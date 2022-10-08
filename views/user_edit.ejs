@@ -1,0 +1,10 @@
+<h1>Edit user</h1>
+
+<form action="/admin/user_edit" method="post">
+  id: <input type="text" id="id" name="id" value="<%=user.id%>"/><br>
+  created: <%= user.created %><br>
+  username:<input type="text" id="username" name="username" value="<%=user.username%>"/><br>
+  password:<input type="text" id="password" name= "password" value="<%=user.password%>"/><br>
+  role:<input type="text" id="role" name="role" value="<%= user.role %>" /><br>
+  <button type="submit" name="submit">Submit</button>
+</form>

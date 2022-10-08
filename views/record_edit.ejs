@@ -1,0 +1,60 @@
+
+
+<%= record.user %><br>
+<%= record.date  %><br>
+
+<div id="div_record_edit">
+<form action="/record_edit/<%= record.id %>" method="post" enctype="multipart/form-data" >
+  <input type="text" id="id" name="id" value="<%= record.id %>"   />
+  <input type="text" id="project" name="project" value="<%= record.project %>"/>
+  <input type="text" id="profession" name="profession"  value="<%= record.profession %>" />
+  <input type="text" id="region" name="region" value="<%= record.region %>" />
+  <input type="text" id="text" name="text" value="<%= record.text  %>" />
+  <input type="text" id="filename" name="filename" value="<%= record.file %>">
+  <input type="file" id="file"/>
+  <input type="text" id="caption" name="caption" value="<%= record.caption %>" />
+  <button type="submit" name="submit">Submit</button>
+</form>
+</div>
+<hr>
+<% comments.sort().reverse().forEach(function(comment){ %>
+  <%= comment.date %><%= comment.id %> <%= comment.text %> <br>
+  <% if(comment.file) {%>
+    ====has file===<br>
+    <% if(['jpg','png','tiff','jpeg','gif'].includes(comment.file.split('.').at(-1).toLowerCase())) {%>
+      <%= comment.file %> <br><br>
+      <a href='/upload/<%= comment.file %>'>
+        <img src="/upload/<%= comment.file %>" alt="<%= comment.file %>" width="300" height="300">
+      </a>
+    <% } else { %>
+      <a href='/upload/<%= comment.file %>'>Click to open or download:   <%= comment.file %></a> <br><br>
+    <% }  %>
+  <% } %>
+  <hr>
+<% }); %>
+
+<button id="btn_ac">Add comment</button>
+<div id="fm_ac" style="display:none">
+<form  action="/comment_add" method="post" enctype="multipart/form-data" >
+  <input type="text" id="id" name="id" value="<%= record.id %>"   />
+  <input type="text" id="project" name="project" value="-"/>
+  <input type="text" id="profession" name="profession"  value="-" />
+  <input type="text" id="region" name="region" value="-" />
+  <input type="text" id="text" name="text" placeholder="input text..." />
+  <input type="file" id="file" name="file"/>
+  <input type="text" id="caption" name="caption" placeholder="input caption..." />
+  <button type="submit" name="submit">Submit</button>
+</form>
+</div>
+
+<script>
+  document.getElementById("btn_ac").addEventListener("click",function(){
+    if (document.getElementById("fm_ac").style.display === "none"){
+      document.getElementById("fm_ac").style.display = "block";
+      document.getElementById("btn_ac").innerText = "Adding comment ...";
+    }else{
+      document.getElementById("fm_ac").style.display = "none"
+      document.getElementById("btn_ac").innerText = "Add comment";
+    }
+  })
+</script>

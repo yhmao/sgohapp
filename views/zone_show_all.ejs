@@ -1,0 +1,16 @@
+
+
+
+<h1>zone_show_all</h1>
+
+<% zones.forEach(function(zone){ %>
+  id: <%= zone.id %><br>
+  user: <%= zone.user %><br>
+  userUpdate:<%= zone.userUpdate %><br>
+  date: <%= zone.date %><br>
+  dateUpdate:   <%= zone.dateUpdate %><br>
+  zoneCode: <%= zone.zoneCode %><br>
+  zoneDescription:   <%= zone.zoneDescription %><br>
+  <a href="/admin/zone_edit/<%=zone.id%>">Edit this zone</a>
+  <hr>
+<% }); %>

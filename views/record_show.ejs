@@ -1,0 +1,32 @@
+
+Show one record:<hr>
+
+<%= record.date %><br>
+<%= record.user %><br>
+<%= record.project %><br>
+<%= record.region %><br>
+<%= record.text %><br>
+<% if(record.file != '') {%>
+  <%= record.file %>
+<% } else{ %>
+   no file.
+<% } %>
+<br>
+<%= record.caption %><br>
+<a href="/record_edit/<%=record.id%>">Edit</a>
+<hr>
+
+<% comments.sort().reverse().forEach(function(comment){ %>
+  <%= comment.date %><%= comment.id %> <%= comment.text %> <br>
+  <% if(comment.file) {%>
+    ====has file===<br>
+    <% if(['jpg','png','tiff','jpeg','gif'].includes(comment.file.split('.').at(-1).toLowerCase())) {%>
+      <%= comment.file %> <br><br>
+      <a href='/upload/<%= comment.file %>'>
+        <img src="/upload/<%= comment.file %>" alt="<%= comment.file %>" width="300" height="300">
+      </a>
+    <% } else { %>
+      <a href='/upload/<%= comment.file %>'>Click to open or download:   <%= comment.file %></a> <br><br>
+    <% }  %>
+  <% } %>
+<% }); %>

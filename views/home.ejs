@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+    <%- include("./include/head.ejs") %>
+	</head>
+
+	<body>
+    <%- include("./include/header.ejs") %>
+
+		<header>
+	    <h1>Home</h1>
+			<% if (user==='') { %>
+				亲爱的用户，你还没有<b><a href='/login'>登录</a></b>。
+			<% }else { %>
+				亲爱的用户 <b><%= user %></b> ,
+			<% } %>
+			欢迎你来到上海大歌剧院项目监理现场记录系统
+			<hr>
+		</header>
+
+		<section class="d-flex">
+			<aside >
+				我的
+				<ul id="ul_all"><button>所有列表<button></ul>
+				<ul id="ul_my_all"><button>我的列表<button></ul>
+				<ul><button><a href="/record_new">新建</a><button></ul>
+				<ul><button><a href="/logout">logout</a><button></ul>
+			</aside>
+
+			<section class="d-flex">
+				<h3> 列表 </h3>
+				<div id="div_list_all"></div>
+			</section>
+
+		</section>
+
+    <%- include("./include/footer.ejs") %>
+
+		<script>
+			function load_list_all(){
+				const xhttp = new XMLHttpRequest();
+				xhttp.onload = function(){
+					document.getElementById("div_list_all").innerHTML = this.responseText;
+				};
+				xhttp.open("GET", "/record_show_all");
+				xhttp.send();
+			}
+			function my_load_list_all(){
+				const xhttp = new XMLHttpRequest();
+				xhttp.onload = function(){
+					document.getElementById("div_list_all").innerHTML = this.responseText;
+				};
+				xhttp.open("GET", "/my/record_show_all");
+				xhttp.send();
+			}
+			load_list_all();
+
+			document.getElementById('ul_all').addEventListener("click", load_list_all);
+			document.getElementById('ul_my_all').addEventListener("click", my_load_list_all);
+
+		</script>
+
+
+
+
+	</body>
+
+</html>

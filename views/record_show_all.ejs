@@ -1,0 +1,9 @@
+<% records.sort().reverse().forEach(function(record){ %>
+  <%= record.text %><br>
+  <%= record.user %><br>
+  <%= record.date %><br>
+  <%= record.id %><br>
+  <%= record.caption %><br>
+  <a href="/record_show/<%=record.id%>">ShowDetail</a>
+  <hr>
+<% }); %>

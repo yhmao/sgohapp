@@ -1,0 +1,12 @@
+<h1>users_all</h1>
+
+<% users.forEach(function(user){ %>
+  id: <%= user.id %><br>
+  User: <%= user.username %><br>
+  Password:<%= user.password %><br>
+  Role: <%= user.role %><br>
+  Registered:   <%= user.created %><br>
+
+  <a href="/admin/user_edit/<%=user.id%>">Edit this user</a>
+  <hr>
+<% }); %>

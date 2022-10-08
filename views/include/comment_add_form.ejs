@@ -1,0 +1,10 @@
+<form action="/comment_add" method="post" enctype="multipart/form-data" >
+  <input type="text" id="id" name="id" value="<%= record.id %>"   />
+  <input type="text" id="project" name="project" value="-"/>
+  <input type="text" id="profession" name="profession"  value="-" />
+  <input type="text" id="region" name="region" value="-" />
+  <input type="text" id="text" name="text" placeholder="input text..." />
+  <input type="file" id="file"/>
+  <input type="text" id="caption" name="caption" value="input caption..." />
+  <button type="submit" name="submit">Add Comment</button>
+</form>

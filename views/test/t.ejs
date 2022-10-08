@@ -1,0 +1,68 @@
+
+
+<!DOCTYPE html>
+<html>
+<%- include("../include/head.ejs") %>
+<style>
+  .important{
+    font-weight:bold;
+    font-size:xx-large;
+  }
+  .blue{
+    color:blue;
+  }
+  #div1{
+    height:200px;
+    width:300px;
+    padding:10px;
+    margin:3px;
+    border:2px solid blue;
+    background-color:lightblue;
+  }
+  hr {
+    position: relative;
+    top: 20px;
+    border: none;
+    height: 12px;
+    background: black;
+    margin-bottom: 50px;
+}
+.ancestors * {
+  display: block;
+  border: 2px solid lightgrey;
+  color: lightgrey;
+  padding: 5px;
+  margin: 15px;
+}
+
+</style>
+<head>
+  <script>
+
+    $(document).ready(function(){
+      $("button").click(function(){
+        $("span").parentsUntil("div").css({"color": "red", "border": "2px solid red"});
+
+      })
+
+
+    })
+
+
+
+  </script>
+</head>
+<button>Click</button><br>
+<hr>
+
+<body class="ancestors"> body (great-great-grandparent)
+  <div style="width:500px;">div (great-grandparent)
+    <ul>ul (grandparent)
+      <li>li (direct parent)
+        <span>span</span>
+      </li>
+    </ul>
+  </div>
+</body>
+
+</html>
