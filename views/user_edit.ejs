@@ -9,6 +9,13 @@
   cellphone:<input type="text" id="cellphone" name="cellphone" value="<%=user.cellphone%>"/><br>
   password:<input type="text" id="password" name= "password" value="<%=user.password%>"/><br>
   team: <select name="team" id="team">
+
+          <% if(user.team == 'none'){ %>
+            <option value="steel" selected>none|未加入</option>
+          <% }else{ %>
+            <option value="steel">none|未加入</option>
+          <% } %>
+    
           <% if(user.team == 'steel'){ %>
             <option value="steel" selected>steel|钢结构</option>
           <% }else{ %>
@@ -32,6 +39,16 @@
           <% }else{ %>
             <option value="stage">stage|舞台</option>
           <% } %>
+
+          <% if(user.team == 'all'){ %>
+            <option value="stage" selected>all|所有</option>
+          <% }else{ %>
+            <option value="stage">all|所有</option>
+          <% } %>
+
+
+
+
         </select>
         <br>
 

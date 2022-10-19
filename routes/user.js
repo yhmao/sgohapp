@@ -33,11 +33,12 @@ module.exports = function(app){
 
   app.get(['/','/home'], function(req,res,next){
     console.log('enter home');
-    console.log('req,session: ', req.session);
+    console.log('req.session: ', req.session);
     console.log('req.user:', req.user);
+    // console.log('user:', locals.user);
     if (req.user){console.log('req.user.username:', req.user.username);}
 
-    if (req.user){ res.render('home',{user: req.user.username, role: req.user.role});}
+    if (req.user){ res.render('home',{user: req.user});}
     else{ res.render('home',{user:'',role:''});
     }
   });
@@ -103,6 +104,8 @@ module.exports = function(app){
       console.log('type of profession:', typeof profession);
       var zone = fields.zone;
       console.log('zone:',zone);
+      var title = fields.title;
+      console.log('title: ', title);
       var text = fields.text;
       console.log('text:', text);
       var caption = fields.caption;
@@ -122,6 +125,7 @@ module.exports = function(app){
         project:project,
         profession:profession,
         zone: zone,
+        title: title,
         text:text,
         caption:caption,
         exposure:exposure,
@@ -188,7 +192,7 @@ module.exports = function(app){
               console.log('all comments:', comments);
               //render with comments
               db.Zone.find({},(err,zones)=>{
-                res.render('record_edit',{record:record,comments:comments,zones:zones,moment:moment});
+                res.render('record_edit',{record:record,comments:comments,zones:zones,moment:moment,user:req.user});
               });
             }
           });
@@ -197,7 +201,7 @@ module.exports = function(app){
         console.log('no comments');
         //render without comments
         db.Zone.find({},(err,zones)=>{
-          res.render('record_edit',{record:record,comments:[],zones:zones,moment:moment});
+          res.render('record_edit',{record:record,comments:[],zones:zones,moment:moment,user:req.user});
         });
       }
     });
@@ -245,6 +249,7 @@ module.exports = function(app){
       var project = fields.project;
       var profession = fields.profession;
       var zone = fields.zone;
+      var title = fields.title;
       var text = fields.text;
       var caption = fields.caption;
       var filename = fields.filename;
@@ -270,6 +275,7 @@ module.exports = function(app){
         record.project = project;
         record.profession = profession;
         record.zone = zone;
+        record.title = title;
         record.text = text;
         record.caption = caption;
         record.exposure = exposure;
@@ -387,13 +393,13 @@ module.exports = function(app){
           ctrl++;
           if (ctrl === commentIds.length){
             console.log('all comments:', comments);
-            res.render('record_show',{record:record,comments:comments,moment:moment});
+            res.render('record_show',{record:record,comments:comments,moment:moment,user:req.user});
           }
         });
       });
     }else{
       console.log('no comments');
-      res.render('record_show', {record:record, comments:[],moment:moment});
+      res.render('record_show', {record:record, comments:[],moment:moment,user:req.user});
     }
   });
 
@@ -461,6 +467,7 @@ module.exports = function(app){
               record.save((err,record)=>{
                 console.log('record saved with new child.');
                 res.redirect('/record_edit/'+id);
+                // res.render('record_edit',{record:record,moment:moment,user:req.user})
               });
             });
           });
@@ -477,6 +484,7 @@ module.exports = function(app){
             record.save((err,record)=>{
               console.log('record saved with new child.');
               res.redirect('/record_edit/'+id);
+              // res.render('record_edit',{record:record,moment:moment,user:req.user})
             });
           });
         });
@@ -526,13 +534,13 @@ module.exports = function(app){
 
 
 
-  app.get('/share/upload', function(req,res,next){
-    console.log('enter GET /share/upload');
-    res.render('upload',{file:'',flag:''});
+  app.get('/sharefile', function(req,res,next){
+    console.log('enter GET /sharefile');
+    res.render('sharefile_new',{file:'',flag:''});
   });
 
-  app.post('/upload', function(req,res,next){
-    console.log('enter POST /share/upload');
+  app.post('/sharefile', function(req,res,next){
+    console.log('enter POST /sharefile');
     var flag;
     const form = formidable({
       multiples:true,
@@ -540,46 +548,17 @@ module.exports = function(app){
       keepExtensions:true,
       maxFileSize:50*1024*1024,
       filename: function(name,ext,part,form){
-        console.log('name ext :', name,ext);
-        // if (name =='invalid-name') {return "";}
-        // check if file exists
-        // if (fs.existsSync(`${__dirname}\/..\/upload\\${name}${ext}`)){
-        //   console.log('fs.existsSyn : exists');
-        //   return "";
-        // }
-
         if (name =='invalid-name' || (fs.existsSync(`${__dirname}\/..\/share\/${name}${ext}`)) ) {
           console.log('invalid name or exists');
           console.log(`Path:  ${__dirname}\/..\/share\/${name}${ext}`);
           console.log(fs.existsSync(`${__dirname}\/..\/share\/${name}${ext}`));
           return " ";
         } else {
-          return name+ext;
+          return  name + ext;
         }
-
-
-
-
-
-
-        // fs.stat(`${__dirname}\/..\/upload\\${name}${ext}`, function(err,stat){
-        //   console.log('enter fs.stat ...');
-        //   if(err){console.log('fs.stat err:', err);}
-        //   if(stat){console.log('fs.stat stat: ', stat);}
-        //   if(err == null) {
-        //     console.log('same file check: File exists');
-        //     return "";
-        //   }else if (err.code === 'ENOENT'){
-        //     console.log('same file check: file does not exist');
-        //     return name+ext;
-        //   } else {
-        //     console.log('same file check: err: ', err);
-        //     return "";
-        //   }
-        // });
-
       }
     });
+
     form.parse(req, (err,fields,files)=>{
       console.log('start parsing form...');
       if (err) {
@@ -587,37 +566,59 @@ module.exports = function(app){
         next(err);
         return;
       }
+
       var user = req.user.username;
       var caption = fields.caption;
       var file;
-      if (files.file.originalFilename){
-          file = files.file.newFilename;
-          console.log('file selected with newFilename', file);
-        } else {
-          console.log('no file selected for uploading.');
-          file = null;
-        }
-      var upload = new db.Upload({
+
+      if (files.file.newFilename === " "){
+        console.log('no selection or already exisits, will not save to db');
+        res.render('sharefile_new', {file:files.file.originalFilename,flag:"nok"});
+      } else {
+        console.log('new file: ', files.file.newFilename);
+        var sharefile = new db.Sharefile({
           user: user,
-          file: file,
+          file: files.file.newFilename,
           caption: caption
         });
+        sharefile.save(()=>{
+          console.log('ok, saved to db for one file update');
+          res.render('sharefile_new',{file:files.file.newFilename,flag:'ok'})
+        });
+      }
+
+
+      //
+      //
+      //
+      // if (files.file.originalFilename){
+      //     file = files.file.newFilename;
+      //     console.log('file selected with newFilename', file);
+      //   } else {
+      //     console.log('no file selected for uploading.');
+      //     file = null;
+      //   }
+      // var upload = new db.Upload({
+      //     user: user,
+      //     file: file,
+      //     caption: caption
+      //   });
       // if(!file || file==" "){
       //     console.log('file is empty or file only space, file: ',file);
       //     res.render('upload',{file:file})
 
-      if (fs.existsSync(`${__dirname}\/..\/share\\${files.file.originalFilename}`)) {
-          console.log('file exists and will not save to database');
-          res.render('upload', {file:files.file.originalFilename,flag:"exists"});
-        } else if (!file) {
-          console.log('!file, will not save to database');
-          res.render('upload', {file:file, flag:'notSelect'});
-        } else {
-            upload.save(()=>{
-              console.log('one document of upload saved:', upload);
-              res.render('upload',{file:file,flag:'ok'});
-            });
-        }
+      // if (fs.existsSync(`${__dirname}\/..\/share\\${files.file.originalFilename}`)) {
+      //     console.log('file exists and will not save to database');
+      //     res.render('upload', {file:files.file.originalFilename,flag:"exists"});
+      //   } else if (!file) {
+      //     console.log('!file, will not save to database');
+      //     res.render('upload', {file:file, flag:'notSelect'});
+      //   } else {
+      //       upload.save(()=>{
+      //         console.log('one document of upload saved:', upload);
+      //         res.render('upload',{file:file,flag:'ok'});
+      //       });
+      //   }
     });
   });
 

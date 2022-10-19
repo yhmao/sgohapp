@@ -40,6 +40,7 @@ const recordSchema = new mongoose.Schema({
   project: {type: String, default:'SGOH'},
   profession: String,
   zone: String,
+  title: String,
   text: String,
   file: {type:String, default: ''},
   caption: String,
@@ -50,7 +51,7 @@ const recordSchema = new mongoose.Schema({
 });
 const Record = mongoose.model('Record', recordSchema);
 const Comment = mongoose.model('Comment', recordSchema);
-const Upload = mongoose.model('Upload', recordSchema);
+const Sharefile = mongoose.model('Sharefile', recordSchema);
 
 const zoneSchema = new mongoose.Schema({
   user: {type:String, default:''},
@@ -69,7 +70,7 @@ module.exports = {
   User:User,
   Record:Record,
   Comment:Comment,
-  Upload:Upload,
+  Sharefile:Sharefile,
   Zone:Zone
 };
 console.log('database.js.');

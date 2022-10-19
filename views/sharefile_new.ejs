@@ -1,0 +1,17 @@
+
+<% if  (flag == "nok" ) { %>
+    <p> 你未选择任何文件供上传 或 你选择的文件已经有同名文件存在 </p>
+    <p> 请选择合适的文件，或更改文件名后再上传。</p>
+
+<% } else if(flag == "ok") { %>
+    <p> You have just uploaded: <strong><%= file %></strong> </p>
+    <p> And you can return to <a href='/home'>home</a> or upload more... </p>
+<% } %>
+<br>
+
+
+<form action="/sharefile" method="post" enctype="multipart/form-data">
+  <input type="file" id="file" name="file">
+  <input type="text" id="caption" name="caption" placeholder="input attachment caption text" />
+  <button type="submit" name="submit">Submit</button>
+</form>

@@ -89,7 +89,10 @@ app.use(function(req,res,next){
 app.use(function(req,res,next){
   console.log('-----middleware for checking passport session ----');
   if (req.session.passport){console.log('req.session.passport:', req.session.passport);}
-  if (req.user){console.log('req.user:',req.user);}
+  if (req.user){
+    console.log('req.user:',req.user);
+    // res.locals.user = req.user;
+  }
   if (req.session.cookie){console.log('req.session.cookie:',req.session.cookie);}
   console.log('-----middleware passport checking ends ----');
   next();

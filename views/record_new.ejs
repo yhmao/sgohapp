@@ -5,20 +5,15 @@
 
   project项目:<input type="text" id="project" name="project" value="SGOH"/><br><br>
 
-  profession专业:
-  <select name="profession" id="profession">
-    <option value="" selected>请选择专业:</option>
-    <option value="steel">steel|钢结构</option>
-    <option value="civil">civil|土建</option>
-    <option value="install">install|安装</option>
-    <option value="stage">stage|舞台</option>
-  </select><br><br>
+  profession专业:  <%- include("./include/select_profession.ejs") %>
   zone选择区域:<select name="zone" id="zone">
     <option value="" selected>请选择区域</option>
     <% for (var i=0; i < zones.length; i++){ %>
       <option value="<%= zones[i].zoneCode %>"> <%= zones[i].zoneCode %> | <%= zones[i].zoneDescription %> </option>
     <% } %>
   </select><br><br>
+
+  title标题:<input type="text" id="title" name="title" placeholder="请输入本项记录标题"><br><br>
 
   text说明文字:
 

@@ -10,10 +10,10 @@
 		<header>
 	    Home
 			<a href="/home/notice"><button>说明与公告</button></a><br>
-			<% if (user==='') { %>
+			<% if (user.username==='') { %>
 				亲爱的用户，你还没有<b><a href='/login'>登录</a></b>。
 			<% }else { %>
-				亲爱的用户 <b><%= user %></b> ,
+				亲爱的用户 <b><%= user.username %></b> ,
 			<% } %>
 			欢迎你来到上海大歌剧院项目监理现场记录系统
 			<hr>
@@ -30,11 +30,11 @@
 
 				<ul><button><a href="/record_new">新建记录</a></button></ul>
 				<ul><button><a href="/share">文档分享</a></button></ul>
-				<ul><button><a href="/share/upload">上传分享</a></button></ul>
+				<ul><button><a href="/sharefile">上传分享</a></button></ul>
 				<ul><button><a href="/logout">logout</a></button></ul>
 
 
-				<% if (role == 'admin') { %>
+				<% if (user.role == 'admin') { %>
 					<ul>======</ul>
 					<ul><button><a href="/admin">管理员</a></button></ul>
 				<% } %>

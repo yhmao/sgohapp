@@ -9,6 +9,7 @@ var multer = require('multer');
 var path = require('path');
 var utils = require('../utils');
 var fs = require('fs');
+var moment = require('moment');
 
 
 
@@ -258,6 +259,44 @@ module.exports = function(app){
       console.log('find all comments:', comments);
       // res.send('enter GET /admin/comment_json_all');
       res.jsonp(comments);
+    });
+  });
+
+  app.get('/admin/sharefile_show_all', function(req,res,next){
+    console.log('enter GET /admin/sharefile_show_all');
+    db.Sharefile.find({},(err,sharefiles)=>{
+      console.log('sharefiles:', sharefiles);
+      res.render('sharefile_show_all', {sharefiles:sharefiles, moment:moment})
+    });
+    // db.Upload.find({},(err.uploads))
+    // res.send('/admin/sharefile_show_all')
+  });
+
+  app.get('/admin/sharefile_show/:id', function(req,res,next){
+    console.log('enter GET /admin/sharefile_show_all');
+    var id = req.params.id;
+    console.log('id:', id);
+    db.Sharefile.findById(id, (err,sharefile)=>{
+      res.render('sharefile_show',{sharefile:sharefile, moment:moment});
+    });
+
+  });
+
+  app.get('/admin/sharefile_remove/:id', function(req,res,next){
+    console.log('enter GET /admin/sharefile_remove/:id');
+    var id = req.params.id;
+    console.log('id:', id);
+    db.Sharefile.findById(id, (err,sharefile)=>{
+      try {
+        fs.unlinkSync(`${__dirname}\/..\/share\/`+sharefile.file)
+        console.log('original file was removed: ', sharefile.file);
+        db.Sharefile.findByIdAndDelete(id, ()=>{
+          res.redirect('/admin/sharefile_show_all');
+        })
+      }catch (e){
+        console.log('err removing file which is not successful: ', sharefile.file);
+        res.send('err removing file which is not successful: '+ sharefile.file)
+      }
     });
   });
 
