@@ -1,6 +1,7 @@
 console.log('===========app.js Starting===========');
 
 const util = require('util');
+const moment = require('moment');
 const fs = require('fs');
 const express = require('express');
 const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn();
@@ -15,6 +16,8 @@ const db = require('./database.js');   //mongoose
 const mw = require('./middlewares.js')  //more middlewares
 
 var multer = require('multer');
+const formidable = require('formidable');
+
 var utils = require('./utils');
 
 const storage = multer.diskStorage({
@@ -55,8 +58,8 @@ app.use('/test', express.static(path.join(__dirname,'public/test')));
 
 //share a folder with file list
 var serveIndex = require('serve-index');
-app.use('/share', serveIndex(path.join(__dirname, 'public/static/share')));
-app.use('/share', express.static(path.join(__dirname, 'public/static/share')));
+app.use('/share', serveIndex(path.join(__dirname, 'share')));
+app.use('/share', express.static(path.join(__dirname, 'share')));
 
 app.use(session({
   secret:'keyboard cat',
@@ -70,6 +73,7 @@ app.use(mw.passport.initialize());
 app.use(mw.passport.session());
 app.use(mw.passport.authenticate('session'));
 // app.use(mw.passport.authenticate('remember-me'));
+console.log('app.js app.use(mw.passport.xxx)');
 
 console.log('app.js app.use().');
 
@@ -77,7 +81,7 @@ console.log('app.js app.use().');
 console.log('app.js xxxxxxxx');
 
 app.use(function(req,res,next){
-  console.log("------NEW REQUEST: " + req.method + "  " + req.originalUrl + "-------");
+  console.log("\n\n\n\n=*=*=*=*=*=*=*= NEW REQUEST: " + req.method + "  " + req.originalUrl + " =*=*=*=*=*=*=*=\n\n");
 
   next();
 });
@@ -86,6 +90,7 @@ app.use(function(req,res,next){
   console.log('-----middleware for checking passport session ----');
   if (req.session.passport){console.log('req.session.passport:', req.session.passport);}
   if (req.user){console.log('req.user:',req.user);}
+  if (req.session.cookie){console.log('req.session.cookie:',req.session.cookie);}
   console.log('-----middleware passport checking ends ----');
   next();
 });
@@ -113,34 +118,9 @@ app.use(express.urlencoded({ extended: true })) // for parsing application/x-www
 
 
 app.get(['/t/:name/:age','/t'], function(req,res,next){
-
-
   var date = new Date();
   var yyyymmdd_hhmmss = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2) + '_' + ("0" + date.getHours() ).slice(-2) + ("0" + date.getMinutes()).slice(-2) + ("0" + date.getSeconds()).slice(-2);
 
-
-  // console.log('session: ', session);
-  // console.log('session.secret: ', session.secret);
-  // console.log('cookie', res.cookie);
-  // req.session.cookie.expires = new Date(Date.now() + 3600000);
-
-
-  //
-  // console.log('req.seesionID: ', req.sessionID);
-  // console.log('req.session.cookie:', req.session.cookie);
-  // console.log('req.session.cookie.maxAge:', req.session.cookie.maxAge);
-  // console.log('req.session.cookie.expires: ', req.session.cookie.expires);
-  // console.log('req.session.cookie.originalMaxAge: ', req.session.cookie.originalMaxAge);
-  // console.log('req.session: ', req.session);
-  // console.log('req.session.secret: ', req.session.secret);
-
-
-
-  // res.send('test id name');
-  // res.write('<form action="/t" method="post"><input type="text" name="name" placeholder="name"/>');
-  // res.write(' <input type="text" name="password" placeholder="password"/>');
-  // res.write('<input type="submit" name="submit" value="Submit"/ > </form>');
-  // res.end();
   console.log('session:', session);
   console.log('req.session:', req.session);
   console.log('req.session.id:', req.session.id);

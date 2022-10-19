@@ -1,5 +1,6 @@
 
 var db = require('./database');
+var utils = require('./utils');
 //middleware passport
 var passport = require('passport');
 var LocalStrategy = require('passport-local');
@@ -7,6 +8,7 @@ var LocalStrategy = require('passport-local');
 
 var strategy = new LocalStrategy(function verify(
   username, password, cb){
+    console.log('middleware.js new LocalStrategy...');
     db.User.findOne({username:username},function(error,user){
       if(error){console.log('error in finding one username'); return cb(error);}
       if(!user){console.log('find no user'); return cb(null, false, { message: 'Incorrect username or password.' });}
@@ -23,44 +25,69 @@ var strategy = new LocalStrategy(function verify(
   });
 passport.use('local',strategy);
 passport.serializeUser(function(user, cb){
-  console.log('serializeUser...');
+  console.log('middleware.js passport serializeUser...');
+  console.log('middleware.js passport serializeUser... user:',user);
   process.nextTick(function(){
     // cb(null, { id: user.id, username: user.username });
+    console.log('middleware.js passport serializeUser... user.id:', user.id);
     cb(null, user.id);
-  })
+  });
+  console.log('middleware.js passport serializeUser...ends');
 });
 
 passport.deserializeUser(function(_id,cb){
-  console.log('deserializeUser...');
+  console.log('middleware.js passport deserializeUser...');
   process.nextTick(function(){
     db.User.findById(_id,(err,user)=>{
+      console.log('middleware.js passport deserializeUser..._id:',_id);
       if(err){
         cb(null, false, {error:err});
       } else{
+        console.log('middleware.js passport deserializeUser... user:', user);
         cb(null, user)
       }
     });
   });
+  console.log('middleware.js passport deserializeUser...ends');
 });
 
+
+
 // var rememberMeStrategy = new RememberMeStrategy(
+//   //verify callback (consumes the token)
 //   function(token,done){
+//     console.log('middleware.js new RememberMeStrategy verify...');
+//     console.log('Token:', Token);
 //     Token.consume(token, function(err,user){
+//       console.log('consuming token...');
 //       if(err) { return done(err);}
 //       if(!user) {return done(null, false);}
 //       return done(null,user);
 //     });
 //   },
+//   //issue callback (issues a new token)
 //   function(user, done){
-//     var token = utils.generateToken(64);
-//     Token.save(token,{userId: user.id},function(err){
+//     console.log('middleware.js new RememberMeStrategy issue...');
+//     var token = utils.randomString(64);
+//     console.log('new token generated: ', token);
+//     Token.save(token,user.id,function(err){
+//       console.log('saving new generated token...');
 //       if(err) {return done(err);}
 //       return done(null,token);
 //     })
 //   }
 // )
+console.log('middleware.js passport.use(rememberMeStrategy)...');
 // passport.use(rememberMeStrategy);
-// console.log('exported middleware passport with local and remember-me.');
+console.log('middleware.js passport.use(rememberMeStrategy)...ends');
+
+
+
+
+
+
+
+
 
 
 // middleware upload

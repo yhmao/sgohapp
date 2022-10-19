@@ -1,3 +1,6 @@
+
+
+
 <h1>Login</h1>
 <form action="/login" method="post">
     <section>
@@ -8,5 +11,14 @@
         <label for="password">Password</label>
         <input id="password" name="password" type="password" required>
     </section>
+    <section>
+        <label for="remember_me">Remember Me</label>
+        <input id="remember_me" name="remember_me" type="checkbox" value="yes" checked>
+    </section>
     <button type="submit">Login</button>
 </form>
+
+<br>
+<br>
+
+<button id='register' name='register'><a href="/register">新用户注册</a></button>

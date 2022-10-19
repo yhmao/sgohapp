@@ -1,51 +1,120 @@
 
 
-<%= record.user %><br>
-<%= record.date  %><br>
+User: <%= record.user %><br>
+Created :<%= moment(record.date).format('YYYY-MM-DD HH:mm:ss') %><br>
+Updated :<%= moment(record.dateUpdate).format('YYYY-MM-DD HH:mm:ss') %><br>
+Created: <%= record.date  %><br>
+Updated: <%= record.dateUpdate  %><br><br><br>
+
+
 
 <div id="div_record_edit">
 <form action="/record_edit/<%= record.id %>" method="post" enctype="multipart/form-data" >
-  <input type="text" id="id" name="id" value="<%= record.id %>"   />
-  <input type="text" id="project" name="project" value="<%= record.project %>"/>
-  <input type="text" id="profession" name="profession"  value="<%= record.profession %>" />
-  <input type="text" id="region" name="region" value="<%= record.region %>" />
-  <input type="text" id="text" name="text" value="<%= record.text  %>" />
-  <input type="text" id="filename" name="filename" value="<%= record.file %>">
-  <input type="file" id="file"/>
-  <input type="text" id="caption" name="caption" value="<%= record.caption %>" />
-  <button type="submit" name="submit">Submit</button>
-</form>
+  id:<input type="text" id="id" name="id" value="<%= record.id %>" size="30"  /><br>
+  project项目:<input type="text" id="project" name="project" value="<%= record.project %>"/><br>
+  profession专业:<input type="text" id="profession" name="profession"  value="<%= record.profession %>" /><br><br>
+  zone选择区域:
+  <select name="zone" id="zone">
+    <% for (var i=0; i < zones.length; i++){ %>
+      <% if (zones[i].zoneCode==record.zone) { %>
+        <option value="<%= zones[i].zoneCode %>" selected> <%= zones[i].zoneCode %> | <%= zones[i].zoneDescription %> </option>
+      <% } else { %>
+        <option value="<%= zones[i].zoneCode %>"> <%= zones[i].zoneCode %> | <%= zones[i].zoneDescription %> </option>
+      <% } %>
+    <% } %>
+  </select><br><br>
+  <br>
+
+  text说明文字:<textarea id="text" name="text"  rows="8" cols="80"><%= record.text %></textarea> <br><br>
+
+  <% if(['jpg','png','tiff','jpeg','gif'].includes(record.file.split('.').pop().toLowerCase())) {%>
+    <a href="/upload/<%= record.file %>">
+      <img src="/upload/<%= record.file %>" alt="<%= record.file %>" width="400" >
+    </a>
+  <% } else if (['mp4','ogg','webm', 'mov','wmv','avi','flv','swf','mkv','mpeg'].includes(record.file.split('.').pop().toLowerCase())) { %>
+    <a href='/upload/<%= record.file %>'>
+      <%= record.file %> <br><br>
+      <video width='320' height='240' controls>
+        <source src='/upload/<%= record.file %>' type="video/mp4">
+        Your browser does not support the video tag. Please download to play with proper software.
+      </video>
+    </a>
+  <% } else { %>
+    <a href='/upload/<%= record.file %>'>Click to open or download:   <%= record.file %></a>
+  <% }  %>  <br>
+  <%= record.file %><br>
+  filename文件名:<input type="text" id="filename" name="filename" value="<%= record.file %>"><br>
+  file选取上传文件:<input type="file" id="file" name="file"/><br><br>
+  caption图注:<input type="text" id="caption" name="caption" value="<%= record.caption %>" /><br>
+
+  <% if (record.exposure === 'private'){ %>
+    <input type="checkbox" id="exposure" name="exposure" value="private" checked >
+    <label for="exposure">设为私密，仅自己可见。</label><br><br>
+  <% } else { %>
+    <input type="checkbox" id="exposure" name="exposure" value="private" >
+    <label for="exposure">设为私密，仅自己可见。</label><br><br>
+  <% } %>
+  <br>
+
+
+  <button type="submit" name="submit">提交更改</button><br>
+  </form>
+  <button><a href="/record_remove/<%= record.id %>">删除</a></button>
+  <button><a href="/admin/record_remove_force/<%= record.id %>">强力删除</a></button>
 </div>
 <hr>
 <% comments.sort().reverse().forEach(function(comment){ %>
-  <%= comment.date %><%= comment.id %> <%= comment.text %> <br>
+  date: <%= comment.date %><br>
+  User: <%= comment.user %><br>
+  id: <%= comment.id %> <br>
+  project: <%= comment.project %><br>
+  region: <%= comment.region %> <br>
+  text: <%= comment.text %> <br>
+  caption: <%= comment.caption %> <br>
+
+
   <% if(comment.file) {%>
     ====has file===<br>
-    <% if(['jpg','png','tiff','jpeg','gif'].includes(comment.file.split('.').at(-1).toLowerCase())) {%>
+    <% if(['jpg','png','tiff','jpeg','gif'].includes(comment.file.split('.').pop().toLowerCase())) {%>
       <%= comment.file %> <br><br>
       <a href='/upload/<%= comment.file %>'>
-        <img src="/upload/<%= comment.file %>" alt="<%= comment.file %>" width="300" height="300">
+        <img src="/upload/<%= comment.file %>" alt="<%= comment.file %>" width="400"  >
+      </a>
+    <% } else if (['mp4','ogg','webm', 'mov','wmv','avi','flv','swf','mkv','mpeg'].includes(comment.file.split('.').pop().toLowerCase())) { %>
+      <a href='/upload/<%= comment.file %>'>
+        <%= comment.file %> <br><br>
+        <video width='320' height='240' controls>
+          <source src='/upload/<%= comment.file %>' type="video/mp4">
+          Your browser does not support the video tag. Please download to play with proper software.
+        </video>
       </a>
     <% } else { %>
       <a href='/upload/<%= comment.file %>'>Click to open or download:   <%= comment.file %></a> <br><br>
     <% }  %>
   <% } %>
+  <br>
+  <button><a href="#">修改该comment</a></button> &nbsp; &nbsp;&nbsp;&nbsp;
+  <button><a href="/comment_delete/<%=comment.id%>">删除该comment</a></button>
   <hr>
+
 <% }); %>
 
 <button id="btn_ac">Add comment</button>
 <div id="fm_ac" style="display:none">
 <form  action="/comment_add" method="post" enctype="multipart/form-data" >
-  <input type="text" id="id" name="id" value="<%= record.id %>"   />
-  <input type="text" id="project" name="project" value="-"/>
-  <input type="text" id="profession" name="profession"  value="-" />
-  <input type="text" id="region" name="region" value="-" />
-  <input type="text" id="text" name="text" placeholder="input text..." />
-  <input type="file" id="file" name="file"/>
-  <input type="text" id="caption" name="caption" placeholder="input caption..." />
+  id:<input type="text" id="id" name="id" value="<%= record.id %>"   /><br>
+  project:<input type="text" id="project" name="project" value="-"/><br>
+  profession: <input type="text" id="profession" name="profession"  value="-" /><br>
+  region: <input type="text" id="region" name="region" value="-" /><br>
+  text: <input type="text" id="text" name="text" placeholder="input text..." /><br>
+  file: <input type="file" id="file" name="file"/><br>
+  caption: <input type="text" id="caption" name="caption" placeholder="input caption..." /><br>
+
   <button type="submit" name="submit">Submit</button>
+
 </form>
 </div>
+<br><br><br>
 
 <script>
   document.getElementById("btn_ac").addEventListener("click",function(){

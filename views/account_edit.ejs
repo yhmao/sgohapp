@@ -1,0 +1,21 @@
+<h1>Modify my account</h1>
+
+<form action='/my/account/edit' method='post'>
+  <section>
+    <label for="username">Username</label>
+    <%= user.username %>
+  </section>
+  <section>
+    <label for="nickname">Nickname</label>
+    <input id="nickname" name="nickname" type="text" value="<%= user.nickname %>" >
+  </section>
+  <section>
+    <label for="cellphone">Cellphone</label>
+    <input id="cellphone" name="cellphone" type="text" value="<%= user.cellphone %>" >
+  </section>
+  <section>
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" value="<%= user.password %>" required>
+  </section>
+  <button type="submit">Modify</button>
+</form>

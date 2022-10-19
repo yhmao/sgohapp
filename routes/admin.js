@@ -8,12 +8,18 @@ console.log('user.js routes.');
 var multer = require('multer');
 var path = require('path');
 var utils = require('../utils');
+var fs = require('fs');
 
 
 
 module.exports = function(app){
 
   // user managment
+
+  app.get('/admin', function(req,res,next){
+    console.log('enter GET /admin');
+    res.render('admin');
+  });
 
   app.get('/admin/user_show_all', function(req,res,next){
     console.log('enter admin/show_all_users');
@@ -41,10 +47,15 @@ module.exports = function(app){
     console.log('enter post admin/edit_user');
     var id = req.body.id;
     var username = req.body.username;
+    var nickname = req.body.nickname;
+    var cellphone = req.body.cellphone;
     var password = req.body.password;
     var role = req.body.role;
-    console.log(username, password, role);
-    await db.User.findByIdAndUpdate(id,{username,password,role});
+    var team = req.body.team;
+    var dateUpdate = Date.now();
+    console.log('username, nickname,cellphone,password, role,team:');
+    console.log(username, nickname,cellphone,password, role,team);
+    await db.User.findByIdAndUpdate(id,{username,nickname,cellphone,password,role,team,dateUpdate});
     db.User.findById(id, function(error,user){
       console.log('updated user:', user);
       res.render("user_edit", {user:user});
@@ -111,6 +122,146 @@ module.exports = function(app){
       res.render("zone_edit", {zone:zone})
     });
   });
+
+  //remove record :id by force, including all comments, files.
+  app.get('/admin/record_remove_force/:id', function(req,res,next){
+    console.log('enter GET /admin/record_remove_force/:id');
+    var id = req.params.id;
+    console.log('id:', id);
+    db.Record.findById(id, (err,record)=>{
+      // record has comments else
+      if (record.children.length) {
+        console.log(`record has ${record.children.length} comments to remove first...`);
+        var ctrl = 0;
+        // for each comment
+        record.children.forEach((commentId, i) => {
+          console.log(`removing comment ${i}: ${commentId}`);
+          db.Comment.findById(commentId,(err,comment)=>{
+            // for each comment has file
+            if (comment.file) {
+              console.log('comment has file: ', comment.file);
+              fs.unlinkSync(`${__dirname}\/..\/upload\/${comment.file}`);
+              console.log(`the file ${comment.file} has been removed.`);
+
+              //
+              db.Comment.findByIdAndDelete(comment.id, (err,comment)=>{
+                if (err) { console.log('err removing comment: ', err);}
+                console.log('one comment was removed from db: ', comment);
+                ctrl++;
+
+                // all comment removed, remove record
+                // if has comments or else
+                if (ctrl == record.children.length) {
+                  console.log('all comments removed.');
+                  //remove records
+                  // if record has file and else
+                  if (record.file) {
+                    console.log(`record has file: ${record.file}`);
+                    console.log('remove record file first...');
+                    fs.unlinkSync(`${__dirname}\/..\/upload\/${record.file}`);
+                    db.Record.findByIdAndDelete(record.id, (err,record)=>{
+                      if (err) {console.log('err removing record from db: ', err);}
+                      console.log('removing record from db successful.');
+                      res.send('successfully removed the record with all its file and comments!')
+                    });
+
+                  // if record no file
+                  } else {
+                    console.log('record has no file');
+                    console.log('remove record directly...');
+                    db.Record.findByIdAndDelete(record.id, (err,record)=>{
+                      if (err) {console.log('err removing record from db: ', err);}
+                      console.log('removing record from db successful.');
+                      res.send('successfully removed the record with all its file and comments!')
+                    })
+                  }
+
+            // for each comment no file
+                } else {
+
+                  console.log('comment has no file.');
+                  db.Comment.findByIdAndDelete(comment.id, (err,comment)=>{
+                    if (err) { console.log('err removing comment: ', err);}
+                    console.log('one comment was removed from db: ', comment);
+                    ctrl++;
+                    // all comment removed, remove record
+                    if (ctrl == record.children.length) {
+                      console.log('all comments removed.');
+                      //remove records
+                      if (record.file) {
+                        console.log(`record has file: ${record.file}`);
+                        console.log('remove record file first...');
+                        fs.unlinkSync(`${__dirname}\/..\/upload\/${record.file}`);
+                        db.Record.findByIdAndDelete(record.id, (err,record)=>{
+                          if (err) {console.log('err removing record from db: ', err);}
+                          console.log('removing record from db successful.');
+                          res.send('successfully removed the record with all its file and comments!')
+                        });
+                      } else {
+                        console.log('record has no file');
+                        console.log('remove record directly...');
+                        db.Record.findByIdAndDelete(record.id, (err,record)=>{
+                          if (err) {console.log('err removing record from db: ', err);}
+                          console.log('removing record from db successful.');
+                          res.send('successfully removed the record with all its file and comments!')
+                        })
+                      }
+                    }
+                  });
+                }
+                // for each comment no file end
+              });
+
+        }
+          });
+        });
+      // record has no comments
+      } else {
+        console.log('record has no comment...');
+        //remove record
+        if (record.file) {
+          console.log(`record has file: ${record.file}`);
+          console.log('remove record file first...');
+          fs.unlinkSync(`${__dirname}\/..\/upload\/${record.file}`);
+          db.Record.findByIdAndDelete(record.id, (err,record)=>{
+            if (err) {console.log('err removing record from db: ', err);}
+            console.log('removing record from db successful.');
+            res.send('successfully removed the record with all its file and comments!')
+          });
+        } else {
+          console.log('record has no file');
+          console.log('remove record directly...');
+          db.Record.findByIdAndDelete(record.id, (err,record)=>{
+            if (err) {console.log('err removing record from db: ', err);}
+            console.log('removing record from db successful.');
+            res.send('successfully removed the record with all its file and comments!')
+          })
+        }
+
+      }
+
+    });
+  });
+
+  app.get('/admin/record_json_all', function(req,res,next){
+    console.log('enter GET /admin/record_json_all');
+    db.Record.find({},(err,records)=>{
+      console.log('find all records:', records);
+      // res.send('enter GET /admin/record_json_all');
+      res.jsonp(records);
+    });
+  });
+
+  app.get('/admin/comment_json_all', function(req,res,next){
+    console.log('enter GET /admin/comment_json_all');
+    db.Comment.find({}, (err,comments)=>{
+      console.log('find all comments:', comments);
+      // res.send('enter GET /admin/comment_json_all');
+      res.jsonp(comments);
+    });
+  });
+
+
 
 
 };

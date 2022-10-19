@@ -1,9 +1,16 @@
-<% records.sort().reverse().forEach(function(record){ %>
-  <%= record.text %><br>
-  <%= record.user %><br>
-  <%= record.date %><br>
-  <%= record.id %><br>
-  <%= record.caption %><br>
+<% records.sort(function(a,b){return a.dateUpdate-b.dateUpdate}).reverse().forEach(function(record){ %>
+
+  User:<%= record.user %>&nbsp;|&nbsp;
+  Id:<%= record.id %><br>
+  U:<%= moment(record.dateUpdate).format('YYYY-MM-DD HH:mm:ss') %>&nbsp;|&nbsp;
+  C:<%= moment(record.date).format('YYYY-MM-DD HH:mm:ss') %><br>
+
+  Text:<%= record.text %><br>
+  Caption:<%= record.caption %><br>
+  file: <%= record.file %><br>
+  Comments: <%= record.children.length %><br>
+
+
   <a href="/record_show/<%=record.id%>">ShowDetail</a>
   <hr>
 <% }); %>

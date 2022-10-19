@@ -2,11 +2,36 @@
 
 
 <form action="/record_new" method="post" enctype="multipart/form-data">
-  <input type="text" id="project" name="project" value="SGOH"/>
-  <input type="text" id="profession" name="profession" placeholder="input profession" />
-  <input type="text" id="region" name="region" placeholder="input region" />
-  <input type="text" id="text" name="text" placeholder="input text description" />
-  <input type="file" id="file" name="file">
-  <input type="text" id="caption" name="caption" placeholder="input attachment caption text" />
+
+  project项目:<input type="text" id="project" name="project" value="SGOH"/><br><br>
+
+  profession专业:
+  <select name="profession" id="profession">
+    <option value="" selected>请选择专业:</option>
+    <option value="steel">steel|钢结构</option>
+    <option value="civil">civil|土建</option>
+    <option value="install">install|安装</option>
+    <option value="stage">stage|舞台</option>
+  </select><br><br>
+  zone选择区域:<select name="zone" id="zone">
+    <option value="" selected>请选择区域</option>
+    <% for (var i=0; i < zones.length; i++){ %>
+      <option value="<%= zones[i].zoneCode %>"> <%= zones[i].zoneCode %> | <%= zones[i].zoneDescription %> </option>
+    <% } %>
+  </select><br><br>
+
+  text说明文字:
+
+  <!-- <input type="text" id="text" name="text" placeholder="input text description" /><br><br> -->
+  <textarea id="text" name="text" rows="4" cols="80" placeholder="input text description"></textarea>
+
+  file选取上传文件:<input type="file" id="file" name="file"><br><br>
+
+  caption图注<input type="text" id="caption" name="caption" placeholder="input attachment caption text" /><br><br>
+
+  <input type="checkbox" id="exposure" name="exposure" value="private">
+  <label for="exposure">设为私密，仅自己可见。</label><br><br>
+
   <button type="submit" name="submit">Submit</button>
+
 </form>

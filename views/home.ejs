@@ -8,7 +8,8 @@
     <%- include("./include/header.ejs") %>
 
 		<header>
-	    <h1>Home</h1>
+	    Home
+			<a href="/home/notice"><button>说明与公告</button></a><br>
 			<% if (user==='') { %>
 				亲爱的用户，你还没有<b><a href='/login'>登录</a></b>。
 			<% }else { %>
@@ -20,16 +21,32 @@
 
 		<section class="d-flex">
 			<aside >
-				我的
-				<ul id="ul_all"><button>所有列表<button></ul>
-				<ul id="ul_my_all"><button>我的列表<button></ul>
-				<ul><button><a href="/record_new">新建</a><button></ul>
-				<ul><button><a href="/logout">logout</a><button></ul>
+
+				<ul id="my_account"><button>我的账号</button></ul>
+				<ul id="ul_all"><button>所有列表</button></ul>
+				<ul id="ul_my_all_record"><button>我的列表</button></ul>
+				<ul id="ul_my_all_record_private"><button>我的私密</button></ul>
+				<ul id="ul_my_all_comment"><button>我的评论</button></ul>
+
+				<ul><button><a href="/record_new">新建记录</a></button></ul>
+				<ul><button><a href="/share">文档分享</a></button></ul>
+				<ul><button><a href="/share/upload">上传分享</a></button></ul>
+				<ul><button><a href="/logout">logout</a></button></ul>
+
+
+				<% if (role == 'admin') { %>
+					<ul>======</ul>
+					<ul><button><a href="/admin">管理员</a></button></ul>
+				<% } %>
+
+
+
+
 			</aside>
 
-			<section class="d-flex">
-				<h3> 列表 </h3>
-				<div id="div_list_all"></div>
+			<section>
+				<div style="padding-left: 20px;"><center><h3> 列表 </h3></center></div>
+				<div style="padding-left: 20px;" id="div_main"></div>
 			</section>
 
 		</section>
@@ -37,10 +54,18 @@
     <%- include("./include/footer.ejs") %>
 
 		<script>
+			function my_account(){
+				const xhttp = new XMLHttpRequest();
+				xhttp.onload = function(){
+					document.getElementById("div_main").innerHTML = this.responseText;
+				};
+				xhttp.open("GET", "/my/account");
+				xhttp.send();
+			}
 			function load_list_all(){
 				const xhttp = new XMLHttpRequest();
 				xhttp.onload = function(){
-					document.getElementById("div_list_all").innerHTML = this.responseText;
+					document.getElementById("div_main").innerHTML = this.responseText;
 				};
 				xhttp.open("GET", "/record_show_all");
 				xhttp.send();
@@ -48,15 +73,36 @@
 			function my_load_list_all(){
 				const xhttp = new XMLHttpRequest();
 				xhttp.onload = function(){
-					document.getElementById("div_list_all").innerHTML = this.responseText;
+					document.getElementById("div_main").innerHTML = this.responseText;
 				};
 				xhttp.open("GET", "/my/record_show_all");
 				xhttp.send();
 			}
+			function my_load_list_all_c(){
+				const xhttp = new XMLHttpRequest();
+				xhttp.onload = function(){
+					document.getElementById("div_main").innerHTML = this.responseText;
+				};
+				xhttp.open("GET", "/my/record_show_all_c");
+				xhttp.send();
+			}
+			function my_load_list_all_private(){
+				const xhttp = new XMLHttpRequest();
+				xhttp.onload = function(){
+					document.getElementById("div_main").innerHTML = this.responseText;
+				};
+				xhttp.open("GET", "/my/record_show_all_private");
+				xhttp.send();
+			}
 			load_list_all();
 
+			document.getElementById('my_account').addEventListener("click", my_account);
 			document.getElementById('ul_all').addEventListener("click", load_list_all);
-			document.getElementById('ul_my_all').addEventListener("click", my_load_list_all);
+			document.getElementById('ul_my_all_record').addEventListener("click", my_load_list_all);
+			document.getElementById('ul_my_all_comment').addEventListener("click", my_load_list_all_c);
+			document.getElementById('ul_my_all_record_private').addEventListener('click', my_load_list_all_private)
+
+
 
 		</script>
 

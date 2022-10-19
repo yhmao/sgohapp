@@ -1,10 +1,68 @@
 <h1>Edit user</h1>
 
 <form action="/admin/user_edit" method="post">
-  id: <input type="text" id="id" name="id" value="<%=user.id%>"/><br>
-  created: <%= user.created %><br>
+  id: <%= user.id %><br><input type="text" id="id" name="id" value="<%=user.id%>" hidden/>
+  created: <%= user.date %><br>
+  lastUpdate: <%= user.dateUpdate %><br><br>
   username:<input type="text" id="username" name="username" value="<%=user.username%>"/><br>
+  nickname:<input type="text" id="nickname" name="nickname" value="<%=user.nickname%>"/><br>
+  cellphone:<input type="text" id="cellphone" name="cellphone" value="<%=user.cellphone%>"/><br>
   password:<input type="text" id="password" name= "password" value="<%=user.password%>"/><br>
-  role:<input type="text" id="role" name="role" value="<%= user.role %>" /><br>
+  team: <select name="team" id="team">
+          <% if(user.team == 'steel'){ %>
+            <option value="steel" selected>steel|钢结构</option>
+          <% }else{ %>
+            <option value="steel">steel|钢结构</option>
+          <% } %>
+
+          <% if(user.team == 'civil'){ %>
+            <option value="civil" selected>civil|土建</option>
+          <% }else{ %>
+            <option value="civil">civil|土建</option>
+          <% } %>
+
+          <% if(user.team == 'install'){ %>
+            <option value="install" selected>install|安装</option>
+          <% }else{ %>
+            <option value="install">install|安装</option>
+          <% } %>
+
+          <% if(user.team == 'stage'){ %>
+            <option value="stage" selected>stage|舞台</option>
+          <% }else{ %>
+            <option value="stage">stage|舞台</option>
+          <% } %>
+        </select>
+        <br>
+
+
+
+  role: <select name="role" id="role">
+          <% if(user.role == 'user'){ %>
+            <option value="user" selected>user</option>
+          <% }else{ %>
+            <option value="user">user</option>
+          <% } %>
+
+          <% if(user.role == 'manager'){ %>
+            <option value="manager" selected>manager</option>
+          <% }else{ %>
+            <option value="manager">manager</option>
+          <% } %>
+
+          <% if(user.role == 'admin'){ %>
+            <option value="admin" selected>admin</option>
+          <% }else{ %>
+            <option value="admin">admin</option>
+          <% } %>
+
+          <% if(user.role == 'guest'){ %>
+            <option value="guest" selected>guest</option>
+          <% }else{ %>
+            <option value="guest">guest</option>
+          <% } %>
+
+        </select>
+  <br>
   <button type="submit" name="submit">Submit</button>
 </form>
