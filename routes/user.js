@@ -36,7 +36,7 @@ module.exports = function(app){
     console.log('req.session: ', req.session);
     console.log('req.user:', req.user);
     // console.log('user:', locals.user);
-    if (req.user){console.log('req.user.username:', req.user.username);}
+    if (req.user){console.log('req.user.username:', req.user.username );}
 
     if (req.user){ res.render('home',{user: req.user});}
     else{ res.render('home',{user:'',role:''});
@@ -145,7 +145,7 @@ module.exports = function(app){
             console.log('record just saved: ', record);
             // res.send('response from post record_new....');
             db.Zone.find({},(err,zones)=>{
-              res.render('record_edit', {record:record,comments:record.children,zones:zones,moment:moment})
+              res.render('record_edit', {record:record,comments:record.children,zones:zones,moment:moment,user:req.user})
             });
           });
         });
@@ -157,7 +157,7 @@ module.exports = function(app){
           console.log('record just saved: ', record);
           // res.send('response from post record_new....');
           db.Zone.find({},(err,zones)=>{
-            res.render('record_edit', {record:record,comments:record.children,zones:zones,moment:moment})
+            res.render('record_edit', {record:record,comments:record.children,zones:zones,moment:moment,user:req.user})
           });
         });
       }
@@ -324,6 +324,13 @@ module.exports = function(app){
     })
   });
 
+  app.get('/record_show_all_full', function(req,res,next){
+    db.Record.find({exposure:{$ne : "private"}}, function(err,records){
+      console.log('records:',records);
+      res.render('record_show_all_full', {records:records, moment:moment});
+    })
+  });
+
 
   app.get('/my/record_show_all', function(req,res,next){
     console.log('enter my/record_show_all');
@@ -463,7 +470,8 @@ module.exports = function(app){
             db.Record.findById(id,(err,record)=>{
               console.log('refreshing record by updating children with new added comment');
               console.log('comment.id:', comment.id);
-              record.children.push(comment.id);
+              // record.children.push(comment.id);
+              record.children.push(comment);
               record.save((err,record)=>{
                 console.log('record saved with new child.');
                 res.redirect('/record_edit/'+id);
@@ -480,7 +488,8 @@ module.exports = function(app){
           db.Record.findById(id,(err,record)=>{
             console.log('refreshing record by updating children with new added comment');
             console.log('comment.id:', comment.id);
-            record.children.push(comment.id);
+            // record.children.push(comment.id);
+            record.children.push(comment);
             record.save((err,record)=>{
               console.log('record saved with new child.');
               res.redirect('/record_edit/'+id);

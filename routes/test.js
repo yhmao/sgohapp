@@ -1,3 +1,6 @@
+
+
+
 console.log('test.js.');
 
 var multer = require('multer');
@@ -22,9 +25,14 @@ const mypassword = 'mypassword';
 var session;
 
 module.exports = function(app) {
-  app.get('/test/', function(req,res){
+  app.get(['/test/','/test'], function(req,res){
     console.log('enter get /test/');
-    res.send('/test/');
+    res.send('test page: <br> home; session; ajax');
+  });
+
+  app.get('/test/bs', function(req,res,next){
+    console.log('enter GET /test/bs');
+    res.render('./test/test_bootstrap.ejs');
   });
 
   app.get('/test/home', function(req,res,next){

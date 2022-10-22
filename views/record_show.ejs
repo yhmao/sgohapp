@@ -1,5 +1,11 @@
+<head>
+  <%- include("./include/head.ejs") %>
+</head>
 
-Show one record:<hr>
+<!--Show single record including all comments-->
+
+<h3>显示单条记录</h3><br>
+<a href="/record_edit/<%=record.id%>"><button class="btn btn-primary" >编辑该记录</button></a><hr>
 
 创建Created :<%= moment(record.date).format('YYYY-MM-DD HH:mm:ss') %><br>
 更新Updated :<%= moment(record.dateUpdate).format('YYYY-MM-DD HH:mm:ss') %><br>
@@ -8,7 +14,7 @@ Show one record:<hr>
 项目Project:<%= record.project %><br>
 区域Region:<%= record.region %><br>
 专业Profession:<%= record.profession %><br>
-标题Title:<%= record.title %><br>
+标题Title:<b style="color:blue"><%= record.title %></b><br>
 说明文字Text: <%= record.text %><br>
 图注Caption: <%= record.caption %><br>
 <% if(record.file != '') {%>
@@ -37,15 +43,16 @@ Show one record:<hr>
 <br>
 
 
-<a href="/record_edit/<%=record.id%>">Edit</a>
 
 
-<hr><hr>
 
-<% comments.sort().reverse().forEach(function(comment){ %>
+<hr style="height: 5px;background-color:#AAA;">
+以下为评论：<hr>
+
+<% record.children.sort().reverse().forEach(function(comment){ %>
   <%= moment(comment.date).format('YYYY-MM-DD HH:mm:ss') %><br>
   <%= comment.id %> <br>
-  <%= comment.text %> <br>
+  <b><%= comment.text %></b> <br>
   <%= comment.user %><br>
   <% if(comment.file) {%>
     ====has file===<br>

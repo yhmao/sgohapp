@@ -46,6 +46,11 @@
 
 			<section>
 				<div style="padding-left: 20px;"><center><h3> 列表 </h3></center></div>
+				<div style="padding-left: 20px;">
+					<button id='btn_record_show_all_full'>展开的列表</button>
+					<button>各个分区</button>
+					<hr>
+				</div>
 				<div style="padding-left: 20px;" id="div_main"></div>
 			</section>
 
@@ -54,7 +59,7 @@
     <%- include("./include/footer.ejs") %>
 
 		<script>
-			function my_account(){
+			function my_account(e){
 				const xhttp = new XMLHttpRequest();
 				xhttp.onload = function(){
 					document.getElementById("div_main").innerHTML = this.responseText;
@@ -94,6 +99,14 @@
 				xhttp.open("GET", "/my/record_show_all_private");
 				xhttp.send();
 			}
+			function record_show_all_full(){
+				const xhttp = new XMLHttpRequest();
+				xhttp.onload = function(){
+					document.getElementById("div_main").innerHTML = this.responseText;
+				};
+				xhttp.open("GET", "/record_show_all_full");
+				xhttp.send();
+			}
 			load_list_all();
 
 			document.getElementById('my_account').addEventListener("click", my_account);
@@ -101,6 +114,9 @@
 			document.getElementById('ul_my_all_record').addEventListener("click", my_load_list_all);
 			document.getElementById('ul_my_all_comment').addEventListener("click", my_load_list_all_c);
 			document.getElementById('ul_my_all_record_private').addEventListener('click', my_load_list_all_private)
+			document.getElementById('btn_record_show_all_full').addEventListener('click', record_show_all_full)
+
+
 
 
 
