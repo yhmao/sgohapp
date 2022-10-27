@@ -1,0 +1,20 @@
+<!--show picture/video/file in html-->
+<!-- filename = file -->
+
+<% if(['jpg','png','tiff','jpeg','gif'].includes(file.split('.').pop().toLowerCase())) {%>
+  <%#= file %> <br><br>
+  <a href='/upload/<%= file %>'>
+    <img src="/upload/<%= file %>" alt="<%= file %>" width="400"  >
+  </a>
+<% } else if (['mp4','ogg','webm', 'mov','wmv','avi','flv','swf','mkv','mpeg'].includes(file.split('.').pop().toLowerCase())) { %>
+  <a href='/upload/<%= file %>'>
+    <%#= file %> <br><br>
+    <video width='320' height='240' controls>
+      <source src='/upload/<%= file %>' type="video/mp4">
+      Your browser does not support the video tag. Please download to play with proper software.
+    </video>
+  </a>
+<% } else { %>
+  <a href='/upload/<%= file %>'>Click to open or download:   <%= file %></a> <br><br>
+<% }  %><br>
+<%#= file %>

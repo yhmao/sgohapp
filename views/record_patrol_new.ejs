@@ -1,0 +1,51 @@
+<head>
+  <%- include("./include/head.ejs") %>
+</head>
+  <%- include("./include/header.ejs") %>
+
+<div class="container-fluid">
+  <% if(patrolType =='routine'){ %>
+    <h2>正在进行日常巡视</h2>
+  <% }else if(patrolType =='safety') { %>
+    <h2>正在进行安全巡视</h2>
+  <% } %>
+
+  <form action="/record_patrol_new" method="post" enctype="multipart/form-data">
+
+    <div class="row">
+      <div class="col-3 col-md-1">patrolType</div>
+      <div class="col-9 col-md-11"><input id="text" name="patrolType" value=<%= patrolType %> hidden ></input></div>
+    </div>
+
+    <div class="row">
+      <div class="col-3 col-md-1">区域:    </div>
+      <div class="col-9 col-md-11">
+          <%- include("./include/select_zone.ejs")  %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-3 col-md-1">描述:*   </div>
+      <div class="col-9 col-md-11"><textarea id="text" name="text" required ></textarea></div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-3 col-md-1">拍照:    </div>
+      <div class="col-9 col-md-11"><input type="file" id="file" name="file" multiple></div>
+    </div>
+
+
+
+    <div class="row">
+      <div class="col-3 col-md-1"><input type="checkbox" id="exposure" name="exposure" value="private"></div>
+      <div class="col-9 col-md-11"> 设为私密，仅自己可见 </div>
+    </div>
+
+    <div class="row">
+      <button class="btn btn-primary btn-lg" type="submit" name="submit">提交</button>
+    </div>
+
+  </form>
+
+</div>

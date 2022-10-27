@@ -8,47 +8,47 @@ var LocalStrategy = require('passport-local');
 
 var strategy = new LocalStrategy(function verify(
   username, password, cb){
-    console.log('middleware.js new LocalStrategy...');
+    // console.log('middleware.js new LocalStrategy...');
     db.User.findOne({username:username},function(error,user){
       if(error){console.log('error in finding one username'); return cb(error);}
       if(!user){console.log('find no user'); return cb(null, false, { message: 'Incorrect username or password.' });}
-      console.log('find one user:', user);
-      console.log('user.id:', user.id);
+      // console.log('find one user:', user);
+      // console.log('user.id:', user.id);
       if (user.password === password) {
-        console.log('user valid.');
+        // console.log('user valid.');
         return cb(null, user);
       }else{
-        console.log('user valid, password wrong');
+        // console.log('user valid, password wrong');
         return cb(error);
       }
     })
   });
 passport.use('local',strategy);
 passport.serializeUser(function(user, cb){
-  console.log('middleware.js passport serializeUser...');
-  console.log('middleware.js passport serializeUser... user:',user);
+  // console.log('middleware.js passport serializeUser...');
+  // console.log('middleware.js passport serializeUser... user:',user);
   process.nextTick(function(){
     // cb(null, { id: user.id, username: user.username });
-    console.log('middleware.js passport serializeUser... user.id:', user.id);
+    // console.log('middleware.js passport serializeUser... user.id:', user.id);
     cb(null, user.id);
   });
-  console.log('middleware.js passport serializeUser...ends');
+  // console.log('middleware.js passport serializeUser...ends');
 });
 
 passport.deserializeUser(function(_id,cb){
-  console.log('middleware.js passport deserializeUser...');
+  // console.log('middleware.js passport deserializeUser...');
   process.nextTick(function(){
     db.User.findById(_id,(err,user)=>{
-      console.log('middleware.js passport deserializeUser..._id:',_id);
+      // console.log('middleware.js passport deserializeUser..._id:',_id);
       if(err){
         cb(null, false, {error:err});
       } else{
-        console.log('middleware.js passport deserializeUser... user:', user);
+        // console.log('middleware.js passport deserializeUser... user:', user);
         cb(null, user)
       }
     });
   });
-  console.log('middleware.js passport deserializeUser...ends');
+  // console.log('middleware.js passport deserializeUser...ends');
 });
 
 

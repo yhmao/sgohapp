@@ -12,3 +12,12 @@ console.log('utcDate:', utcDate);
 console.log('Date():', new Date());
 
 console.log('test-date.js.');
+
+
+// start today
+var start = moment().startOf('day');
+// end today
+var end = moment().endOf('day');
+
+console.log('start:',start);
+console.log('end:',end);

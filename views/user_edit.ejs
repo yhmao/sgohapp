@@ -15,7 +15,7 @@
           <% }else{ %>
             <option value="steel">none|未加入</option>
           <% } %>
-    
+
           <% if(user.team == 'steel'){ %>
             <option value="steel" selected>steel|钢结构</option>
           <% }else{ %>
@@ -55,16 +55,54 @@
 
 
   role: <select name="role" id="role">
+
+
+          <% if(user.role == 'supervisor'){ %>
+            <option value="supervisor" selected>supervisor</option>
+          <% }else{ %>
+            <option value="supervisor">supervisor</option>
+          <% } %>
+
+          <% if(user.role == 'teamLeader'){ %>
+            <option value="teamLeader" selected>teamLeader</option>
+          <% }else{ %>
+            <option value="teamLeader">teamLeader</option>
+          <% } %>
+
+          <% if(user.role == 'siteManager'){ %>
+            <option value="siteManager" selected>siteManager</option>
+          <% }else{ %>
+            <option value="siteManager">siteManager</option>
+          <% } %>
+
+          <% if(user.role == 'projectManager'){ %>
+            <option value="projectManager" selected>projectManager</option>
+          <% }else{ %>
+            <option value="projectManager">projectManager</option>
+          <% } %>
+
+          <% if(user.role == 'divisionManager'){ %>
+            <option value="divisionManager" selected>divisionManager</option>
+          <% }else{ %>
+            <option value="divisionManager">divisionManager</option>
+          <% } %>
+
+          <% if(user.role == 'companyManager'){ %>
+            <option value="companyManager" selected>companyManager</option>
+          <% }else{ %>
+            <option value="companyManager">companyManager</option>
+          <% } %>
+
+          <% if(user.role == 'guest'){ %>
+            <option value="guest" selected>guest</option>
+          <% }else{ %>
+            <option value="guest">guest</option>
+          <% } %>
+
           <% if(user.role == 'user'){ %>
             <option value="user" selected>user</option>
           <% }else{ %>
             <option value="user">user</option>
-          <% } %>
-
-          <% if(user.role == 'manager'){ %>
-            <option value="manager" selected>manager</option>
-          <% }else{ %>
-            <option value="manager">manager</option>
           <% } %>
 
           <% if(user.role == 'admin'){ %>
@@ -73,11 +111,11 @@
             <option value="admin">admin</option>
           <% } %>
 
-          <% if(user.role == 'guest'){ %>
-            <option value="guest" selected>guest</option>
-          <% }else{ %>
-            <option value="guest">guest</option>
-          <% } %>
+
+
+
+
+
 
         </select>
   <br>

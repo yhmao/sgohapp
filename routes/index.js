@@ -3,5 +3,6 @@ module.exports = function(app){
   require('./user')(app);
   require('./admin')(app);
   require('./test')(app);
+  require('./patrol')(app);
 };
 console.log('index.js');

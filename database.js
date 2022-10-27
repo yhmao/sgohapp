@@ -26,8 +26,8 @@ const userSchema = new mongoose.Schema({
   nickname: String,
   cellphone: String,
   password: String,
+  role: {type:String, default: 'user'},  //监理，负责，项目总负责，项目总监，事业部，集团 supervisor,teamLeader,siteManager,projectManager,divisionManager, companyManager,
   team: String, //钢结构，土建，安装，舞台
-  role: {type:String, default: 'user'},
   date: {type: Date, default: Date.now},
   dateUpdate: {type:Date, default:Date.now}
 });
@@ -41,13 +41,17 @@ const recordSchema = new mongoose.Schema({
   profession: String,
   zone: String,
   title: String,
+  patrolType: String, //质量，日常
   text: String,
-  file: {type:String, default: ''},
+  file: String,
+  files: [], //allow multiple files
   caption: String,
+  status: {type: String, default:'active'},
+  annotation: String,
   keywords: String,  //for later organize
-  exposure: {type: String, default:'public'},  // private,public
-  parents: [],
-  children: []
+  exposure: {type: String, default:'public'},  // visible to: private,siteManager,projectManager...
+  parents: [],  // array of id
+  children: []   // array of document
 });
 const Record = mongoose.model('Record', recordSchema);
 const Comment = mongoose.model('Comment', recordSchema);

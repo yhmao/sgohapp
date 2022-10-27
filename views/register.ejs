@@ -1,21 +1,23 @@
+<%- include('./include/head') %>
 <h1>Register</h1>
-
+<div  class="container-fluid">
 <form action='/register' method='post'>
-  <section>
-    <label for="username">Username</label>
-    <input id="username" name="username" type="text" required> 如：zhangsan
-  </section>
-  <section>
-    <label for="nickname">Nickname</label>
-    <input id="nickname" name="nickname" type="text" >  如：张三
-  </section>
-  <section>
-    <label for="cellphone">Cellphone</label>
-    <input id="cellphone" name="cellphone" type="text" >  如：18612341234
-  </section>
-  <section>
-    <label for="password">Password </label>
-    <input id="password" name="password" type="password" required>  如：xxxx
-  </section>
+  <div>
+    <label class="col-12 col-md-12" for="username">用户名 如：zhangsan</label><br>
+    <input class="col-9 col-md-11" id="username" name="username" type="text" required><br><br>
+  </div>
+  <div>
+    <label class="col-12 col-md-12" for="nickname">昵称 如：张三</label><br>
+    <input class="col-9 col-md-11" id="nickname" name="nickname" type="text" ><br><br>
+  </div>
+  <div>
+    <label class="col-12 col-md-12" for="cellphone">手机 如：18612341234</label><br>
+    <input class="col-9 col-md-11" id="cellphone" name="cellphone" type="text" ><br><br>
+  </div>
+  <div>
+    <label class="col-12 col-md-12" for="password">密码 如：xxxx</label><br>
+    <input class="col-9 col-md-11" id="password" name="password" type="password" required><br><br>
+  </div>
   <button type="submit">Register</button>
 </form>
+</div>

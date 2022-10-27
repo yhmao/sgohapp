@@ -1,0 +1,267 @@
+<head>
+  <%- include("./include/head.ejs") %>
+</head>
+
+<% if(record.user == user){ %>
+  <span class="btn font-weight-bold">好了，继续创建下一条巡视记录:</span><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/record_patrol_new?patrolType=routine" ><button class="btn btn-primary">日常巡视</button></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="/record_patrol_new?patrolType=safety" ><button class="btn btn-primary">安全巡视</button></a>
+  <br><br><br>
+  <b>我要完善刚才输入的记录：</b><br>
+<% } %>
+
+<div class="container-fluid">
+
+<!--Start form-->
+
+
+    <% if(record.user == user || user.role == 'admin' || user.role == 'siteManager'){ %>
+
+      <form action="/record_patrol/<%= record.id %>" method="post" enctype="multipart/form-data">
+        <%= record.user %>    <br>
+        <%= moment(record.dateUpdate).format('YYYY-MM-DD HH:mm:ss') %>   | <%= moment(record.date).format('YYYY-MM-DD HH:mm:ss') %><br><br>
+
+        <div class="row">
+          <div class="col-4 col-md-1">已选区域:    </div>
+          <div class="col-8 col-md-11">
+              <%= record.zone %>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4 col-md-1">重选区域:    </div>
+          <div class="col-8 col-md-11">
+              <%- include("./include/select_zone.ejs")  %>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-4 col-md-1">描述:   </div>
+          <div class="col-8 col-md-11"><textarea id="text" name="text" ><%= record.text %></textarea></div>
+        </div>
+
+        <div class="row">
+          <div class="col-4 col-md-1">再拍一张:    </div>
+          <div class="col-8 col-md-11"><input type="file" id="file" name="file" multiple></div>
+        </div>
+
+        <div class="row">
+          <div class="col-4 col-md-1">
+            <% if(record.exposure === 'private') {%>
+              <input type="checkbox" id="exposure" name="exposure" value="private" checked   >
+            <% } else {%>
+              <input type="checkbox" id="exposure" name="exposure" value="private"   >
+            <% } %>
+          </div>
+          <div class="col-8 col-md-11"> 设为私密，仅作者自己可见:  </div>
+        </div>
+
+      <div class="row">
+        <button class="btn btn-primary " type="submit" name="submit">提交更改</button>
+      </div>
+
+      </form>
+      <!--End form-->
+    <% }else{ %>
+      <!-- if not author/admin/siteManager, only display information -->
+      <h3>一条记录请审阅</h3>
+      <%= record.user %>   <br>
+      <%= moment(record.dateUpdate).format('YYYY-MM-DD HH:mm:ss') %>   | <%= moment(record.date).format('YYYY-MM-DD HH:mm:ss') %><br><br>
+      <div class="row">
+        <div class="col-4 col-md-1">区域:    </div>
+        <div class="col-8 col-md-11">
+            <%= record.zone %>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-4 col-md-1">描述:   </div>
+        <div class="col-8 col-md-11"><%= record.text %></div>
+      </div>
+      <br><br><br>
+
+    <% } %>
+
+
+
+<!--Start Show review information-->
+
+  <% if(user.role != 'projectManager') { %>
+    <% if (record.exposure=='projectManager') { %>
+      <b>已提交项目总监审阅，提交意见为：</b><br>
+      <span style="color:blue"><%= record.annotation %></span><br>
+    <% } %>
+    记录状态为：<span style="color:blue"><%= (record.status=='followup')?'跟踪':(record.status=='closed'?'已关闭':'初始')  %></span>
+    <br><br>
+  <% } else if(user.role == 'projectManager' && record.exposure=='projectManager'){ %>
+    <h3>请项目总监审阅：</h3><br>
+    <span style="color:blue"><%= record.annotation %></span>
+  <% } %>
+
+<!--End Show review information-->
+
+<!--Start review form-->
+<% if(user.role == 'siteManager' || user.role == 'admin'){ %>
+  <form action="/record_patrol/<%= record.id %>/review" method="post" enctype="multipart/form-data">
+
+    <div class="row">
+      <div class="col-4 col-md-1">批注:   </div>
+      <div class="col-8 col-md-11"><textarea id="annotation" name="annotation" ><%= record.annotation %></textarea></div>
+    </div>
+
+    <div>
+      <% if (record.exposure == 'projectManager') { %>
+        <input type="checkbox" id="exposure" name="exposure" value="projectManager" checked>
+      <% } else { %>
+        <input type="checkbox" id="exposure" name="exposure" value="projectManager">
+      <% } %>
+
+      <label for="exposure">(已)提交上级领导(项目总监)审核</label>
+    </div>
+
+    <div>
+
+
+      <% if (record.status == 'followup') { %>
+        <input type="radio" id="status1" name="status" value="followup" checked>
+      <% } else { %>
+        <input type="radio" id="status1" name="status" value="followup">
+      <% } %>
+      <label for="status1">跟踪</label><br>
+
+      <% if (record.status == 'closed') { %>
+        <input type="radio" id="status2" name="status" value="closed" checked>
+      <% } else { %>
+        <input type="radio" id="status2" name="status" value="closed">
+      <% } %>
+      <label for="status2">关闭</label><br>
+    </div>
+
+    <div class="row">
+      <button class="btn btn-primary  " type="submit" name="submit">提交批注</button>
+    </div>
+
+  </form>
+<% } %>
+<!--End review form-->
+
+
+<!--Start 已上传照片：-->
+<br><br>
+<hr>
+
+
+<br><br>
+
+  <% if(record.files.length > 0) {%>
+    <h4>随记录上传的照片：<%=record.files.length  %></h4>
+
+    <% record.files.reverse().forEach(function(file){ %>
+      <div class="file">
+        <hr>
+
+            <% if(['jpg','png','tiff','jpeg','gif'].includes(file.split('.').pop().toLowerCase())) {%>
+
+              <a href='/upload/<%= file %>'>
+                <img src="/upload/<%= file %>" alt="<%= file %>" width="400"  >
+              </a>
+            <% } else if (['mp4','ogg','webm', 'mov','wmv','avi','flv','swf','mkv','mpeg'].includes(file.split('.').pop().toLowerCase())) { %>
+              <a href='/upload/<%= file %>'>
+                <%= file %> <br><br>
+                <video width='320' height='240' controls>
+                  <source src='/upload/<%= file %>' type="video/mp4">
+                  Your browser does not support the video tag. Please download to play with proper software.
+                </video>
+              </a>
+            <% } else { %>
+              <a href='/upload/<%= file %>'>Click to open or download:   <%= file %></a> <br><br>
+            <% }  %><br>
+
+            <%= file %><br>
+
+            <% if(record.user == user || user.role == 'admin' || user.role == 'siteManager'){ %>
+              <a href="/record_new_routine_edit_file_remove/:id/:file"><button>删除</button></a><br>
+            <% } %>
+
+
+
+
+      </div>
+
+    <% }) %>
+
+    <% } else{ %>
+       无上传照片。
+  <% } %>
+<!--End 已上传照片：-->
+  <br><br><br>
+<hr>
+<h4>添加评论：</h4>
+
+
+<!--Start form 添加评论：-->
+
+    <form  action="/record_patrol/<%= record.id  %>/comment_add" method="post" enctype="multipart/form-data" >
+
+      <div class="row">
+          <div class="col-4 col-md-1" hidden>id: </div>
+          <div class="col-8 col-md-11"><input type="text" id="id" name="id" value="<%= record.id %>" hidden  /></div>
+      </div>
+
+      <div class="row">
+        <div class="col-4 col-md-1">评论文字:   </div>
+        <div class="col-8 col-md-11"><textarea id="text" name="text" ></textarea></div>
+      </div>
+
+      <div class="row">
+          <div class="col-4 col-md-1">附加图片 </div>
+          <div class="col-8 col-md-11"><input type="file" id="file" name="file" ></div>
+      </div>
+
+      <div class="row">
+          <button class="btn btn-primary  " type="submit" name="submit">Submit</button>
+      </div>
+
+    </form>
+
+<!--End form 添加评论：-->
+<hr>
+<h4>显示评论:<%= record.children.length %></h4>
+<hr>
+<!--Start 显示评论：-->
+
+<% record.children.sort().reverse().forEach(function(comment){ %>
+  <%= comment.user %>  | <%= moment(comment.date).format('YYYY-MM-DD HH:mm:ss') %><br>
+  <%#= comment._id %>
+  <b style="color:blue"><%= comment.text %></b> <br>
+
+  <% if(comment.file) {%>
+
+    <% if(['jpg','png','tiff','jpeg','gif'].includes(comment.file.split('.').pop().toLowerCase())) {%>
+      <%#= comment.file %> <br><br>
+      <a href='/upload/<%= comment.file %>'>
+        <img src="/upload/<%= comment.file %>" alt="<%= comment.file %>" width="400"  >
+      </a>
+    <% } else if (['mp4','ogg','webm', 'mov','wmv','avi','flv','swf','mkv','mpeg'].includes(comment.file.split('.').pop().toLowerCase())) { %>
+      <a href='/upload/<%= comment.file %>'>
+        <%#= comment.file %>
+        <video width='320' height='240' controls>
+          <source src='/upload/<%= comment.file %>' type="video/mp4">
+          Your browser does not support the video tag. Please download to play with proper software.
+        </video>
+      </a>
+    <% } else { %>
+      <a href='/upload/<%= comment.file %>'>Click to open or download:   <%= comment.file %></a> <br><br>
+    <% }  %>
+  <% } %>
+  <hr>
+<% }); %>
+
+
+
+<!--End 显示评论：-->
+
+
+
+
+
+</div>

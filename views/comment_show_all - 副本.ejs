@@ -1,0 +1,16 @@
+<% myComments.sort().reverse().forEach(function(comment){ %>
+  Text:<%= comment.text %><br>
+  Caption:<%= comment.caption %><br>
+  User:<%= comment.user %><br>
+  Create:<%= moment(comment.date).format('YYYY-MM-DD HH:mm:ss') %><br>
+  Update:<%= moment(comment.dateUpdate).format('YYYY-MM-DD HH:mm:ss') %><br>
+  Id:<%= comment.id %><br>
+
+  --parent:--<br>
+  <%= comment.parents[0].user %><br>
+  <%= comment.parents[0].id %><br>
+  <%= comment.parents[0].text %><br>
+  <%= comment.parents[0].caption %><br>
+
+  <hr>
+<% }); %>

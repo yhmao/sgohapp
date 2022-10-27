@@ -148,6 +148,11 @@ app.get('/test/t', function(req,res,next){
   res.render('test/t.ejs');
 });
 
+app.get('/test/js', function(req,res,next){
+  console.log('enter GET /test/js');
+  res.render('test/js.ejs');
+});
+
 
 
 

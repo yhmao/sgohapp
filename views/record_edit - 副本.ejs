@@ -1,0 +1,191 @@
+<head>
+  <%- include("./include/head.ejs") %>
+</head>
+
+
+<!--Edit single record-->
+作者User: <%= record.user %><br>
+创建Created :<%= moment(record.date).format('YYYY-MM-DD HH:mm:ss') %><br>
+更新Updated :<%= moment(record.dateUpdate).format('YYYY-MM-DD HH:mm:ss') %><br>
+
+
+
+
+<div id="div_record_edit">
+
+<form action="/record_edit/<%= record.id %>" method="post" enctype="multipart/form-data" >
+  id:<input type="text" id="id" name="id" value="<%= record.id %>" size="30" readonly><br>
+  project项目:<input type="text" id="project" name="project" value="<%= record.project %>" readonly ><br>
+  profession专业: <%- include("./include/select_profession.ejs") %>
+
+  zone选择区域:
+  <select name="zone" id="zone">
+    <% for (var i=0; i < zones.length; i++){ %>
+      <% if (zones[i].zoneCode==record.zone) { %>
+        <option value="<%= zones[i].zoneCode %>" selected> <%= zones[i].zoneCode %> | <%= zones[i].zoneDescription %> </option>
+      <% } else { %>
+        <option value="<%= zones[i].zoneCode %>"> <%= zones[i].zoneCode %> | <%= zones[i].zoneDescription %> </option>
+      <% } %>
+    <% } %>
+  </select><br><br>
+  <br>
+  Title标题:<input type="text" id="title" name="title"  value="<%= record.title %>" /><br><br>
+  text说明文字:<textarea id="text" name="text"  rows="8" cols="80"><%= record.text %></textarea> <br><br>
+
+  <% if(['jpg','png','tiff','jpeg','gif'].includes(record.file.split('.').pop().toLowerCase())) {%>
+    <a href="/upload/<%= record.file %>">
+      <img src="/upload/<%= record.file %>" alt="<%= record.file %>" width="400" >
+    </a>
+  <% } else if (['mp4','ogg','webm', 'mov','wmv','avi','flv','swf','mkv','mpeg'].includes(record.file.split('.').pop().toLowerCase())) { %>
+    <a href='/upload/<%= record.file %>'>
+      <%= record.file %> <br><br>
+      <video width='320' height='240' controls>
+        <source src='/upload/<%= record.file %>' type="video/mp4">
+        Your browser does not support the video tag. Please download to play with proper software.
+      </video>
+    </a>
+  <% } else { %>
+    <a href='/upload/<%= record.file %>'>Click to open or download:   <%= record.file %></a>
+  <% }  %>  <br>
+
+
+  <%= record.file %><br>
+  filename文件名:<input type="text" id="filename" name="filename" value="<%= record.file %>"><br>
+  file选取上传文件:<input type="file" id="file" name="file"/><br><br>
+  caption图注:<input type="text" id="caption" name="caption" value="<%= record.caption %>" /><br>
+
+  <% if (record.exposure === 'private'){ %>
+    <input type="checkbox" id="exposure" name="exposure" value="private" checked >
+    <label for="exposure">设为私密，仅自己可见。</label><br><br>
+  <% } else { %>
+    <input type="checkbox" id="exposure" name="exposure" value="private" >
+    <label for="exposure">设为私密，仅自己可见。</label><br><br>
+  <% } %>
+  <br>
+
+  <% if(user.username==record.user){ %>
+     <button class="btn btn-primary btn-lg"  type="submit" name="submit">提交更改</button><br><br><br><br>
+  <% } %>
+
+  </form>
+  <% if(user.username==record.user){ %>
+    <button><a href="/record_remove/<%= record.id %>">删除</a></button>
+    <button><a href="/admin/record_remove_force/<%= record.id %>">强力删除</a></button>
+  <% } %>
+
+</div>
+<!--Edit single record end-->
+
+<hr style="height: 3px;background-color:#CCC;">
+<br><br><br><br>
+
+<!--Add comment -->
+<button class="btn btn-primary btn-lg"  id="btn_ac">添加评论</button>
+  <div class="container-fluid">
+      <div id="fm_ac" style="display:none">
+      <form  action="/comment_add" method="post" enctype="multipart/form-data" >
+
+        <div class="row">
+            <div class="col-3 col-md-1">id: </div>
+            <div class="col-9 col-md-11"><input type="text" id="id" name="id" value="<%= record.id %>"   /></div>
+        </div>
+
+        <div class="row">
+            <div class="col-3 col-md-1">project:  </div>
+            <div class="col-9 col-md-11"><input type="text" id="project" name="project" value="-"/></div>
+        </div>
+
+        <div class="row">
+            <div class="col-3 col-md-1">profession:    </div>
+            <div class="col-9 col-md-11"><input type="text" id="profession" name="profession"  value="-" /></div>
+        </div>
+
+        <div class="row">
+            <div class="col-3 col-md-1">region:     </div>
+            <div class="col-9 col-md-11"><input type="text" id="region" name="region" value="-" /></div>
+        </div>
+
+        <div class="row">
+            <div class="col-3 col-md-1">text:  </div>
+            <div class="col-9 col-md-11"><input type="text" id="text" name="text" placeholder="input text..." /></div>
+        </div>
+
+        <div class="row">
+            <div class="col-3 col-md-1">file:  </div>
+            <div class="col-9 col-md-11"><input type="file" id="file" name="file"/></div>
+        </div>
+
+        <div class="row">
+            <div class="col-3 col-md-1">caption:   </div>
+            <div class="col-9 col-md-11"><input type="text" id="caption" name="caption" placeholder="input caption..." /></div>
+        </div>
+
+        <div class="row">
+            <button class="btn btn-primary btn-lg" type="submit" name="submit">Submit</button>
+        </div>
+
+      </form>
+      </div>
+  </div>
+
+
+<br><br><br>
+
+<script>
+  document.getElementById("btn_ac").addEventListener("click",function(){
+    if (document.getElementById("fm_ac").style.display === "none"){
+      document.getElementById("fm_ac").style.display = "block";
+      document.getElementById("btn_ac").innerText = "Adding comment ...";
+    }else{
+      document.getElementById("fm_ac").style.display = "none"
+      document.getElementById("btn_ac").innerText = "Add comment";
+    }
+  })
+</script>
+
+<!--Add comment end-->
+
+----以下显示该条记录的评论----<hr>
+<br><br><br>
+
+
+<% comments.sort().reverse().forEach(function(comment){ %>
+  date: <%= comment.date %><br>
+  User: <%= comment.user %><br>
+  id: <%= comment.id %> <br>
+  project: <%= comment.project %><br>
+  region: <%= comment.region %> <br>
+  text: <%= comment.text %> <br>
+  caption: <%= comment.caption %> <br>
+
+
+  <% if(comment.file) {%>
+    ====has file===<br>
+    <% if(['jpg','png','tiff','jpeg','gif'].includes(comment.file.split('.').pop().toLowerCase())) {%>
+      <%= comment.file %> <br><br>
+      <a href='/upload/<%= comment.file %>'>
+        <img src="/upload/<%= comment.file %>" alt="<%= comment.file %>" width="400"  >
+      </a>
+    <% } else if (['mp4','ogg','webm', 'mov','wmv','avi','flv','swf','mkv','mpeg'].includes(comment.file.split('.').pop().toLowerCase())) { %>
+      <a href='/upload/<%= comment.file %>'>
+        <%= comment.file %> <br><br>
+        <video width='320' height='240' controls>
+          <source src='/upload/<%= comment.file %>' type="video/mp4">
+          Your browser does not support the video tag. Please download to play with proper software.
+        </video>
+      </a>
+    <% } else { %>
+      <a href='/upload/<%= comment.file %>'>Click to open or download:   <%= comment.file %></a> <br><br>
+    <% }  %>
+  <% } %>
+  <br>
+  <% if(user.username==comment.user){ %>
+    <button><a href="#">修改该评论</a></button> &nbsp; &nbsp;&nbsp;&nbsp;
+    <button><a href="/comment_delete/<%=comment.id%>">删除该评论</a></button>
+  <% } %>
+
+
+
+  <hr>
+
+<% }); %>

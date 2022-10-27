@@ -1,0 +1,106 @@
+
+
+
+
+<% records.sort(function(a,b){return a.dateUpdate-b.dateUpdate}).reverse().forEach(function(record){ %>
+  <hr style="height: 5px;background-color:#AAA;">
+  Show one record:<hr>
+
+  创建Created :<%= moment(record.date).format('YYYY-MM-DD HH:mm:ss') %><br>
+  更新Updated :<%= moment(record.dateUpdate).format('YYYY-MM-DD HH:mm:ss') %><br>
+
+  作者User: <%= record.user %><br>
+  项目Project:<%= record.project %><br>
+  区域Region:<%= record.region %><br>
+  专业Profession:<%= record.profession %><br>
+  标题Title:<b style="color:blue;"><%= record.title %></b><br>
+  说明文字Text: <%= record.text %><br>
+  图注Caption: <%= record.caption %><br>
+  <% if(record.file != '') {%>
+
+      <% if(['jpg','png','tiff','jpeg','gif'].includes(record.file.split('.').pop().toLowerCase())) {%>
+        <%= record.file %> <br><br>
+        <a href='/upload/<%= record.file %>'>
+          <img src="/upload/<%= record.file %>" alt="<%= record.file %>" width="400"  >
+        </a>
+      <% } else if (['mp4','ogg','webm', 'mov','wmv','avi','flv','swf','mkv','mpeg'].includes(record.file.split('.').pop().toLowerCase())) { %>
+        <a href='/upload/<%= record.file %>'>
+          <%= record.file %> <br><br>
+          <video width='320' height='240' controls>
+            <source src='/upload/<%= record.file %>' type="video/mp4">
+            Your browser does not support the video tag. Please download to play with proper software.
+          </video>
+        </a>
+      <% } else { %>
+        <a href='/upload/<%= record.file %>'>Click to open or download:   <%= record.file %></a> <br><br>
+      <% }  %><br>
+    <%= record.file %>
+
+  <% } else{ %>
+     no file.
+  <% } %>
+  <br>
+
+
+  <a href="/record_edit/<%=record.id%>"><button class="btn btn-primary btn-lg" >Edit</button></a>
+
+
+
+  <p>-----------comments---------</p>
+  <% if(typeof record.children[0] == "string") { %>
+          <!--previous-->
+          因该记录是在老版本时录入的，所以这里不能正确显示评论内容。<br><br>
+          非常抱歉。
+
+
+
+
+
+
+
+
+  <% } else { %>
+          <!--current-->
+          <% record.children.sort().reverse().forEach(function(comment){ %>
+            <%= moment(comment.date).format('YYYY-MM-DD HH:mm:ss') %><br>
+            <%= comment.id %> <br>
+            <b><%= comment.text %></b> <br>
+            <%= comment.user %><br>
+            <% if(comment.file) {%>
+              ====has file===<br>
+              <% if(['jpg','png','tiff','jpeg','gif'].includes(comment.file.split('.').pop().toLowerCase())) {%>
+                <%= comment.file %> <br><br>
+                <a href='/upload/<%= comment.file %>'>
+                  <img src="/upload/<%= comment.file %>" alt="<%= comment.file %>" width="400"  >
+                </a>
+              <% } else if (['mp4','ogg','webm', 'mov','wmv','avi','flv','swf','mkv','mpeg'].includes(comment.file.split('.').pop().toLowerCase())) { %>
+                <a href='/upload/<%= comment.file %>'>
+                  <%= comment.file %> <br><br>
+                  <video width='320' height='240' controls>
+                    <source src='/upload/<%= comment.file %>' type="video/mp4">
+                    Your browser does not support the video tag. Please download to play with proper software.
+                  </video>
+                </a>
+              <% } else { %>
+                <a href='/upload/<%= comment.file %>'>Click to open or download:   <%= comment.file %></a> <br><br>
+              <% }  %>
+            <% } %>
+            <hr>
+
+    <% }); %>
+
+
+
+
+
+
+  <% } %>
+
+
+
+
+
+
+
+<hr><hr><hr>
+<% }); %>

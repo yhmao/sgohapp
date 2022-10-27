@@ -1,0 +1,65 @@
+<head>
+  <%- include("./include/head.ejs") %>
+</head>
+
+<div class="container-fluid">
+
+<form action="/record_new" method="post" enctype="multipart/form-data">
+
+  <div class="row">
+    <div class="col-3 col-md-1">项目:    </div>
+    <div class="col-9 col-md-11"><input type="text" id="project" name="project" value="SGOH" readonly>  </div>
+  </div>
+
+  <div class="row">
+    <div class="col-3 col-md-1">专业:    </div>
+    <div class="col-9 col-md-11">
+      <%- include("./include/select_profession.ejs") %>
+    </div>
+  </div>
+
+    <div class="row">
+      <div class="col-3 col-md-1">区域:    </div>
+      <div class="col-9 col-md-11">
+        <select class="form-select" name="zone" id="zone">
+          <option value="" selected>请选择区域</option>
+          <% for (var i=0; i < zones.length; i++){ %>
+            <option value="<%= zones[i].zoneCode %>"> <%= zones[i].zoneCode %> | <%= zones[i].zoneDescription %> </option>
+          <% } %>
+        </select>
+      </div>
+  </div>
+
+    <div class="row">
+      <div class="col-3 col-md-1">标题: *   </div>
+      <div class="col-9 col-md-11"><input type="text" id="title" name="title" placeholder="请输入本项记录标题" required   ></div>
+  </div>
+
+  <div class="row">
+    <div class="col-3 col-md-1">说明:   </div>
+    <!-- <input type="text" id="text" name="text" placeholder="input text description" /><br><br> -->
+    <div class="col-9 col-md-11"><textarea id="text" name="text" placeholder="input text description"></textarea></div>
+  </div>
+
+  <div class="row">
+    <div class="col-3 col-md-1">选取上传文件:    </div>
+    <div class="col-9 col-md-11"><input type="file" id="file" name="file"></div>
+  </div>
+
+  <div class="row">
+    <div class="col-3 col-md-1">图注:    </div>
+    <div class="col-9 col-md-11"><input type="text" id="caption" name="caption"   /></div>
+  </div>
+
+  <div class="row">
+    <div class="col-3 col-md-1"><input type="checkbox" id="exposure" name="exposure" value="private"></div>
+    <div class="col-9 col-md-11"> 设为私密，仅自己可见:  </div>
+  </div>
+
+  <div class="row">
+    <button class="btn btn-primary btn-lg" type="submit" name="submit">提交</button>
+  </div>
+
+</form>
+
+</div>

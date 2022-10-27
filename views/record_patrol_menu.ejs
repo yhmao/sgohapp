@@ -1,0 +1,152 @@
+<%- include('./include/head') %>
+<!--import moment-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"
+integrity="sha512-rmZcZsyhe0/MAjquhTgiUcb4d9knaFc7b5xAfju483gbEXTkeJRUMIPk6s3ySZMYUHEcjKbjLjyddGWMrNEvZg==" crossorigin="anonymous">
+</script>
+
+
+<%= user.username %> | <%= user.role %> |
+<a href="/home"><button class="btn btn-sm btn-secondary">首页</button></a>
+<hr>
+
+
+<button id="today" class="btn btn-secondary btn-lg"  >今天</button>
+<button id="yesterday" class="btn btn-secondary btn-lg"  >昨天</button>
+<button id="all" class="btn btn-secondary btn-lg"  >所有</button><br><br>
+<button id="routine" class="btn btn-secondary btn-lg"  >日常</button>
+<button id="safety" class="btn btn-secondary btn-lg"  >安全</button><br><br><br>
+<button id="followup" class="btn btn-secondary btn-lg"  >跟踪</button>
+<button id="closed" class="btn btn-secondary btn-lg"  >关闭</button>
+<button id="projectManager" class="btn btn-secondary btn-lg" >提交</button><br><br>
+<button id="my_private" class="btn btn-secondary btn-lg"  >我的隐私</button>
+<button id="my_public" class="btn btn-secondary btn-lg" >我的公开</button><br><br>
+
+
+<script>
+    function today(){
+      const xhttp = new XMLHttpRequest();
+      xhttp.onload = function(){
+        document.getElementById("div-show").innerHTML = this.responseText;
+      };
+      xhttp.open("get", "/record_patrol_list/today");
+      xhttp.send();
+    }
+    function yesterday(){
+      const xhttp = new XMLHttpRequest();
+      xhttp.onload = function(){
+        document.getElementById("div-show").innerHTML = this.responseText;
+      };
+      xhttp.open("get", "/record_patrol_list/yesterday");
+      xhttp.send();
+    }
+    function all(){
+      const xhttp = new XMLHttpRequest();
+      xhttp.onload = function(){
+        document.getElementById("div-show").innerHTML = this.responseText;
+      };
+      xhttp.open("get", "/record_patrol_list/all");
+      xhttp.send();
+    }
+    function routine(){
+      const xhttp = new XMLHttpRequest();
+      xhttp.onload = function(){
+        document.getElementById("div-show").innerHTML = this.responseText;
+      };
+      xhttp.open("get", "/record_patrol_list/routine");
+      xhttp.send();
+    }
+    function safety(){
+      const xhttp = new XMLHttpRequest();
+      xhttp.onload = function(){
+        document.getElementById("div-show").innerHTML = this.responseText;
+      };
+      xhttp.open("get", "/record_patrol_list/safety");
+      xhttp.send();
+    }
+    function followup(){
+      const xhttp = new XMLHttpRequest();
+      xhttp.onload = function(){
+        document.getElementById("div-show").innerHTML = this.responseText;
+      };
+      xhttp.open("get", "/record_patrol_list/followup");
+      xhttp.send();
+    }
+    function closed(){
+      const xhttp = new XMLHttpRequest();
+      xhttp.onload = function(){
+        document.getElementById("div-show").innerHTML = this.responseText;
+      };
+      xhttp.open("get", "/record_patrol_list/closed");
+      xhttp.send();
+    }
+    function projectManager(){
+      const xhttp = new XMLHttpRequest();
+      xhttp.onload = function(){
+        document.getElementById("div-show").innerHTML = this.responseText;
+      };
+      xhttp.open("get", "/record_patrol_list/projectManager");
+      xhttp.send();
+    }
+    function my_private(){
+      const xhttp = new XMLHttpRequest();
+      xhttp.onload = function(){
+        document.getElementById("div-show").innerHTML = this.responseText;
+      };
+      xhttp.open("get", "/record_patrol_list/my_private");
+      xhttp.send();
+    }
+    function my_public(){
+      const xhttp = new XMLHttpRequest();
+      xhttp.onload = function(){
+        document.getElementById("div-show").innerHTML = this.responseText;
+      };
+      xhttp.open("get", "/record_patrol_list/my_public");
+      xhttp.send();
+    }
+    // today();
+
+    document.getElementById('today').addEventListener("click", today);
+    document.getElementById('yesterday').addEventListener("click", yesterday);
+    document.getElementById('all').addEventListener("click", all);
+    document.getElementById('routine').addEventListener("click", routine);
+    document.getElementById('safety').addEventListener("click", safety);
+    document.getElementById('followup').addEventListener("click", followup);
+    document.getElementById('closed').addEventListener("click", closed);
+    document.getElementById('projectManager').addEventListener("click", projectManager);
+    document.getElementById('my_private').addEventListener("click", my_private);
+    document.getElementById('my_public').addEventListener("click", my_public);
+</script>
+
+
+
+
+
+<!--
+
+今天
+
+昨天
+
+所有
+
+日常(patrolType=routine)
+
+安全(partrolType=safety)
+
+跟踪(status=followup)<br>
+
+关闭(status=closed)
+
+提交(exposure=projectManager)
+
+我的隐私
+
+我的公开
+
+-->
+
+<br><br><br><br><br>
+
+<div id="div-show">
+div
+</div>

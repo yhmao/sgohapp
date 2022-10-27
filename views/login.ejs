@@ -1,24 +1,25 @@
-
-
-
+<%- include('./include/head') %>
 <h1>Login</h1>
+
+<div class="container-fluid">
 <form action="/login" method="post">
-    <section>
-        <label for="username">Username</label>
-        <input id="username" name="username" type="text" required autofocus>
-    </section>
-    <section>
-        <label for="password">Password</label>
-        <input id="password" name="password" type="password" required>
-    </section>
-    <section>
-        <label for="remember_me">Remember Me</label>
-        <input id="remember_me" name="remember_me" type="checkbox" value="yes" checked>
-    </section>
+    <div>
+        <label class="col-3 col-md-1" for="username" >Username</label>
+        <input class="col-9 col-md-11" id="username" name="username" type="text" required autofocus>
+    </div>
+    <div>
+        <label class="col-3 col-md-1" for="password">Password</label>
+        <input class="col-9 col-md-11" id="password" name="password" type="password" required>
+    </div>
+    <div>
+        <input class="col-3 col-md-1 " id="remember_me" name="remember_me" type="checkbox" value="yes" checked>
+        <label class="col-9 col-md-11" for="remember_me">Remember Me</label>
+    </div>
     <button type="submit">Login</button>
 </form>
 
 <br>
 <br>
 
-<button id='register' name='register'><a href="/register">新用户注册</a></button>
+<a href="/register"><button  id='register' name='register'>新用户注册</button></a>
+</div>

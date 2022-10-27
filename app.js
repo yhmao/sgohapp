@@ -102,7 +102,7 @@ app.use(
   // /\/((?!login|register|).)*/,      // exclude login and register
   /\/((?!login|register|home|test).)*/,
   function(req,res,next){
-  console.log('use ensureLoggedIn.');
+  // console.log('use ensureLoggedIn.');
   next();
   },
   ensureLoggedIn

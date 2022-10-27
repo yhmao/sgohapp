@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+    <%- include("./include/head.ejs") %>
+	</head>
+
+	<body>
+    <%- include("./include/header.ejs") %>
+
+		<header>
+
+			<a href="/home/notice"><button>说明与公告</button></a>
+			<a href="/login"><button>登录</button></a>
+			<a href="/logout"><button>登出</button></a>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<% if(user.role == 'admin'){ %>
+				<a href="/admin"><button class="btn btn-secondary">... ...</button></a><br>
+			<% } %>
+
+			<br>
+			<% if (user.username =='') { %>
+				亲爱的用户，你还没有<b><a href='/login'>登录</a>,请先登录。</b>。
+			<% }else { %>
+				亲爱的用户 <b><%= user.username %></b> ,欢迎你使用监理巡视系统！
+			<% } %>
+
+			<hr>
+		</header>
+
+		<section class="d-flex">
+			<aside >
+				巡视工作现在开始......<br><br>
+				<ul id="ul_routine"><a href="/record_patrol_new?patrolType=routine"><button class="btn btn-primary btn-lg">日常</button></a></ul>
+				<br>
+				<ul id="ul_safety"><a href="/record_patrol_new?patrolType=safety"><button class="btn btn-primary btn-lg">安全</button></a></ul>
+				<br>
+				<ul id="ul_safety"><a href="/record_patrol_list/all"><button class="btn btn-secondary btn-lg">列表</button></a></ul>
+				<br>
+				<ul id="ul_safety"><a href="/record_patrol_menu"><button class="btn btn-secondary btn-lg">浏览</button></a></ul>
+				<br>
+			</aside>
+
+
+		</section>
+
+    <%- include("./include/footer.ejs") %>
+
+
+	</body>
+
+</html>

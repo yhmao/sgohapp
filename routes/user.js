@@ -26,6 +26,7 @@ const upload = multer({storage:storage});
 //routes
 module.exports = function(app){
 
+
   app.get('/home/notice', function(req,res,next){
     console.log('enter GET home/notice');
     res.render('notice');
@@ -33,15 +34,30 @@ module.exports = function(app){
 
   app.get(['/','/home'], function(req,res,next){
     console.log('enter home');
-    console.log('req.session: ', req.session);
-    console.log('req.user:', req.user);
-    // console.log('user:', locals.user);
-    if (req.user){console.log('req.user.username:', req.user.username );}
+    // console.log('req.session: ', req.session);
+    // console.log('req.user:', req.user);
+
+    // if (req.user){console.log('req.user.username:', req.user.username );}
+
+    if (req.user){ res.render('record_patrol_home',{user: req.user});}
+    else{ res.render('record_patrol_home',{user:'',role:''});
+    }
+  });
+
+  //lgeacy
+  app.get(['/0'], function(req,res,next){
+    console.log('enter home');
+    // console.log('req.session: ', req.session);
+    // console.log('req.user:', req.user);
+
+    // if (req.user){console.log('req.user.username:', req.user.username );}
 
     if (req.user){ res.render('home',{user: req.user});}
     else{ res.render('home',{user:'',role:''});
     }
   });
+
+
 
   app.get('/record_new',function(req,res,next){
     console.log('enter get record_new.');
@@ -71,22 +87,7 @@ module.exports = function(app){
         return utils.yyyymmdd_hhmmss() + '_' + name + ext;  //newFilename= 20221010_220611_girl.jpg
       }
     });
-    // form.once('error', console.error);
-    // form.on('fileBegin',(formname,file)=>{
-    //   console.log('fileBegin formname&file:', formname,file);
-    //   form.emit('data', {name:'fileBegin', formname, value:file});
-    // });
-    // form.on('file', (formname,file)=>{
-    //   console.log('file  formname & file: ', formname, file);
-    //   form.emit('data',{name:'file',formname, value:file});
-    // });
-    // form.on('field', (fieldName,fieldValue)=>{
-    //   console.log('field  key & value: ', fieldName,fieldValue);
-    //   form.emit('data',{name:'field', key:fieldName, value:fieldValue});
-    // });
-    // form.once('end', ()=>{
-    //   console.log('end');
-    // });
+
     form.parse(req, (err,fields,files)=>{
       console.log('start parsing form...');
       if (err) {

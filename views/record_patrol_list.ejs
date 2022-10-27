@@ -1,0 +1,43 @@
+<head>
+  <%- include("./include/head.ejs") %>
+</head>
+  <%#- include("./include/header.ejs") %>
+
+
+<% records.sort(function(a,b){return a.dateUpdate-b.dateUpdate}).reverse().forEach(function(record){ %>
+  <hr style="height: 5px;background-color:#AAA;">
+  <!--Start 显示一条记录-->
+   <%= moment(record.dateUpdate).format('YYYY-MM-DD HH:mm:ss') %>&nbsp;&nbsp;| &nbsp;<%= moment(record.date).format('YYYY-MM-DD HH:mm:ss') %> <br>
+  <%= (record.patrolType=='routine')?'日常':'安全' %>  &nbsp;&nbsp; | &nbsp; <%= record.zone %>   <br>
+   <%= record.user %> &nbsp;&nbsp;<br>
+   <span style="color:blue"><%= record.text %></span> &nbsp;&nbsp;<br>
+  <!--Start display file: if file, show; if no file, show "no file"-->
+  <% if(record.file != '') {%>
+    <% record.files.forEach(function(file){ %>
+      <%- include('./include/display_file.ejs',{file:file}); %>
+    <% }) %>
+  <% } else{ %>
+     no file.<br>
+  <% } %>
+  <!--End display file: if file, show; if no file, show "no file"-->
+  <br>
+  <% if(record.user == user || user.role == 'admin' || user.role == 'siteManager'){ %>
+    <a href="/record_patrol/<%= record.id %>"><button>编辑本条记录</button></a>
+  <% } %>
+  <a href="/record_patrol/<%= record.id %>"><button>显示记录详细/及评论</button></a>
+  <!--Start 显示评论-->
+  <br>-------------<br>评论: <%= record.children.length %><br>
+  <% if(record.children.length > 0) {%>
+    <%# --comments--<br> %>
+    <%# record.children.forEach(function(comment){ %>
+      <%#- include('./include/display_file.ejs',{file:comment.file}); %>
+    <%# }) %>
+  <% } else{ %>
+    <%# --no comment--<br> %>
+  <% } %>
+  <!--End 显示评论-->
+
+  <!--End 显示一条记录-->
+
+
+<% })  %>
