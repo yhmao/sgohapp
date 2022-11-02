@@ -1,0 +1,101 @@
+<%- include('../include/head.ejs') %>
+
+<html>
+
+<body>
+    <div>
+        <input type="file" id="image-input" accept="image/*">
+        <img id="preview"></img>
+    </div>
+
+    <script>
+        let imgInput = document.getElementById('image-input');
+        imgInput.addEventListener('change', function (e) {
+            if (e.target.files) {
+                let imageFile = e.target.files[0];
+                console.log('imageFile:', imageFile);
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    console.log('e:',e);
+                    var img = document.createElement("img");
+
+                    console.log('img:',img);
+
+                    var MAX_WIDTH = 500;
+                    var MAX_HEIGHT= 500;
+
+                    // var width = img.width;
+                    // var height = img.height;
+
+
+
+
+                    img.onload = function (event) {
+                      console.log('event:',event);
+                      var canvas = document.createElement("canvas");
+
+                      var MAX_WIDTH = 1000;
+                      var MAX_HEIGHT= 1000;
+
+                      var width = img.width;
+                      var height = img.height;
+
+                      // Change the resizing logic
+                      if (width > height) {
+                          if (width > MAX_WIDTH) {
+                              height = height * (MAX_WIDTH / width);
+                              width = MAX_WIDTH;
+                          }
+                      } else {
+                          if (height > MAX_HEIGHT) {
+                              width = width * (MAX_HEIGHT / height);
+                              height = MAX_HEIGHT;
+                          }
+                      }
+
+                      canvas.width = width;
+                      canvas.height = height;
+                      var ctx = canvas.getContext("2d");
+                      console.log('ctx:',ctx);
+                      console.log('width,height:',width,height);
+                      ctx.drawImage(img, 0, 0, width, height);
+
+
+                        // Show resized image in preview element
+                        var dataurl = canvas.toDataURL(imageFile.type);
+
+                        console.log('dataurl:', dataurl);
+                        const fullQuality = canvas.toDataURL('image/jpeg', 1.0);
+                        // data:image/jpeg;base64,/9j/4AAQSkZJRgABAQ…9oADAMBAAIRAxEAPwD/AD/6AP/Z"
+                        const mediumQuality = canvas.toDataURL('image/jpeg', 0.5);
+                        const lowQuality = canvas.toDataURL('image/jpeg', 0.1);
+                        console.log('full:', fullQuality);
+                        console.log('med:', mediumQuality);
+                        console.log('low:', lowQuality);
+
+                        downloadImage(dataurl,'my-canvas.jpeg');
+
+                        function downloadImage(data, filename = 'untitled.jpeg'){
+                          var a = document.createElement('a');
+                          a.href = data;
+                          a.download = filename;
+                          document.body.appendChild(a);
+                          a.click();
+                        }
+
+
+
+
+                        document.getElementById("preview").src = dataurl;
+                    }
+                    img.src = e.target.result;
+                    console.log('e.target.result:',e.target.result);
+                }
+                reader.readAsDataURL(imageFile);
+            }
+        });
+    </script>
+</body>
+
+</html>

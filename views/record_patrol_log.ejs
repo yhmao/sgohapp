@@ -1,0 +1,28 @@
+<%- include('./include/head') %>
+
+<h1>Log file</h1>
+
+
+
+<h4>logs: <%= logs.length %> </h4>
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>用户</th>
+      <th>时间</th>
+      <th>Method</th>
+      <th>URL</th>
+    </tr>
+  </thead>
+  <tbody >
+    <% logs.reverse().forEach(function(log){ %>
+      <tr>
+        <td><%= log.user %></td>
+        <td><%= moment(log.date).format('YYYY-MM-DD HH:mm:ss') %> </td>
+        <td><%= log.method %></td>
+        <td><%= log.url %></td>
+      </tr>
+    <% }) %>
+  </tbody>
+
+</table>

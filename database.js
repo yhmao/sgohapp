@@ -36,7 +36,7 @@ const User = mongoose.model('User', userSchema);
 const recordSchema = new mongoose.Schema({
   user: {type:String,default:'user'},
   date: {type:Date, default:Date.now},
-  dateUpdate: {type:Date, default:Date.now},
+  dateUpdate: {type:Date, default:Date.now},  //update when any modification
   project: {type: String, default:'SGOH'},
   profession: String,
   zone: String,
@@ -46,7 +46,8 @@ const recordSchema = new mongoose.Schema({
   file: String,
   files: [], //allow multiple files
   caption: String,
-  status: {type: String, default:'active'},
+  status: {type: String, default:'active'},  //followup,closed
+  responsible: String,  //person assigned by siteManager
   annotation: String,
   keywords: String,  //for later organize
   exposure: {type: String, default:'public'},  // visible to: private,siteManager,projectManager...
@@ -68,6 +69,14 @@ const zoneSchema = new mongoose.Schema({
 const Zone = mongoose.model('Zone',zoneSchema);
 
 
+const logSchema = new mongoose.Schema({
+  user: String,
+  date: {type: Date, default:Date.now},
+  method: String,  // post, get
+  url: String,
+});
+const Log = mongoose.model('Log', logSchema);
+
 
 module.exports = {
   database:database,
@@ -75,7 +84,8 @@ module.exports = {
   Record:Record,
   Comment:Comment,
   Sharefile:Sharefile,
-  Zone:Zone
+  Zone:Zone,
+  Log:Log
 };
 console.log('database.js.');
 console.log('-----------');

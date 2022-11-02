@@ -1,21 +1,53 @@
-<h1>Modify my account</h1>
+<%- include('./include/head')  %>
+
+<h1>修改我的帐号</h1>
+
+
+<form role="form" action="/my/account/edit" method="post">
+  <div class="form-group">
+    <label for="username">用户名</label>
+    <%= user.username %>
+  </div>
+  <div class="form-group">
+    <label for="nickname">昵称：</label>
+    <input type="text" class="form-control" id="nickname" name="nickname" value="<%= user.nickname %>" >
+  </div>
+  <div class="form-group">
+    <label for="nickname">电话：</label>
+    <input type="text" class="form-control" id="cellphone" name="cellphone" value="<%= user.cellphone %>" >
+  </div>
+  <div class="form-group">
+    <label for="nickname">密码：</label>
+    <input type="text" class="form-control" id="password" name="password" value="<%= user.password %>" >
+  </div>
+  <button>提交更改</button>
+</form>
+
+
+
+
+
+<% /* %>
 
 <form action='/my/account/edit' method='post'>
   <section>
-    <label for="username">Username</label>
+    <label for="username">用户名</label>
     <%= user.username %>
   </section>
   <section>
-    <label for="nickname">Nickname</label>
+    <label for="nickname">昵称</label>
     <input id="nickname" name="nickname" type="text" value="<%= user.nickname %>" >
   </section>
   <section>
-    <label for="cellphone">Cellphone</label>
+    <label for="cellphone">电话</label>
     <input id="cellphone" name="cellphone" type="text" value="<%= user.cellphone %>" >
   </section>
+
   <section>
-    <label for="password">Password</label>
-    <input id="password" name="password" type="password" value="<%= user.password %>" required>
+    <label for="password">密码</label>
+    <input id="password" name="password" type="text" value="<%= user.password %>" required>
   </section>
-  <button type="submit">Modify</button>
+  <button type="submit">提交修改</button>
 </form>
+
+<% */ %>

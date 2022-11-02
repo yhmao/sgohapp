@@ -2,12 +2,13 @@
   <%- include("./include/head.ejs") %>
 </head>
 
-<% if(record.user == user){ %>
-  <span class="btn font-weight-bold">好了，继续创建下一条巡视记录:</span><br>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/record_patrol_new?patrolType=routine" ><button class="btn btn-primary">日常巡视</button></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="/record_patrol_new?patrolType=safety" ><button class="btn btn-primary">安全巡视</button></a>
+<% if(record.user == user.username){ %>
+  <span class="btn font-weight-bold">我想再创建一条巡视记录:</span><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/record_patrol_new?patrolType=routine" ><button class="btn btn-primary">日常巡视</button></a> &nbsp;&nbsp;&nbsp;
+  <a href="/record_patrol_new?patrolType=safety" ><button class="btn btn-primary">安全巡视</button></a>&nbsp;&nbsp;
+  <a href="/record_patrol_list/my" ><button class="btn btn-secondary">我的记录列表</button></a>
   <br><br><br>
-  <b>我要完善刚才输入的记录：</b><br>
+  <b>我要完善该条记录：</b><br>
 <% } %>
 
 <div class="container-fluid">
@@ -15,7 +16,7 @@
 <!--Start form-->
 
 
-    <% if(record.user == user || user.role == 'admin' || user.role == 'siteManager'){ %>
+    <% if(record.user == user.username || user.role == 'admin' || user.role == 'siteManager'){ %>
 
       <form action="/record_patrol/<%= record.id %>" method="post" enctype="multipart/form-data">
         <%= record.user %>    <br>
@@ -69,13 +70,13 @@
       <div class="row">
         <div class="col-4 col-md-1">区域:    </div>
         <div class="col-8 col-md-11">
-            <%= record.zone %>
+            <b style="color:blue"><%= record.zone %></b>
         </div>
       </div>
 
       <div class="row">
         <div class="col-4 col-md-1">描述:   </div>
-        <div class="col-8 col-md-11"><%= record.text %></div>
+        <div class="col-8 col-md-11" style="color:blue"><%= record.text %></div>
       </div>
       <br><br><br>
 
@@ -144,20 +145,30 @@
 <% } %>
 <!--End review form-->
 
+<!-- Delete this record, owner, admin -->
+<% if (record.user == user.username || user.role == 'admin') { %>
+<div class="row">
+  <a href="/record_patrol/<%= record.id %>/remove"><button class="btn btn-primary " >删除该记录</button><a>
+</div>
+<% } %>
 
-<!--Start 已上传照片：-->
+<!--Start 显示上传的照片：-->
 <br><br>
 <hr>
 
 
 <br><br>
 
-  <% if(record.files.length > 0) {%>
-    <h4>随记录上传的照片：<%=record.files.length  %></h4>
 
-    <% record.files.reverse().forEach(function(file){ %>
+  <% if(record.files.length > 0) {%>
+    <h4>已随记录上传的照片/视频：<%=record.files.length  %></h4>
+
+    <% record.files.reverse().forEach(function(file,index){ %>
       <div class="file">
         <hr>
+        <%- include('./include/display_file.ejs',{record:record,file:file,index:record.files.length-index-1,user:user}) %>
+
+        <% /* %>
 
             <% if(['jpg','png','tiff','jpeg','gif'].includes(file.split('.').pop().toLowerCase())) {%>
 
@@ -182,7 +193,7 @@
               <a href="/record_new_routine_edit_file_remove/:id/:file"><button>删除</button></a><br>
             <% } %>
 
-
+        <% */ %>
 
 
       </div>
@@ -192,7 +203,8 @@
     <% } else{ %>
        无上传照片。
   <% } %>
-<!--End 已上传照片：-->
+<!--End 显示上传的照片：-->
+
   <br><br><br>
 <hr>
 <h4>添加评论：</h4>
@@ -229,14 +241,14 @@
 <hr>
 <!--Start 显示评论：-->
 
-<% record.children.sort().reverse().forEach(function(comment){ %>
+<% record.children.sort().reverse().forEach(function(comment,index){ %>
   <%= comment.user %>  | <%= moment(comment.date).format('YYYY-MM-DD HH:mm:ss') %><br>
   <%#= comment._id %>
   <b style="color:blue"><%= comment.text %></b> <br>
 
   <% if(comment.file) {%>
 
-    <% if(['jpg','png','tiff','jpeg','gif'].includes(comment.file.split('.').pop().toLowerCase())) {%>
+    <% if(['jpg','png','tiff','jpeg','gif','heic'].includes(comment.file.split('.').pop().toLowerCase())) {%>
       <%#= comment.file %> <br><br>
       <a href='/upload/<%= comment.file %>'>
         <img src="/upload/<%= comment.file %>" alt="<%= comment.file %>" width="400"  >
@@ -252,7 +264,17 @@
     <% } else { %>
       <a href='/upload/<%= comment.file %>'>Click to open or download:   <%= comment.file %></a> <br><br>
     <% }  %>
+
+    <!-- button for removing this file -->
+    <br>
+
+
   <% } %>
+
+  <% if(comment.user == user.username || user.role == 'admin'){ %>
+    <a href="/record_patrol/<%= record.id %>/comment_remove/<%= record.children.length - index -1 %>"><button >删除该评论</button></a>
+  <% } %>
+  <br>
   <hr>
 <% }); %>
 

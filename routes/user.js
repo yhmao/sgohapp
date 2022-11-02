@@ -27,22 +27,22 @@ const upload = multer({storage:storage});
 module.exports = function(app){
 
 
-  app.get('/home/notice', function(req,res,next){
-    console.log('enter GET home/notice');
-    res.render('notice');
-  });
-
-  app.get(['/','/home'], function(req,res,next){
-    console.log('enter home');
-    // console.log('req.session: ', req.session);
-    // console.log('req.user:', req.user);
-
-    // if (req.user){console.log('req.user.username:', req.user.username );}
-
-    if (req.user){ res.render('record_patrol_home',{user: req.user});}
-    else{ res.render('record_patrol_home',{user:'',role:''});
-    }
-  });
+  // app.get('/home/notice', function(req,res,next){
+  //   console.log('enter GET home/notice');
+  //   res.render('notice');
+  // });
+  //
+  // app.get(['/','/home'], function(req,res,next){
+  //   console.log('enter home');
+  //   // console.log('req.session: ', req.session);
+  //   // console.log('req.user:', req.user);
+  //
+  //   // if (req.user){console.log('req.user.username:', req.user.username );}
+  //
+  //   if (req.user){ res.render('record_patrol_home',{user: req.user});}
+  //   else{ res.render('record_patrol_home',{user:'',role:''});
+  //   }
+  // });
 
   //lgeacy
   app.get(['/0'], function(req,res,next){

@@ -115,7 +115,8 @@ module.exports = function(app) {
       user.save(()=>{
         console.log('user account modification saved to db.');
         console.log('user:', user);
-        res.render('home',{user:user.username});
+        res.redirect('/my/account');
+        // res.render('home',{user:user});
       });
     });
   });

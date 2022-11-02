@@ -19,7 +19,7 @@ module.exports = function(app){
 
   app.get('/admin', function(req,res,next){
     console.log('enter GET /admin');
-    res.render('admin');
+    res.render('record_patrol_admin');
   });
 
   app.get('/admin/user_show_all', function(req,res,next){
@@ -297,6 +297,13 @@ module.exports = function(app){
         console.log('err removing file which is not successful: ', sharefile.file);
         res.send('err removing file which is not successful: '+ sharefile.file)
       }
+    });
+  });
+
+  app.get('/admin/record_patrol_log',function(req,res,next){
+    console.log('enter GET /admin/record_patrol_log');
+    db.Log.find({},(err,logs)=>{
+      res.render('record_patrol_log',{logs:logs,moment:moment})
     });
   });
 

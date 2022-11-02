@@ -56,6 +56,9 @@ app.use('/views',express.static(path.join(__dirname,'views')));
 app.use('/upload', express.static(path.join(__dirname,'upload')));
 app.use('/test', express.static(path.join(__dirname,'public/test')));
 
+
+
+
 //share a folder with file list
 var serveIndex = require('serve-index');
 app.use('/share', serveIndex(path.join(__dirname, 'share')));
@@ -106,6 +109,26 @@ app.use(
   next();
   },
   ensureLoggedIn
+);
+
+
+//log to db
+app.use(
+  /\/((?!log).)*/,
+  function(req,res,next){
+    if (req.user){
+      var user = req.user.username;
+      var url = req.originalUrl;
+      var method = req.method;
+      console.log('XXXXXXXXXXXXXXXXXXXXX');
+      console.log('user,method,url:', user, method, url);
+      var log = new db.Log({user:user,method:method,url:url});
+      log.save(()=>{
+        console.log('Saved log: ', log);
+      });
+    }
+    next();
+  }
 );
 
 require('./routes')(app);

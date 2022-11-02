@@ -1,19 +1,19 @@
 <%- include('./include/head') %>
-<h1>Login</h1>
+<h1>登录</h1>
 
 <div class="container-fluid">
 <form action="/login" method="post">
     <div>
-        <label class="col-3 col-md-1" for="username" >Username</label>
+        <label class="col-3 col-md-1" for="username" >用户名</label>
         <input class="col-9 col-md-11" id="username" name="username" type="text" required autofocus>
     </div>
     <div>
-        <label class="col-3 col-md-1" for="password">Password</label>
+        <label class="col-3 col-md-1" for="password">密码</label>
         <input class="col-9 col-md-11" id="password" name="password" type="password" required>
     </div>
     <div>
         <input class="col-3 col-md-1 " id="remember_me" name="remember_me" type="checkbox" value="yes" checked>
-        <label class="col-9 col-md-11" for="remember_me">Remember Me</label>
+        <label class="col-9 col-md-11" for="remember_me">记住我</label>
     </div>
     <button type="submit">Login</button>
 </form>

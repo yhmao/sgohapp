@@ -1,6 +1,6 @@
 <!--show picture/video/file in html-->
 <!-- filename = file -->
-
+图<%= index %>:
 <% if(['jpg','png','tiff','jpeg','gif'].includes(file.split('.').pop().toLowerCase())) {%>
   <%#= file %> <br><br>
   <a href='/upload/<%= file %>'>
@@ -17,4 +17,12 @@
 <% } else { %>
   <a href='/upload/<%= file %>'>Click to open or download:   <%= file %></a> <br><br>
 <% }  %><br>
+
+<!-- button for removing this file -->
+<% if(record.user == user.username || user.role == 'admin'){ %>
+  <a href="/record_patrol/<%= record.id %>/file_remove/<%= file %>"><button>删除该文件</button></a><br><br>
+<% } %>
+
+
+
 <%#= file %>

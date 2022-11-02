@@ -1,0 +1,87 @@
+
+<form class="" action="/test/test_image2" method="post">
+
+
+<input id="files" name='files'type="file" onchange="previewFiles()" multiple />
+<input  type="submit" name="button" value='upload'>
+
+</form>
+<div id="preview"></div>
+<script type="text/javascript">
+
+
+function previewFiles() {
+  const preview = document.querySelector('#preview');
+  const files = document.querySelector('input[type=file]').files;
+
+  function readAndPreview(file) {
+    // Make sure `file.name` matches our extensions criteria
+    if (/\.(jpg|png|gif)$/i.test(file.name)) {
+      console.log('test=true.');
+      const reader = new FileReader();
+
+      reader.addEventListener("load", function() {
+        const image = new Image();
+        image.height = 400;
+        image.title = file.name;
+        image.src = this.result;
+        console.log('this:',this);
+        console.log('this.result:', this.result);
+        console.log('image:', image);
+        preview.appendChild(image);
+      }, false);
+
+      reader.readAsDataURL(file);
+    }
+  }
+
+  if (files) {
+    Array.prototype.forEach.call(files, readAndPreview);
+  }
+}
+
+// var image = new MarvinImage();
+// console.log('MarvinImage:', image);
+form = new FormData();
+console.log('FormData:', form);
+
+
+function sendToServer(){
+  form = new FormData();
+  form.append("name",name);
+  $.ajax({
+    method: 'POST',
+    url:'/test/test_image2',
+    enctype: 'multipart/form-data',
+    success: function(resp){
+      console.log('success and data: ', data);
+    },
+    error: function(data){
+      console.log('error');
+      console.log('data:', data);
+    }
+  })
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
