@@ -1,68 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-    <%- include("./include/head.ejs") %>
+	<%- include("./include/head.ejs") %>
+	<style>
+		/* body{
+			background-image: url('/public/static/sgoh-logo.jpg');
+			background-repeat: no-repeat;
+			background-attachment: fixed;
+			background-size: cover;
+		} */
+	</style>
 	</head>
+
 
 	<body>
     <%- include("./include/header.ejs") %>
 
 		<header>
 
+		<div>
+			<ul class="nav nav-pills">
+				<li class="nav-item " ><a href="#" class="nav-link active">首页</a></li>
+				<li class="nav-item " ><a href="/record_patrol_my" class="nav-link " title="打开菜单：我的帐号，共享资料，贡献分享">我的</a></li>
+				<li class="nav-item"><a href="/home/notice" class="nav-link" title="将显示最近的一些公告信息">公告</a></li>
+				<li class="nav-item"><a href="/record_patrol_menu" class="nav-link" title="打开菜单，选择显示不同搜索条件的记录列表">列表</a></li>
+				<!-- <li class="nav-item"><a href="/0" class="nav-link">更多</a></li> -->
 
-		<ul class="nav nav-pills">
-			<li class="nav-item " ><a href="#" class="nav-link active">首页</a></li>
-			<li class="nav-item " ><a href="/record_patrol_my" class="nav-link ">我的</a></li>
-			<li class="nav-item"><a href="/home/notice" class="nav-link">公告</a></li>
-			<li class="nav-item"><a href="/record_patrol_menu" class="nav-link">列表</a></li>
-			<!-- <li class="nav-item"><a href="/0" class="nav-link">更多</a></li> -->
+				<li class="nav-item"><a href="/logout" class="nav-link">登出</a></li>
+				<% if (user.role == 'admin') { %>
+					<li class="nav-item"><a href="/admin" class="nav-link">管理员</a></li>
+					<li class="nav-item"><a href="/test/index" class="nav-link">Test</a></li>
 
-			<li class="nav-item"><a href="/logout" class="nav-link">登出</a></li>
-			<% if (user.role == 'admin') { %>
-				<li class="nav-item"><a href="/admin" class="nav-link">管理员</a></li>
-				<li class="nav-item"><a href="/test/index" class="nav-link">Test</a></li>
+				<% } %>
 
-			<% } %>
+				<li class="nav-item"><a href="/about" class="nav-link"  >关于</a></li>
 
-		</ul>
+			</ul>
+		</div>
 
-			<!--
-			<a href="/home/notice"><button>说明与公告</button></a>
-			<a href="/login"><button>登录</button></a>
-			<a href="/logout"><button>登出</button></a>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<% if(user.role == 'admin'){ %>
-				<a href="/admin"><button class="btn btn-secondary">... ...</button></a><br>
-			<% } %>
-			-->
-
-
+		<div>
 			<% if (user.username === undefined) { %>
 				亲爱的用户，你还没有登录,请先<b><a href='/login'>登录</a>。</b>。
 			<% }else { %>
 				亲爱的  <b><%= user.username %></b> ,欢迎你使用监理巡视系统！
 			<% } %>
+		</div>
+		<div>
+			<% if(user.role == 'siteManager' || user.role == 'admin') { %>
+				<a href="/record_patrol_full_list"><button class="btn btn-primary" title="袁总使用，点击可以进行批注">所有记录 (请袁总点击这里进行批注)</button></a>
+			<% } %>
+		</div>
+
+
+
+
 
 			<hr>
 		</header>
 
-		<section class="d-flex">
-			<aside >
-				巡视工作现在开始......<br><br>
-				<ul id="ul_routine"><a href="/record_patrol_new?patrolType=routine"><button class="btn btn-primary btn-lg">开始日常巡视记录</button></a></ul>
-				<br>
-				<ul id="ul_safety"><a href="/record_patrol_new?patrolType=safety"><button class="btn btn-primary btn-lg">开始安全巡视记录</button></a></ul>
-				<br>
-				<ul id="ul_safety"><a href="/record_patrol_list/my"><button class="btn btn-secondary btn-lg">我的所有记录</button></a></ul>
-				<br>
-				<ul id="ul_safety"><a href="/record_patrol_menu"><button class="btn btn-secondary btn-lg">我的负责跟踪</button></a></ul>
-				<br>
 
-			</aside>
+	
+		<div class="container-fluid">
+			<form id="initRecord" action="/record_patrol_new" method="post" enctype="multipart/form-data">
+				<div><div>姓名： </div><div><%= user.username  %></div></div>
+				<div><div>日期：</div><div><%= moment(Date.now()).format('YYYY年MM月DD日')  %></div></div>
+				<div><div>工程名称： </div><div>上海大歌剧院项目</div></div>
+				<div><div>巡视类别： </div><div>
+					<input type="radio" id="routine" name="patrolType" value="日常" checked="checked"><label for="routine" >日常</label>
+					<input type="radio" id="safety" name="patrolType" value="安全"><label for="safety">安全</label>
+				</div></div>
+				<div><div></div><div><input type="submit" name="submit" value="开始巡视" onclick="clicked(event)"></div></div>
+				<div><div></div><div class="mygs">点击“开始巡视”将在系统中生成记录号，在下一页显示中你将进一步完善记录信息，添加现场图片等...</div></div>
+			</form>
+			
+		</div>
 
 
-		</section>
 
-    <%- include("./include/footer.ejs") %>
+
+	<!-- <%- include("./include/footer.ejs") %> -->
+	<script>
+		console.log($("form#initRecord :submit"));
+		$("form#initRecord").css('font-size','1.3em');
+		$("form#initRecord").addClass("container-fluid");
+		$("form#initRecord>div").css({'margin-top':'15px','font-weight':'bold'});
+		$("form#initRecord>div").addClass('row');
+		$("form#initRecord>div").children('div').filter(':even').addClass("col-5 col-md-2");
+		$("form#initRecord>div").children('div').filter(':odd').addClass("col-7 col-md-10");
+		$("form#initRecord :submit").addClass('mx-auto btn-lg bg-primary')
+
+		// $("#initRecord>div>div:even").addClass('col-5 col-md-2');
+		// $("#initRecord>div>div:odd").addClass('col-5 col-md-2');
+
+	// 	    $(".form>div").children("div").filter(':even')
+	// $(".form>div").children("div").filter(':odd').addClass("col-7 col-md-10");
+	function clicked(e){
+		if(!confirm('确定要生成新的记录?')){
+			e.preventDefault();
+		}		
+	}
+
+	
+	</script>
 
 
 	</body>

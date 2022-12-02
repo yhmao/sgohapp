@@ -1,129 +1,24 @@
 <head>
-  <%- include("./include/head.ejs") %>
+    <%- include("./include/head.ejs") %>
 </head>
-  <%#- include("./include/header.ejs") %>
+    <%- include("./include/header.ejs") %>
+  
+<div>共找到<%= records.length  %>条记录：</div>    
 
-
-<% records.sort(function(a,b){return a.dateUpdate-b.dateUpdate}).reverse().forEach(function(record){ %>
-  <hr style="height: 5px;background-color:#AAA;">
-  <!--Start 显示一条记录-->
-   <%= moment(record.dateUpdate).format('YYYY-MM-DD HH:mm:ss') %>&nbsp;&nbsp;| &nbsp;<%= moment(record.date).format('YYYY-MM-DD HH:mm:ss') %> <br>
-  <%= (record.patrolType=='routine')?'日常':'安全' %>  &nbsp;&nbsp; | &nbsp; <%= record.zone %>   <br>
-   <%= record.user %> &nbsp;&nbsp;<br>
-   <span style="color:blue"><%= record.text %></span> &nbsp;&nbsp;<br>
-
-   <!-- 添加批注功能 -->
-
-
-   <% if(user.role == 'siteManager' || user.role == 'admin'){ %>
-
-     <div style="border-style:solid;border-width:1px;border-color:blue;background-color:#DDDDDD;">
-       <!-- 已有批注状态反馈 -->
-       <% if(user.role !== 'projectManager') { %>
-         <% if (record.exposure=='projectManager') { %>
-           <b>已提交项目总监审阅，提交意见为：</b><br>
-           <span style="color:blue"><%= record.annotation %></span><br>
-         <% } %>
-         记录状态为：<span style="color:blue"><%= (record.status=='followup')?'跟踪':(record.status=='closed'?'已关闭':'初始')  %></span>
-         <br><br>
-       <% } %>
-
-
-
-     <form action="/record_patrol/<%= record.id %>/review" method="post" enctype="multipart/form-data">
-       <br>
-       <div class="row">
-         <div class="col-4 col-md-1">批注:   </div>
-         <div class="col-8 col-md-11"><textarea id="annotation" name="annotation" ><%= record.annotation %></textarea></div>
-       </div>
-
-       <div>
-         <% if (record.exposure == 'projectManager') { %>
-           <input type="checkbox" id="exposure" name="exposure" value="projectManager" checked>
-         <% } else { %>
-           <input type="checkbox" id="exposure" name="exposure" value="projectManager">
-         <% } %>
-
-         <label for="exposure">(已)提交上级领导(项目总监)审核</label>
-       </div>
-
-       <div>
-
-
-         <% if (record.status == 'followup') { %>
-           <input type="radio" id="status1" name="status" value="followup" checked>
-         <% } else { %>
-           <input type="radio" id="status1" name="status" value="followup">
-         <% } %>
-         <label for="status1">跟踪</label><br>
-
-         <% if (record.status == 'closed') { %>
-           <input type="radio" id="status2" name="status" value="closed" checked>
-         <% } else { %>
-           <input type="radio" id="status2" name="status" value="closed">
-         <% } %>
-         <label for="status2">关闭</label><br>
-
-
-
-         <!-- 跟踪负责人 -->
-         <% if(record.responsible){ %>
-           已选跟踪负责人：<%= record.responsible %> <br>
-         <% } %>
-         <select class="form-select" name="responsible" id="responsible">
-           <option value="" selected>请选择跟踪负责人</option>
-           <% for (var i=0; i < responsibles.length; i++){ %>
-             <% if (responsibles[i].username == record.responsible) { %>
-               <option value="<%= responsibles[i].username %>" selected> <%= responsibles[i].username %>|<%= responsibles[i].role %> </option>
-             <% } else { %>
-               <option value="<%= responsibles[i].username %>" > <%= responsibles[i].username %>|<%= responsibles[i].role %> </option>
-             <% } %>
-            <% } %>
-         </select>
-         <!-- End 跟踪负责人 -->
-
-       </div>
-
-
-       <div class="row">
-         <button class="btn btn-primary  " type="submit" name="submit">提交批注</button>
-       </div>
-
-     </form>
+<div class="container">
+  <% records.sort(function(a,b){return a.dateUpdate-b.dateUpdate}).reverse().forEach(function(record,index){ %>
+    <hr style="height: 10px;background-color:#AAA;">
+    <div><span class="badge badge-warning"><%= index %></span></div>
+    <div class="container">
+      <!--Start 显示一条记录-->
+      <div class="mygs"><%= moment(record.dateUpdate).format('YYYY-MM-DD HH:mm:ss') %>&nbsp;&nbsp;| &nbsp;<%= moment(record.date).format('YYYY-MM-DD HH:mm:ss') %></div>
+      <div class="mygs" ><span style="color:blue;"><%= record.user %>&nbsp;&nbsp; </span>| <%= record.patrolType %>  &nbsp;&nbsp; | &nbsp; <%= record.zone %></div>
+      <div><span style="color:blue;font-size: 20px;"><%= record.text %></span></div> 
+      <div>附图: <%= record.files.length %>;&nbsp;&nbsp;&nbsp;&nbsp; 评论:<%= record.children.length %></div>
+      <div class="float-right strong"><a href="/record_patrol/<%= record.id %>">打开>>>&nbsp;&nbsp;&nbsp;&nbsp; </a></div>
+      <br>
     </div>
-   <% } %>
+  <% })  %>
 
-   <!-- End 添加批注功能 -->
-
-
-
-  <!--Start display file: if file, show; if no file, show "no file"-->
-  <% if(record.file != '') {%>
-    <% record.files.forEach(function(file,index){ %>
-      <%- include('./include/display_file.ejs',{record:record,file:file,index:record.files.length-index-1,user:user}); %>
-    <% }) %>
-  <% } else{ %>
-     no file.<br>
-  <% } %>
-  <!--End display file: if file, show; if no file, show "no file"-->
-  <br>
-  <% if(record.user == user || user.role == 'admin' || user.role == 'siteManager'){ %>
-    <a href="/record_patrol/<%= record.id %>"><button>编辑本条记录</button></a>
-  <% } %>
-  <a href="/record_patrol/<%= record.id %>"><button>显示记录详细/及评论</button></a>
-  <!--Start 显示评论-->
-  <br>-------------<br>评论: <%= record.children.length %><br>
-  <% if(record.children.length > 0) {%>
-    <%# --comments--<br> %>
-    <%# record.children.forEach(function(comment){ %>
-      <%#- include('./include/display_file.ejs',{file:comment.file}); %>
-    <%# }) %>
-  <% } else{ %>
-    <%# --no comment--<br> %>
-  <% } %>
-  <!--End 显示评论-->
-
-  <!--End 显示一条记录-->
-
-
-<% })  %>
+</div>
+  

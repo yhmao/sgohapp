@@ -1,0 +1,113 @@
+
+routes of patrol_ajax:
+
+/record_patrol/:id/body_text_ajax/new
+/record_patrol/:id/body_text_ajax/edit
+
+/record_patrol/:id/body_image_image_add_ajax
+/record_patrol/:id/body_image_text_add_ajax/:fileId
+/record_patrol/:id/body_image_remove_ajax/:fileId  //remove text and image if no review
+/record_patrol/:id/body_image_review_add_ajax/:fileId
+/record_patrol/:id/body_image_review_remove_ajax/:fileId/:reviewId
+
+/record_patrol/:id/body_video_video_add_ajax
+/record_patrol/:id/body_video_text_add_ajax/:fileId
+/record_patrol/:id/body_video_remove_ajax/:fileId  //remove text and video if no review
+/record_patrol/:id/body_video_review_add_ajax/:fileId
+/record_patrol/:id/body_video_review_remove_ajax/:fileId/:reviewId
+
+/record_patrol/:id/comment/add_ajax   // newly add text and/or image
+/record_patrol/:id/comment/:commentId/text_edit_ajax
+/record_patrol/:id/comment/:commentId/image_add_ajax
+/record_patrol/:id/comment/:commentId/image_remove_ajax
+/record_patrol/:id/comment/:commentId/remove_ajax
+/record_patrol/:id/comment/:commentId/review_add_ajax
+/record_patrol/:id/comment/:commentId/:reviewId/review_remove_ajax
+
+************************************************************************
+
+<div id="record">
+
+    <div id="record_body">
+        <div id="record_body_text"></div>
+        <div id="record_body_image_add"></div>
+        <div id="record_body_video_add"></div>
+        <div class="body_image"></div>    //multiple
+        <div class="body_video"></div>    //multiple
+    </div>
+
+    <div id="record_comments">
+        <div id="record_comment_add"></div>
+        <div class="comment"></div>    //multiple
+    </div>
+
+</div>
+
+***************************************************************************
+
+const recordSchema = new mongoose.Schema({
+  user: {type:String,default:'user'},
+  date: {type:Date, default:Date.now},
+  dateUpdate: {type:Date, default:Date.now},  //update when any modification
+  project: {type: String, default:'SGOH'},
+  profession: String,
+  zone: String,
+  title: String,
+  patrolType: String, //质量，日常
+  text: String,
+  file: String,
+  files: [], //allow multiple files
+  caption: String,
+  status: {type: String, default:'active'},  //followup,closed
+  responsible: String,  //person assigned by siteManager
+  annotation: String,
+  keywords: String,  //for later organize
+  exposure: {type: String, default:'public'},  // visible to: private,siteManager,projectManager...
+  parents: [],  // array of id
+  children: []   // array of document
+});
+const Record = mongoose.model('Record', recordSchema);
+const Comment = mongoose.model('Comment', recordSchema);
+    user: {type:String,default:'user'},
+    date: {type:Date, default:Date.now},
+    dateUpdate: {type:Date, default:Date.now},  //update when any modification
+    text: String,
+    file: String,
+    status: {type: String, default:'active'},  //followup,closed
+    responsible: String,  //person assigned by reviewer(siteManager)
+    annotation: String,   // input by reviewer(siteManager)
+    exposure: {type: String, default:'public'},  // visible to: private,siteManager,projectManager... reviewer=>projectManager
+    parents: [],  // array of id, = record.id
+    children: []   // array of document = [review]
+
+const Sharefile = mongoose.model('Sharefile', recordSchema);
+    user: {type:String,default:'user'},
+    date: {type:Date, default:Date.now},
+    text: String,
+    file: String,
+
+const Review = mongoose.model('Review', recordSchema);
+    user: {type:String,default:'user'},
+    date: {type:Date, default:Date.now},
+    dateUpdate: {type:Date, default:Date.now},  //update when any modification
+    text: String,
+    status: {type: String, default:'initial'},  //  gray:initial; green:close; yellow:follow; red:severe
+    responsible: String,  //person assigned by siteManager
+    annotation: String,
+    exposure: {type: String, default:'public'},  // visible to: private,siteManager,projectManager...
+    parents: [],  // array of id = comment.id or file.id
+
+
+
+
+const userSchema = new mongoose.Schema({
+  username: String,
+  nickname: String,
+  cellphone: String,
+  password: String,
+  role: {type:String, default: 'user'},  //监理，负责，项目总负责，项目总监，事业部，集团 supervisor,teamLeader,siteManager,projectManager,divisionManager, companyManager,
+  team: String, //钢结构，土建，安装，舞台
+  date: {type: Date, default: Date.now},
+  dateUpdate: {type:Date, default:Date.now}
+});
+const User = mongoose.model('User', userSchema);

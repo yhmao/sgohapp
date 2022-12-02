@@ -1,5 +1,6 @@
 console.log('===========app.js Starting===========');
 
+
 const util = require('util');
 const moment = require('moment');
 const fs = require('fs');
@@ -14,6 +15,8 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local')
 const db = require('./database.js');   //mongoose
 const mw = require('./middlewares.js')  //more middlewares
+
+
 
 var multer = require('multer');
 const formidable = require('formidable');
@@ -84,20 +87,23 @@ console.log('app.js app.use().');
 console.log('app.js xxxxxxxx');
 
 app.use(function(req,res,next){
-  console.log("\n\n\n\n=*=*=*=*=*=*=*= NEW REQUEST: " + req.method + "  " + req.originalUrl + " =*=*=*=*=*=*=*=\n\n");
+  console.log("\n\n" + moment(Date.now()).format('YYYY-MM-DD HH:mm:ss') + " =*=*=*=*=*=*=*= NEW REQUEST: " + req.method + "  " + req.originalUrl + " :" );
+  // console.log("time:",moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'));
+  console.log("\n\n");
 
   next();
 });
 
 app.use(function(req,res,next){
-  console.log('-----middleware for checking passport session ----');
-  if (req.session.passport){console.log('req.session.passport:', req.session.passport);}
+  // console.log('-----middleware for checking passport session ----');
+  // if (req.session.passport){console.log('req.session.passport:', req.session.passport);}
   if (req.user){
-    console.log('req.user:',req.user);
+    // console.log('req.user:',req.user);
+    console.log('req.user.username:', req.user.username);
     // res.locals.user = req.user;
   }
-  if (req.session.cookie){console.log('req.session.cookie:',req.session.cookie);}
-  console.log('-----middleware passport checking ends ----');
+  // if (req.session.cookie){console.log('req.session.cookie:',req.session.cookie);}
+  // console.log('-----middleware passport checking ends ----');
   next();
 });
 
@@ -120,16 +126,20 @@ app.use(
       var user = req.user.username;
       var url = req.originalUrl;
       var method = req.method;
-      console.log('XXXXXXXXXXXXXXXXXXXXX');
-      console.log('user,method,url:', user, method, url);
+      // console.log('XXXXXXXXXXXXXXXXXXXXX');
+      console.log('logger - user,method,url:', user, method, url);
+      console.log('Date time: ', moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'));
+      console.log('\n\n');
       var log = new db.Log({user:user,method:method,url:url});
       log.save(()=>{
-        console.log('Saved log: ', log);
+        // console.log('Saved log: ', log);
       });
     }
     next();
   }
 );
+
+
 
 require('./routes')(app);
 
@@ -160,6 +170,37 @@ app.get(['/t/:name/:age','/t'], function(req,res,next){
   res.send('test id name @'+ yyyymmdd_hhmmss);
 });
 
+///////////////////////////////////////////////////////////////////////
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.log('!!!!!!!!!!!',moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'));
+
+  console.log('Unhandled Rejection at:', reason.stack || reason)
+
+});
+
+app.use(errorHandler);
+
+function errorHandler (err, req, res, next) {
+  if (res.headersSent) {
+    return next(err)
+  }
+
+  var errorLog = new db.ErrorLog({
+    user: req.user,
+    date: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'),
+    url: req.originalUrl,
+    error: err.toString(),
+  });
+  errorLog.save(()=>{
+    res.status(500);
+    res.send( `<p>errorHandler - Error: </p>${err} <p> ${moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')} </p> 
+      <p>Request: ${req.originalUrl}</p><p>User: ${req.user}</p>` );
+  });  
+}
+
+
+///////////////////////////////////////////////////////////////////////
 app.post('/t', function(req,res,next){
   console.log('enter post /t');
   console.log('req.body:', req.body);
@@ -179,5 +220,8 @@ app.post('/t', function(req,res,next){
 app.listen(app.get('port'),'0.0.0.0',function(){
   console.log('Express started on http://localhost:' +
     app.get('port') + '; press Ctrl+C to terminate.');
+  
+
 });
-console.log('===========app.js End===========');
+console.log('At: ', moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'));
+console.log('===========app.js started===========');

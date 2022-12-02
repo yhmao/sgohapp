@@ -63,6 +63,15 @@ module.exports = function(app){
     });
   });
 
+  app.get('/admin/user_remove/:id',function(req,res,next){
+    console.log('enter GET /admin/user_remove/:id ...');
+    var id = req.params.id;
+    db.User.findByIdAndRemove(id,()=>{
+      console.log('one user removed.');
+      res.send(`该用户已删除。<a href="/admin/user_show_all">返回用户列表</a>`);
+    })
+  });
+
 
   // zone management
 
@@ -304,6 +313,13 @@ module.exports = function(app){
     console.log('enter GET /admin/record_patrol_log');
     db.Log.find({},(err,logs)=>{
       res.render('record_patrol_log',{logs:logs,moment:moment})
+    });
+  });
+
+  app.get('/admin/record_patrol_errorLog',function(req,res,next){
+    console.log('enter GET /admin/record_patrol_errorLog');
+    db.ErrorLog.find({},(err,errorLogs)=>{
+      res.render('record_patrol_errorLog',{errorLogs:errorLogs,moment:moment})
     });
   });
 

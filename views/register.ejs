@@ -21,3 +21,31 @@
   <button type="submit">Register</button>
 </form>
 </div>
+
+<script>
+  $(":submit").bind('click',function(e){
+    e.preventDefault();
+    var formData = new FormData(this.form);
+    var url = this.form.action;
+    var that = this;
+    console.log('url:',url);
+    $.ajax({
+      url: url,
+      data: formData,
+      processData: false,
+      contentType: false,
+      type:"POST"
+    })
+    .done(function(data){
+      // console.log('done data:', data);
+    })
+    .fail(function(xhr,status,errorThrown){
+      // console.log('fail xhr, status, errorThrown:', xhr, status, errorThrown);
+    })
+    .always(function(xhr, status){
+      // console.log('always xhr status: ', xhr, status);
+      $(that).after(`<div style="color:blue;">${xhr}</div>`);
+      $('#username').focus();
+    })
+  });
+</script>

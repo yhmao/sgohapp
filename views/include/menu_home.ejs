@@ -1,0 +1,25 @@
+首页
+公告
+我的帐户
+登出
+功能: 共享，上传，我的上传
+管理员
+
+
+
+
+<ul class="nav nav-pills">
+    <li class="nav-item " ><a href="#" class="nav-link active">首页</a></li>
+    <li class="nav-item " ><a href="/record_patrol_my" class="nav-link ">我的</a></li>
+    <li class="nav-item"><a href="/home/notice" class="nav-link">公告</a></li>
+    <li class="nav-item"><a href="/record_patrol_menu" class="nav-link">列表</a></li>
+    <!-- <li class="nav-item"><a href="/0" class="nav-link">更多</a></li> -->
+
+    <li class="nav-item"><a href="/logout" class="nav-link">登出</a></li>
+    <% if (user.role == 'admin') { %>
+        <li class="nav-item"><a href="/admin" class="nav-link">管理员</a></li>
+        <li class="nav-item"><a href="/test/index" class="nav-link">Test</a></li>
+
+    <% } %>
+
+</ul>

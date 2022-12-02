@@ -1,6 +1,6 @@
 <%- include('./include/head') %>
 
-<h1>users_all</h1>
+<h1>所有用户列表</h1>
 
 
 
@@ -10,6 +10,7 @@
     <tr>
       <th>id</th>
       <th>用户名</th>
+      <th>昵称</th>
       <th>密码</th>
       <th>角色</th>
       <th>小组</th>
@@ -21,6 +22,7 @@
       <tr>
         <td><%= user.id %></td>
         <td><b><%= user.username %></b></td>
+        <td><%= user.nickname %></td>
         <td><%= user.password %></td>
         <td><%= user.role %></td>
         <td><%= user.team %></td>

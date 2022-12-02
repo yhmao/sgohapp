@@ -42,13 +42,13 @@ const recordSchema = new mongoose.Schema({
   zone: String,
   title: String,
   patrolType: String, //质量，日常
-  text: String,
+  text: String,     //for BodyFiles: = text
   file: String,
   files: [], //allow multiple files
   caption: String,
-  status: {type: String, default:'active'},  //followup,closed
+  status: String,  //followup,closed
   responsible: String,  //person assigned by siteManager
-  annotation: String,
+  annotation: String,   // record: 巡视情况：正常，关注，有问题，有疑问
   keywords: String,  //for later organize
   exposure: {type: String, default:'public'},  // visible to: private,siteManager,projectManager...
   parents: [],  // array of id
@@ -56,7 +56,9 @@ const recordSchema = new mongoose.Schema({
 });
 const Record = mongoose.model('Record', recordSchema);
 const Comment = mongoose.model('Comment', recordSchema);
+const Review = mongoose.model('Review', recordSchema);
 const Sharefile = mongoose.model('Sharefile', recordSchema);
+const BodyFile = mongoose.model('BodyFile', recordSchema);
 
 const zoneSchema = new mongoose.Schema({
   user: {type:String, default:''},
@@ -77,15 +79,26 @@ const logSchema = new mongoose.Schema({
 });
 const Log = mongoose.model('Log', logSchema);
 
+const errorLogSchema = new mongoose.Schema({
+  user: String,
+  date: String,
+  url: String,
+  error: String
+});
+const ErrorLog = mongoose.model('ErrorLog', errorLogSchema);
+
 
 module.exports = {
   database:database,
   User:User,
   Record:Record,
   Comment:Comment,
+  Review: Review,
+  BodyFile:BodyFile,
   Sharefile:Sharefile,
   Zone:Zone,
-  Log:Log
+  Log:Log,
+  ErrorLog:ErrorLog
 };
 console.log('database.js.');
 console.log('-----------');

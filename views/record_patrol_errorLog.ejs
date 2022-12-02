@@ -1,0 +1,33 @@
+<%- include('./include/head') %>
+
+<h1>errroLog file</h1>
+
+
+
+<h4>errorLogs: <%= errorLogs.length %> </h4>
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>user</th>
+      <th>date</th>
+      <th>url</th>
+      <th>error</th>
+    </tr>
+  </thead>
+  <tbody >
+    <% errorLogs.reverse().forEach(function(log){ %>
+      <tr>
+        <td> <% if (log.user) { %>
+                <%= log.user.username %>
+            <% } else { %>
+                <%= log.user %>
+            <% } %>
+        </td>
+        <td><%= log.date %> </td>
+        <td><%= log.url %></td>
+        <td><%= log.error %></td>
+      </tr>
+    <% }) %>
+  </tbody>
+
+</table>

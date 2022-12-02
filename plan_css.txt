@@ -1,0 +1,14 @@
+
+
+.mygs{color:gray;font-size:12px}                  /*my gray small */
+.myt{color:blue;font-size:2em}                    /*my title */
+.myb{background-color: rgb(245, 245, 245);        /*my body */
+    white-space: pre-wrap;
+    min-width:100%;
+    padding-top: 15px;
+    padding-bottom: 15px;}
+.mymm{max-height: 45%;}                  /*my multimedia */
+
+<div class="jumbotron">
+  <form></form>    /* form filling */
+</div>

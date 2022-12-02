@@ -1,289 +1,280 @@
 <head>
-  <%- include("./include/head.ejs") %>
-</head>
+    <%- include("./include/head.ejs") %>
+  </head>
+  <body>
+    <%- include("./include/header.ejs") %>
+  
 
-<% if(record.user == user.username){ %>
-  <span class="btn font-weight-bold">我想再创建一条巡视记录:</span><br>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/record_patrol_new?patrolType=routine" ><button class="btn btn-primary">日常巡视</button></a> &nbsp;&nbsp;&nbsp;
-  <a href="/record_patrol_new?patrolType=safety" ><button class="btn btn-primary">安全巡视</button></a>&nbsp;&nbsp;
-  <a href="/record_patrol_list/my" ><button class="btn btn-secondary">我的记录列表</button></a>
-  <br><br><br>
-  <b>我要完善该条记录：</b><br>
-<% } %>
-
-<div class="container-fluid">
-
-<!--Start form-->
-
-
-    <% if(record.user == user.username || user.role == 'admin' || user.role == 'siteManager'){ %>
-
-      <form action="/record_patrol/<%= record.id %>" method="post" enctype="multipart/form-data">
-        <%= record.user %>    <br>
-        <%= moment(record.dateUpdate).format('YYYY-MM-DD HH:mm:ss') %>   | <%= moment(record.date).format('YYYY-MM-DD HH:mm:ss') %><br><br>
-
-        <div class="row">
-          <div class="col-4 col-md-1">已选区域:    </div>
-          <div class="col-8 col-md-11">
-              <%= record.zone %>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-4 col-md-1">重选区域:    </div>
-          <div class="col-8 col-md-11">
-              <%- include("./include/select_zone.ejs")  %>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-4 col-md-1">描述:   </div>
-          <div class="col-8 col-md-11"><textarea id="text" name="text" ><%= record.text %></textarea></div>
-        </div>
-
-        <div class="row">
-          <div class="col-4 col-md-1">再拍一张:    </div>
-          <div class="col-8 col-md-11"><input type="file" id="file" name="file" multiple></div>
-        </div>
-
-        <div class="row">
-          <div class="col-4 col-md-1">
-            <% if(record.exposure === 'private') {%>
-              <input type="checkbox" id="exposure" name="exposure" value="private" checked   >
-            <% } else {%>
-              <input type="checkbox" id="exposure" name="exposure" value="private"   >
-            <% } %>
-          </div>
-          <div class="col-8 col-md-11"> 设为私密，仅作者自己可见:  </div>
-        </div>
-
-      <div class="row">
-        <button class="btn btn-primary " type="submit" name="submit">提交更改</button>
-      </div>
-
-      </form>
-      <!--End form-->
-    <% }else{ %>
-      <!-- if not author/admin/siteManager, only display information -->
-      <h3>一条记录请审阅</h3>
-      <%= record.user %>   <br>
-      <%= moment(record.dateUpdate).format('YYYY-MM-DD HH:mm:ss') %>   | <%= moment(record.date).format('YYYY-MM-DD HH:mm:ss') %><br><br>
-      <div class="row">
-        <div class="col-4 col-md-1">区域:    </div>
-        <div class="col-8 col-md-11">
-            <b style="color:blue"><%= record.zone %></b>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-4 col-md-1">描述:   </div>
-        <div class="col-8 col-md-11" style="color:blue"><%= record.text %></div>
-      </div>
-      <br><br><br>
-
+  
+    <a href="/record_patrol/<%= record.id %>"><h4><button class="btn-lg" style="background-color: yellow;">更新显示本记录</button></h4></a>
+    <% if(user.username == record.user || user.role == 'admin') { %>
+      <div class="float-right " style="margin-right: 10px;"><a href="/record_patrol/<%= record.id %>/remove"><h4><button id="buttonRecordRemove"class="bg-danger" onclick="if(!confirm('确定要删除吗？')){ return false;}" title="删除本条记录。需先删除所有的评论项及本记录的所有图片记录项，之后点击本按钮方可删除本条记录。">&times;</button></h4></a></div>
     <% } %>
+    
+  
+  
+    <div class="record">
+      <div class="myt"><%= record.text %></div>
+      <div class="head form">
+        <div hidden><div>(id)</div><div id="record_id" ><%= record.id %> </div></div>
+        <div hidden><div>(patrolType)</div><div id="record_patrolType" ><%= record.patrolType %> </div></div>
+        <div hidden><div>(zone)</div><div id="record_zone" ><%= record.zone %> </div></div>
+        <div hidden><div>(exposure)</div><div id="record_exposure" ><%= record.exposure %> </div></div>
+        <div hidden><div>id: </div><div><%= record.id %></div></div>
+  
+        <div><div>姓名：</div><div><%= record.user  %></div></div>
+        <div><div>日期：</div><div><%= moment(record.date).format('YYYY年MM月DD日 HH:mm:ss')  %></div></div>
+		<div><div>更新：</div><div><%= moment(record.dateUpdate).format('YYYY年MM月DD日 HH:mm:ss')  %></div></div>
+        <div><div>工程名称：</div><div>上海大歌剧院项目</div></div>
+        <div><div>私密：</div><div><%= record.exposure  %></div></div>
+        <div><div>类别：</div><div> <%= record.patrolType %></div></div>
+        <div><div>巡视部位：</div><div><%= record.zone %></div></div>
+        <div><div>巡视描述：</div><div><%= record.text %></div></div>
+        <div><div>巡视情况：</div><div id="record_annotation"><%= record.annotation %></div></div>
+        
+        <% if(record.status) { %>
+          <div><div>关注状态：</div><div><%= record.status %></div></div>
+        <% } %>
 
 
+      </div>
+  
+      <div class="headEdit">
+          <form class="form" id="form_body_text" action='/body_text' method="POST" enctype="multipart/form-data" >
+              <div><div>(id)</div><div><input type="text" name="id" value="<%= record.id %>" hidden></div></div>
+              <div><div>姓名：</div><div><%= record.user  %></div></div>
+              <div><div>日期：</div><div><%= moment(Date.now()).format('YYYY年MM月DD日')  %></div></div>
+              <div><div>工程名称：</div><div>上海大歌剧院项目</div></div>
+        <div><div>私密：</div><div><input type="checkbox" id="exposure" name="exposure" value="private"></div></div>
+              <div><div>类别：</div><div>
+          <input type="radio" id="routine" name="patrolType" value="日常" ><label for="routine" >日常</label>
+          <input type="radio" id="safety" name="patrolType" value="安全"><label for="safety">安全</label>
+          </div></div>
+              <div><div>巡视部位：</div><div><%- include("./include/select_zone.ejs")  %></div></div>
+              <div><div>巡视描述：</div><div><textarea name="text"><%=record.text%></textarea></div></div>
 
-<!--Start Show review information-->
+              <div><div>巡视情况：</div><div><select id="annotation" name="annotation" style="width:100%">
+                <option value="正常">正常</option>
+                <option value="关注">关注</option>
+                <option value="有问题">有问题</option>
+                <option value="有疑问">有疑问</option>
+                </select></div></div><br>
+   
+              
 
-  <% if(user.role != 'projectManager') { %>
-    <% if (record.exposure=='projectManager') { %>
-      <b>已提交项目总监审阅，提交意见为：</b><br>
-      <span style="color:blue"><%= record.annotation %></span><br>
+              <input class="btn-lg btn-primary" type="submit" name="submit" value="提交上述更新">
+          </form>
+
+          <hr style="height: 10px; background-color: #eee;">
+          <br>
+
+          <form class="form" id="main_file_plus" action="/body_file_plus" method="post" enctype="multipart/form-data">
+              <div><div>id:</div><div><input type="text" name="id" value="<%= record.id %>" hidden></div></div>
+              <div><div>上传现场照片：</div><div><input type="file" name="file" id="file"></div></div>
+              <div><div>照片说明：</div><div><input id="fileText" type="text" name="text"></div></div>
+              <div><div><input class="btn-lg btn-primary" type="submit" name="submit" value="上传照片"></div><div></div></div>
+          </form>
+      </div>
+
+      <hr style="height: 10px; background-color: #eee;">
+      <br>
+
+  
+    <% if(user.username == record.user || user.role == 'admin') { %>
+    <button class="btn-lg" onclick="$('div.head, div.headEdit').toggle();">切换编辑/显示</button>
     <% } %>
-    记录状态为：<span style="color:blue"><%= (record.status=='followup')?'跟踪':(record.status=='closed'?'已关闭':'初始')  %></span>
-    <br><br>
-  <% } else if(user.role == 'projectManager' && record.exposure=='projectManager'){ %>
-    <h3>请项目总监审阅：</h3><br>
-    <span style="color:blue"><%= record.annotation %></span>
-  <% } %>
+  
 
-<!--End Show review information-->
+    <hr>
+  
+  
+    <div class="files">  <!--^div.files-->
+      <% if(record.files.length > 0) {%>
+          <h4>附件：<%=record.files.length  %></h4>
+            <% record.files.reverse().forEach(function(file,index){ %>
+              <hr>
+  
+              <div class="file">
+                  <div>图<span class="badge bg-primary"><%= record.files.length-index-1 %><span></div>
+                  <div class="fileId" hidden><%= (typeof file === 'object')?file._id:file %></div>
+    
+                        <%- include('./include/display_file.ejs',{record:record,file:file,index:record.files.length-index-1,user:user}) %>
 
-<!--Start review form-->
-<% if(user.role == 'siteManager' || user.role == 'admin'){ %>
-  <form action="/record_patrol/<%= record.id %>/review" method="post" enctype="multipart/form-data">
+                  <% if(file.text){ %>  
+                        <div class="myb"><%= file.text %>  </div>
+                  <% } %>
 
-    <div class="row">
-      <div class="col-4 col-md-1">批注:   </div>
-      <div class="col-8 col-md-11"><textarea id="annotation" name="annotation" ><%= record.annotation %></textarea></div>
-    </div>
+				  
+				  
+				  
+				  <% if(user.username == record.user || user.role == 'admin') { %>   <!--^图片说明-->
+                  <div class="fileText" >
+                    <button ><<图片说明</button>
+                    <div class="recordId" hidden><%= record.id %></div>
+                    <div class="fileId" hidden><%= file._id %></div>
+					<div class="fileTextOld" hidden><%= file.text %></div>
+                  </div>
+                  <% } %>   <!--图片说明$-->
+				  
 
-    <div>
-      <% if (record.exposure == 'projectManager') { %>
-        <input type="checkbox" id="exposure" name="exposure" value="projectManager" checked>
-      <% } else { %>
-        <input type="checkbox" id="exposure" name="exposure" value="projectManager">
+
+                  <% if(file.responsible) { %>
+                    <div class="myb">跟进负责人：<%= file.responsible %></div>
+                  <% } %>
+				  
+				  <% if(file.status) { %>
+                    <div class="myb">状态：<%= file.status %></div>
+                  <% } %>				  
+                  <% if (typeof file === 'object') { %>  <!--如果不是文件名-->
+                    <% if (file.children.length > 0 ) { %>  <!--^批注显示-->
+                      <div>
+                        <% file.children.reverse().forEach(function(review,index){ %>
+                          <div >
+                            <%= moment(review.date).format('YYYY-MM-DD HH:mm:ss') %> | <%= review.user %>: <span class="myb"><%= review.text %></span>     
+                            <% if (user.username == review.user || user.role == 'admin') { %>
+                              <a href="/record_patrol/<%= record.id %>/<%= file._id %>/<%= review._id %>/remove"><span class="removeReview"  style="color:red;">&times;</span></a>                                   
+                            <% } %>
+                            
+                          </div>
+                        <% }) %>
+                      </div>
+                    <% } %>   <!--批注显示$-->
+                  <% } %>
+    
+                  <% if(user.username ==  record.user || user.role == 'admin') { %>
+                    <div><a href="/record_patrol/<%= record.id %>/file_doc_remove/<%= file._id %>"><button title="该项目下面没有批注内容方可删除该项目。">删除该项</button></a></div>
+                  <% } %>
+
+                  <% if(user.role == 'siteManager' || user.role == 'admin') { %>   <!--^批注生成-->
+                  <div class="showReview" >
+                    <button title="仅供袁总使用...">进行批注>></button>
+                    <div class="recordId" hidden><%= record.id %></div>
+                    <div class="fileId" hidden><%= file._id %></div>
+                  </div>
+                  <% } %>   <!--批注生成$-->
+				  
+				  <% if(user.role == 'siteManager' || user.role == 'admin') { %>   <!--^关闭该项-->
+                  <div><a href="/record_patrol/<%=record.id%>/file_close/<%=file._id%>"><button title="仅供袁总使用...">关闭该项</button></a></div>
+				  <% } %>   <!--关闭该项$-->
+				
+  
+              </div>    <!--end div.file-->
+  
+  
+            <% }) %>  <!--forEach-->
+      <% } else{ %>
+          <div>无上传照片。</div>
       <% } %>
+  
+    </div>  <!--div.files$-->
+  
+    <hr>
+    <br><br><br><br><br><br>
+  
+    <div class="comments">  <!--^div.comments-->
+  
+  
+        <!--^添加评论-->
+        <div class="h4 "><button class="btn-lg"  onclick="$('.comment_plus').toggle();" title="任何人都可以添加评论，评论时可以只输入文字，也可以附加图片。点击弹出输入表单进行操作...">添加评论>></button></div>
+        <div class="comment_plus" style="display:none;" >
+            <form class="form" id="form_comment_plus" action="/comment_plus" method="post" enctype="multipart/form-data" >
+              <div hidden><div>id:</div><div><input type="text" id="id" name="id" value="<%= record.id %>" /></div></div>
+              <div><div>文字:</div><div><textarea id="text" name="text" ></textarea></div></div>
+              <div><div>附件: </div><div><input type="file" id="file" name="file" ></div></div>
+              <div><div><div></div><button class="btn-lg btn-primary" type="submit" name="submit">上传评论文字与所选图片</button></div></div>
+            </form>
+        </div>
+        <!--添加评论$-->
+  
 
-      <label for="exposure">(已)提交上级领导(项目总监)审核</label>
-    </div>
+  
+  
+  
+        <div>显示评论:<%= record.children.length %></div>
+        <p>------------------------------------</p>
+  
+        <!--每个评论-->
+        <% record.children.sort().reverse().forEach(function(comment,index){ %>  <!--^forEach comment-->
+  
+          <div class="comment">  <!--^div.comment-->
+				<div>评论<span class="badge bg-warning"><%= record.children.length-index-1 %></span></div>
+                <div class="commentId" hidden><%= comment._id %></div>
+                <%= comment.user %>  | <%= moment(comment.date).format('YYYY-MM-DD HH:mm:ss') %><br>
+                <%#= comment._id %>
+  
+                <b style="color:blue"><%= comment.text %></b> <br>
+  
+                <% if(comment.file) {%>
+                  <div class="file">
+                    <%- include('./include/display_file.ejs',{record:record,file:comment.file,index:record.children.length-index-1,user:user}) %>
+                  </div>
+                <% } %>
 
-    <div>
+                <% if(comment.responsible) { %>
+                  <div class="myb">跟进负责人：<%= comment.responsible %></div>
+                <% } %>
+				
+				<% if(comment.status) { %>
+                    <div class="myb">状态：<%= comment.status %></div>
+                <% } %>	
 
+                <% if (Array.isArray(comment.children)) { %>    <!--check ensure array-->
+                  <% if (comment.children.length > 0 ) { %>
+                    <% comment.children.reverse().forEach(function(review,index){ %>
+                      <div >
+                          <%= moment(review.date).format('YYYY-MM-DD HH:mm:ss') %> | <%= review.user %>: <span class="myb"><%= review.text %></span> 
+                      </div>
 
-      <% if (record.status == 'followup') { %>
-        <input type="radio" id="status1" name="status" value="followup" checked>
-      <% } else { %>
-        <input type="radio" id="status1" name="status" value="followup">
-      <% } %>
-      <label for="status1">跟踪</label><br>
+                    <% }) %>
+                  <% } %>
+                <% } %>
+  
+                <!-- button for removing this comment -->
+                <% if(comment.user == user.username || user.role == 'admin'){ %>
+                  <a href="/record_patrol/<%= record.id %>/comment_remove/<%= record.children.length - index -1 %>"><button  title="该评论下面没有批注方可删除。">删除该评论</button></a>
+                <% } %>
+                <br>
+  
+                <% if(user.role == 'siteManager' || user.role == 'admin'){ %>
+                <div class="showReviewComment btn"><h4>
+                  <button title="仅供袁总使用...">进行批注>></button>
+                  <div class="recordId" hidden><%= record.id %></div>
+                  <div class="commentId" hidden><%= comment._id %></div>
+                </h4></div>
+                <% } %>
+				
+				<% if(user.role == 'siteManager' || user.role == 'admin') { %>   <!--^关闭该项-->
+                  <div><a href="/record_patrol/comment_close/<%= record.id %>/<%= comment._id %>"><button title="仅供袁总使用...">关闭该项</button></a></div>
+				<% } %>   <!--关闭该项$-->
+				
+				
+				
+				
+				
+  
+          </div>   <!--div.comment$-->
+  
+          <hr>
+        <% }); %>  <!--forEach comment$-->
+  
+    </div>  <!--div.comments$-->
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <br><br><br><br><br><br><br><br><br><br><br><br>
+  <div class="h4"><a href="/record_patrol/<%= record.id %>"><button>更新显示本记录</button></a></div>
+  
+  
+  <script src="/public/js/record_patrol.js"></script>
 
-      <% if (record.status == 'closed') { %>
-        <input type="radio" id="status2" name="status" value="closed" checked>
-      <% } else { %>
-        <input type="radio" id="status2" name="status" value="closed">
-      <% } %>
-      <label for="status2">关闭</label><br>
-    </div>
-
-    <div class="row">
-      <button class="btn btn-primary  " type="submit" name="submit">提交批注</button>
-    </div>
-
-  </form>
-<% } %>
-<!--End review form-->
-
-<!-- Delete this record, owner, admin -->
-<% if (record.user == user.username || user.role == 'admin') { %>
-<div class="row">
-  <a href="/record_patrol/<%= record.id %>/remove"><button class="btn btn-primary " >删除该记录</button><a>
-</div>
-<% } %>
-
-<!--Start 显示上传的照片：-->
-<br><br>
-<hr>
-
-
-<br><br>
-
-
-  <% if(record.files.length > 0) {%>
-    <h4>已随记录上传的照片/视频：<%=record.files.length  %></h4>
-
-    <% record.files.reverse().forEach(function(file,index){ %>
-      <div class="file">
-        <hr>
-        <%- include('./include/display_file.ejs',{record:record,file:file,index:record.files.length-index-1,user:user}) %>
-
-        <% /* %>
-
-            <% if(['jpg','png','tiff','jpeg','gif'].includes(file.split('.').pop().toLowerCase())) {%>
-
-              <a href='/upload/<%= file %>'>
-                <img src="/upload/<%= file %>" alt="<%= file %>" width="400"  >
-              </a>
-            <% } else if (['mp4','ogg','webm', 'mov','wmv','avi','flv','swf','mkv','mpeg'].includes(file.split('.').pop().toLowerCase())) { %>
-              <a href='/upload/<%= file %>'>
-                <%= file %> <br><br>
-                <video width='320' height='240' controls>
-                  <source src='/upload/<%= file %>' type="video/mp4">
-                  Your browser does not support the video tag. Please download to play with proper software.
-                </video>
-              </a>
-            <% } else { %>
-              <a href='/upload/<%= file %>'>Click to open or download:   <%= file %></a> <br><br>
-            <% }  %><br>
-
-            <%= file %><br>
-
-            <% if(record.user == user || user.role == 'admin' || user.role == 'siteManager'){ %>
-              <a href="/record_new_routine_edit_file_remove/:id/:file"><button>删除</button></a><br>
-            <% } %>
-
-        <% */ %>
-
-
-      </div>
-
-    <% }) %>
-
-    <% } else{ %>
-       无上传照片。
-  <% } %>
-<!--End 显示上传的照片：-->
-
-  <br><br><br>
-<hr>
-<h4>添加评论：</h4>
-
-
-<!--Start form 添加评论：-->
-
-    <form  action="/record_patrol/<%= record.id  %>/comment_add" method="post" enctype="multipart/form-data" >
-
-      <div class="row">
-          <div class="col-4 col-md-1" hidden>id: </div>
-          <div class="col-8 col-md-11"><input type="text" id="id" name="id" value="<%= record.id %>" hidden  /></div>
-      </div>
-
-      <div class="row">
-        <div class="col-4 col-md-1">评论文字:   </div>
-        <div class="col-8 col-md-11"><textarea id="text" name="text" ></textarea></div>
-      </div>
-
-      <div class="row">
-          <div class="col-4 col-md-1">附加图片 </div>
-          <div class="col-8 col-md-11"><input type="file" id="file" name="file" ></div>
-      </div>
-
-      <div class="row">
-          <button class="btn btn-primary  " type="submit" name="submit">Submit</button>
-      </div>
-
-    </form>
-
-<!--End form 添加评论：-->
-<hr>
-<h4>显示评论:<%= record.children.length %></h4>
-<hr>
-<!--Start 显示评论：-->
-
-<% record.children.sort().reverse().forEach(function(comment,index){ %>
-  <%= comment.user %>  | <%= moment(comment.date).format('YYYY-MM-DD HH:mm:ss') %><br>
-  <%#= comment._id %>
-  <b style="color:blue"><%= comment.text %></b> <br>
-
-  <% if(comment.file) {%>
-
-    <% if(['jpg','png','tiff','jpeg','gif','heic'].includes(comment.file.split('.').pop().toLowerCase())) {%>
-      <%#= comment.file %> <br><br>
-      <a href='/upload/<%= comment.file %>'>
-        <img src="/upload/<%= comment.file %>" alt="<%= comment.file %>" width="400"  >
-      </a>
-    <% } else if (['mp4','ogg','webm', 'mov','wmv','avi','flv','swf','mkv','mpeg'].includes(comment.file.split('.').pop().toLowerCase())) { %>
-      <a href='/upload/<%= comment.file %>'>
-        <%#= comment.file %>
-        <video width='320' height='240' controls>
-          <source src='/upload/<%= comment.file %>' type="video/mp4">
-          Your browser does not support the video tag. Please download to play with proper software.
-        </video>
-      </a>
-    <% } else { %>
-      <a href='/upload/<%= comment.file %>'>Click to open or download:   <%= comment.file %></a> <br><br>
-    <% }  %>
-
-    <!-- button for removing this file -->
-    <br>
-
-
-  <% } %>
-
-  <% if(comment.user == user.username || user.role == 'admin'){ %>
-    <a href="/record_patrol/<%= record.id %>/comment_remove/<%= record.children.length - index -1 %>"><button >删除该评论</button></a>
-  <% } %>
-  <br>
-  <hr>
-<% }); %>
-
-
-
-<!--End 显示评论：-->
-
-
-
-
-
-</div>
+  </body>
+  

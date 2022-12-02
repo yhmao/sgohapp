@@ -1,0 +1,205 @@
+
+
+<h2> 绘制位图 </h2>
+<canvas id="canvas" width="500" height="330"
+	style="border:1px solid black"></canvas>
+<div id='response' > div-show </div><br><br><hr><br>
+
+<!-- <script type="text/javascript">
+	// 获取canvas元素对应的DOM对象
+	var canvas = document.getElementById('mc');
+	// 获取在canvas上绘图的CanvasRenderingContext2D对象
+	var ctx = canvas.getContext('2d');
+	// 创建Image对象
+	var image = new Image();
+	// 指定Image对象装载图片
+	image.src = "/static/1.jpg";
+	// 当图片装载完成时激发该函数
+  console.log('img.src:', image.src);
+	image.onload = function()
+	{
+		// 保持原大小绘制图片
+		ctx.drawImage(image , 20 , 10, 300, 200);
+		// 绘制图片时进行缩放
+		// ctx.drawImage(image , 250 , 40 , 76 , 110);
+		var sd = 150;
+		var sh = 165
+		// 从源位图中挖取一块、放大3倍后绘制在Canvas上
+		// ctx.drawImage(image , 200 , 50  , sd  ,  sh
+		// 	, 335 , 10 , sd * 3 , sh * 3);
+	}
+</script> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div style="border-style: dotted;">
+<form class="" action="/test/test_upload" method="post" enctype="multipart/form-data">
+  <div class="row">
+    <div class="col-4 col-md-1">再拍一张:    </div>
+    <div class="col-8 col-md-11"><input type="file" id="file" name="file" accept="image/*" onchange="handlefiles(event)"></div>
+  </div>
+
+
+
+
+  <div class="row">
+    <div class="col-4 col-md-1">name :   </div>
+    <div class="col-8 col-md-11"><input type="text" id="name" name="name" value="name xxx "></div>
+  </div>
+
+  <div class="row">
+  <div class="col"><canvas src="" id="mc" width="200" height="200"  style="border:1px solid black" ></canvas></div>
+  </div>
+
+  <div class="row">
+  <div class="col-6"><img src="" id="image_again" width="200" style="margin: 0 0 0 auto;" ></img></div>
+  <div class="col-6"><img src="" id="image_again2" width="200" style="margin: 0 0 0 auto;" ></img></div>
+  </div>
+
+  <div class="row">
+    <div class="col-12 text-right"><button class="btn btn-primary " type="submit" name="submit">上传照片</button></div>
+  </div>
+
+</form>
+</div>
+
+<div>
+	<img id='image' width="300" height="300" style="border: dashed solid 1px;">
+</div>
+
+<script type="text/javascript">
+
+  function handlefiles(e)
+  {
+    console.log('handling files...');
+    var inputElement = document.getElementById('file');
+		var canvas = document.getElementById('canvas');
+		var ctx = canvas.getContext('2d');
+    console.log('inputEle.files:', inputElement.files);
+    console.log('inputElement.files[0]:', inputElement.files[0]);
+    console.log('inputElement.value:', inputElement.value);
+    console.log('input onchange event:', e);
+		console.log('input file size: ', inputElement.files[0].size);
+		var filename = inputElement.files[0].name;
+		console.log('filename:', filename);
+		var xhttp = new XMLHttpRequest();
+		xhttp.onload = function(){
+			document.getElementById('response').innerHTML = this.responseText;
+		};
+
+
+
+
+
+
+
+
+
+
+
+		var url;
+
+		var fileReader = new FileReader();
+		fileReader.onload = function(e)
+			{
+				console.log('enter fileReaderHandler...');
+				console.log('fileReader onload event:', e);
+				// console.log('fileReader onload fileReader.result:', fileReader.result);
+				var image = document.getElementById('image');
+				image.onload = function()
+					{
+						ctx.drawImage(image,0,0,300,300);
+						canvas.toBlob
+						(
+								function(blob)
+									{
+										url = URL.createObjectURL(blob);
+										var formData = new FormData();
+										formData.append('file', blob, filename );
+										xhttp.open('post', '/test/test_upload');
+										xhttp.send(formData);
+									}
+								,'image/png',
+								0.3
+						)
+					}
+				image.src = fileReader.result;
+				console.log('type of image: ', typeof image);
+				console.log('image:', image);
+
+
+			}
+
+
+		fileReader.readAsDataURL(inputElement.files[0]);
+
+
+
+
+
+
+
+
+
+  }
+
+
+
+
+
+
+
+  // const canvas = document.getElementById('canvas');
+  // const ctx = canvas.getContext('2d');
+  //
+  //
+  // const img = new Image(100,100);
+  // // img.onLoad = drawImageActualSize();
+  //
+  //
+  // // img.src = "/public/2.jpg";
+  // img.src = "../public/3.jpg";
+  // document.getElementById('canvas').insertAdjacentElement('beforebegin',img);
+  // console.log('img:', img);
+  // console.log('img.src:',img.src);
+  //
+  // console.log('enter drawImageActualSize');
+  // // canvas.width = this.naturalWidth;
+  // // canvas.height = this.natualHeight;
+  // console.log('this:', this);
+  //
+  // ctx.drawImage(img,0,0,200,200);
+  // console.log('right after ctx.drawImage');
+  //
+  //
+  // // function drawImageActualSize(){
+  // //   console.log('enter drawImageActualSize');
+  // //   // canvas.width = this.naturalWidth;
+  // //   // canvas.height = this.natualHeight;
+  // //   console.log('this:', this);
+  // //
+  // //   ctx.drawImage(img,0,0,200,200);
+  // //   console.log('right after ctx.drawImage');
+  // //
+  // // };
+
+
+
+
+</script>

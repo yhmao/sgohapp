@@ -59,7 +59,7 @@ integrity="sha512-rmZcZsyhe0/MAjquhTgiUcb4d9knaFc7b5xAfju483gbEXTkeJRUMIPk6s3ySZ
   </div>
  </nav>
 </div>
-<div id="div-menu-selected">我的负责跟踪</div>
+<div id="div-menu-selected">所有</div>
 
 
 
@@ -174,7 +174,7 @@ integrity="sha512-rmZcZsyhe0/MAjquhTgiUcb4d9knaFc7b5xAfju483gbEXTkeJRUMIPk6s3ySZ
       xhttp.open("get", "/record_patrol_list/my");
       xhttp.send();
     }
-    my_responsible();
+    all();
 
     document.getElementById('today').addEventListener("click", today);
     document.getElementById('yesterday').addEventListener("click", yesterday);
@@ -240,3 +240,99 @@ integrity="sha512-rmZcZsyhe0/MAjquhTgiUcb4d9knaFc7b5xAfju483gbEXTkeJRUMIPk6s3ySZ
 <div id="div-show">
 div
 </div>
+
+
+
+
+
+
+
+
+
+
+<script src="/public/js/record_patrol.js"></script>
+<script>
+  $(document).ready(function(){
+    console.log('============');
+
+    
+  console.log('$(".expand button"):',$(".expand button"));
+
+
+
+
+
+// $(".expand a").bind('click',(function(e) {
+//     e.preventDefault();
+// }));
+
+$(".expand button").bind('click',function(e){
+  console.log('button clicked...');
+  e.preventDefault();
+  var that = this;
+  // var url = $(this).parent().attr('href');
+  var url = 'http://localhost:3000/record_patrol/637a196a416231d7b844a28d';
+  console.log('url:',url);
+  // $.get(url,function(data){
+  //   console.log('data:',data);
+  //   $(this).siblings('.showMain').html(data);
+  // });
+
+              $.ajax({
+          url:url,
+          processData:false,
+          contentType:false,
+          // data:formData,
+          type:'GET'
+        })
+        .done(function(data){
+          console.log('ajax done, data:', data);
+        })
+        .fail(function(xhr,status,errorThrown){
+          console.log('ajax fail xhr,status,errorThrown: ', xhr, status, errorThrown);
+        })
+        .always(function(xhr,status){
+          console.log('ajax always xhr, status', xhr, status);
+          $(that).siblings('.showMain').html(data);
+        })
+        ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  e.preventDefault();
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+  });
+
+
+
+
+
+
+
+
+</script>
