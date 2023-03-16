@@ -3,22 +3,55 @@
 </head>
     <%- include("./include/header.ejs") %>
   
-<div>共找到<%= records.length  %>条记录：</div>    
+<div>共找到<%= count  %>条记录：</div>    
+
+<% if (pages>1 && page) {  %>
+<ul class="pagination">
+  <% for (let p=1; p<=pages; p++) { %>
+    <li class="page-item"><a class="page-link" href="/record_patrol_list/q/<%=p%>">
+      <% if(page == p) { %>
+      <span style="color:red"><%= p %></span>
+      <% } else { %>
+      <span ><%= p %></span>
+      <% } %>
+
+    </a></li>
+  <% } %>
+</ul>
+<% } %>
 
 <div class="container">
   <% records.sort(function(a,b){return a.dateUpdate-b.dateUpdate}).reverse().forEach(function(record,index){ %>
     <hr style="height: 10px;background-color:#AAA;">
-    <div><span class="badge badge-warning"><%= index %></span></div>
+    <div><span class="badge badge-warning"><%= index + (page-1)*20 +1 %></span></div>
     <div class="container">
       <!--Start 显示一条记录-->
       <div class="mygs"><%= moment(record.dateUpdate).format('YYYY-MM-DD HH:mm:ss') %>&nbsp;&nbsp;| &nbsp;<%= moment(record.date).format('YYYY-MM-DD HH:mm:ss') %></div>
       <div class="mygs" ><span style="color:blue;"><%= record.user %>&nbsp;&nbsp; </span>| <%= record.patrolType %>  &nbsp;&nbsp; | &nbsp; <%= record.zone %></div>
-      <div><span style="color:blue;font-size: 20px;"><%= record.text %></span></div> 
-      <div>附图: <%= record.files.length %>;&nbsp;&nbsp;&nbsp;&nbsp; 评论:<%= record.children.length %></div>
-      <div class="float-right strong"><a href="/record_patrol/<%= record.id %>">打开>>>&nbsp;&nbsp;&nbsp;&nbsp; </a></div>
+      <div><span style="color:blue;font-size: 20px;"><a href="/record_patrol/<%= record._id %>"><%= record.text %></a></span></div> 
+      <div>附图: <%= record.files.length %>;&nbsp;&nbsp;&nbsp;&nbsp; 评论:<%= record.children.length %></div> 
+      <div style="display: block; float: right;"><a href="/record_patrol/<%= record._id %>">>>></a></div>
+
       <br>
     </div>
   <% })  %>
 
 </div>
+
+<br><br>
+
+<% if (pages>1 && page) {  %>
+  <ul class="pagination">
+    <% for (let p=1; p<=pages; p++) { %>
+      <li class="page-item"><a class="page-link" href="/record_patrol_list/q/<%=p%>">
+        <% if(page == p) { %>
+        <span style="color:red"><%= p %></span>
+        <% } else { %>
+        <span ><%= p %></span>
+        <% } %>
+  
+      </a></li>
+    <% } %>
+  </ul>
+  <% } %>
   

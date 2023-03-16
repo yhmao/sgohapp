@@ -156,11 +156,29 @@
                         } 
 
                         $.ajax({             //ajax (image)
-                          url: url,  
+                          xhr: function(){
+                            var xhr = new window.XMLHttpRequest();
+                            xhr.upload.addEventListener("progress", function(evt){
+                              if (evt.lengthComputable) {
+                                console.log('evt.lengthComputable...');
+                                var percentComplete = ((evt.loaded / evt.total) * 100 );
+                                console.log('percentComplete:', percentComplete);
+                                $(thisForm).parent().find(".progress-bar").width(percentComplete + '%');
+                                $(thisForm).parent().find(".progress-bar").html(percentComplete + '%');
+                              }
+                            },false);
+                            return xhr;
+                          },
+                          url:url, 
                           processData: false,
                           contentType: false,
                           data: formData,
                           type: 'POST',
+                          beforeSend: function(){
+                            console.log('beforeSend...');
+                            $(thisForm).parent().find(".progress-bar").width('0%');
+                            $(thisForm).parent().find(".uploadStatus").html('开始上传...');
+                          }
                         })
                         .done(function(data){
                           console.log('ajax done data:', data);
@@ -174,6 +192,7 @@
                           $(thisForm).find(':file').val(null);
                           $(thisForm).find('.file-size, .preview').remove();
                           $(thisForm).find('#fileText').val(null); 
+                          $(thisForm).parent().find(".uploadStatus").html('');
                         });
                   
                       });
@@ -189,11 +208,29 @@
                     var formData = new FormData( thisForm );
 
                     $.ajax({               //ajax (not image)
+                      xhr: function(){
+                        var xhr = new window.XMLHttpRequest();
+                        xhr.upload.addEventListener("progress", function(evt){
+                          if (evt.lengthComputable) {
+                            console.log('evt.lengthComputable...');
+                            var percentComplete = ((evt.loaded / evt.total) * 100 );
+                            console.log('percentComplete:', percentComplete);
+                            $(thisForm).parent().find(".progress-bar").width(percentComplete + '%');
+                            $(thisForm).parent().find(".progress-bar").html(percentComplete + '%');
+                          }
+                        },false);
+                        return xhr;
+                      },
                       url:url, 
                       processData: false,
                       contentType: false,
                       data: formData,
                       type: 'POST',
+                      beforeSend: function(){
+                        console.log('beforeSend...');
+                        $(thisForm).parent().find(".progress-bar").width('0%');
+                        $(thisForm).parent().find(".uploadStatus").html('开始上传...');
+                      }
                     })
                     .done(function(data){
                       console.log('ajax done data:', data);
@@ -206,7 +243,9 @@
                       $(thisForm).append($(`<div class="response">${xhr},  ${status}</div>`));
                       $(thisForm).find(':file').val(null);
                       $(thisForm).find('.file-size, .preview').remove();
-                    });
+                      $(thisForm).parent().find(".uploadStatus").html('');
+                    })
+                    ;
           }
 
 
@@ -293,18 +332,18 @@
 
 
       // popup 图片说明
-      $(".fileText").bind('click',function(e){
+      $(".fileText button").bind('click',function(e){
         // console.log('============', $(this).parent().find(".commentId"));  
         console.log('this:', this);
-        console.log('recordId:',$(this).find(".recordId"));
-        console.log('fileId:',$(this).find(".fileId"));
-        console.log('text:',$(this).find(".fileTextOld").val()  );
+        console.log('recordId:',$(this).parent().find(".recordId"));
+        console.log('fileId:',$(this).parent().find(".fileId"));
+        console.log('text:',$(this).parent().find(".fileTextOld").val()  );
         $(this).after($(`
           <div class="">
             <form class="formFileText" action="/main_fileText" method="post" enctype="multipart/form-data">
-              <div hidden ><div>id:</div><div><input type="text" name="recordId" value=${$(this).find(".recordId").text()}  ></div></div>
-              <div hidden><div>fileId:</div><div><input type="text" name="fileId" value=${$(this).find(".fileId").text() }  ></div></div>
-              <div><div></div><div><input type="text" name="text" value=${$(this).find(".fileTextOld").text() }>   </input></div></div>
+              <div hidden ><div>id:</div><div><input type="text" name="recordId" value=${$(this).parent().find(".recordId").text()}  ></div></div>
+              <div hidden><div>fileId:</div><div><input type="text" name="fileId" value=${$(this).parent().find(".fileId").text() }  ></div></div>
+              <div><div></div><div><input type="text" name="text" size="50" value=${$(this).parent().find(".fileTextOld").text() }>   </input></div></div>
               <div><div></div><input type="submit" name="submit" value="提交新的图片说明"></div>
             </form>
           </div>`

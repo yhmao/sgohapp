@@ -1,4 +1,4 @@
-console.log('===========app.js Starting===========');
+console.log('/app.js');
 
 
 const util = require('util');
@@ -13,37 +13,23 @@ const morgan = require('morgan');
 const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local')
-const db = require('./database.js');   //mongoose
-const mw = require('./middlewares.js')  //more middlewares
+const db = require('./database.js');  
+const mw = require('./middlewares.js') 
 
-
-
-var multer = require('multer');
-const formidable = require('formidable');
-
-var utils = require('./utils');
-
-const storage = multer.diskStorage({
-  destination: function(req,file,cb){
-    console.log('storage destination.');
-    cb(null, 'upload')
-  },
-  filename: function(req,file,cb){
-    console.log("storage filename");
-    cb(null, utils.yyyymmdd_hhmmss() + '_' + file.originalname);
-  }
+const cron = require('node-cron');
+cron.schedule('0 0 */2 * * *',()=>{  // every 2 hour
+  console.log('cron.schedule: ', moment().format('YYYY-DD-MM HH:mm:ss'));
+  process.exit();
 });
-const upload = multer({storage:storage});
 
-console.log("app.js require modules.");
+const formidable = require('formidable');
+var utils = require('./utils');
 
 // configure app
 var app = express();
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname,'views'));
 app.set('view engine', 'ejs');
-
-console.log('app.js app.set().');
 
 // middleware
 app.use(express.json());
@@ -60,8 +46,6 @@ app.use('/upload', express.static(path.join(__dirname,'upload')));
 app.use('/test', express.static(path.join(__dirname,'public/test')));
 
 
-
-
 //share a folder with file list
 var serveIndex = require('serve-index');
 app.use('/share', serveIndex(path.join(__dirname, 'share')));
@@ -73,46 +57,28 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
 }));
-// app.use(passport.authenticate('session'));
+console.log('app.use(session)');
 
 app.use(mw.passport.initialize());
 app.use(mw.passport.session());
 app.use(mw.passport.authenticate('session'));
 // app.use(mw.passport.authenticate('remember-me'));
-console.log('app.js app.use(mw.passport.xxx)');
+console.log('app.use(mw.passport.xxx)');
 
-console.log('app.js app.use().');
 
-//------------test start---------------------//
-console.log('app.js xxxxxxxx');
 
+// highlight new request
 app.use(function(req,res,next){
-  console.log("\n\n" + moment(Date.now()).format('YYYY-MM-DD HH:mm:ss') + " =*=*=*=*=*=*=*= NEW REQUEST: " + req.method + "  " + req.originalUrl + " :" );
-  // console.log("time:",moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'));
-  console.log("\n\n");
-
+  console.log("\n\n> " + moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'));
   next();
 });
 
-app.use(function(req,res,next){
-  // console.log('-----middleware for checking passport session ----');
-  // if (req.session.passport){console.log('req.session.passport:', req.session.passport);}
-  if (req.user){
-    // console.log('req.user:',req.user);
-    console.log('req.user.username:', req.user.username);
-    // res.locals.user = req.user;
-  }
-  // if (req.session.cookie){console.log('req.session.cookie:',req.session.cookie);}
-  // console.log('-----middleware passport checking ends ----');
-  next();
-});
+
 
 app.use(
-  // /\/((?!login|register|).)*/,      // exclude login and register
-  /\/((?!login|register|home|test).)*/,
+  /\/((?!login|register|home|test|m).)*/,    // exclude login and register + mobile
   function(req,res,next){
-  // console.log('use ensureLoggedIn.');
-  next();
+    next();
   },
   ensureLoggedIn
 );
@@ -122,14 +88,12 @@ app.use(
 app.use(
   /\/((?!log).)*/,
   function(req,res,next){
+    // console.log('req:', req);
     if (req.user){
       var user = req.user.username;
       var url = req.originalUrl;
       var method = req.method;
-      // console.log('XXXXXXXXXXXXXXXXXXXXX');
-      console.log('logger - user,method,url:', user, method, url);
-      console.log('Date time: ', moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'));
-      console.log('\n\n');
+      console.log('> log >', user, method, url);
       var log = new db.Log({user:user,method:method,url:url});
       log.save(()=>{
         // console.log('Saved log: ', log);
@@ -142,50 +106,26 @@ app.use(
 
 
 require('./routes')(app);
+var mRouter = require('./routes/m');
+app.use('/m', mRouter);
 
 
-//------------test end---------------------//
+app.use(express.json()) 
+app.use(express.urlencoded({ extended: true })) 
 
-
-app.use(express.json()) // for parsing application/json
-app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
-
-
-
-
-app.get(['/t/:name/:age','/t'], function(req,res,next){
-  var date = new Date();
-  var yyyymmdd_hhmmss = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2) + '_' + ("0" + date.getHours() ).slice(-2) + ("0" + date.getMinutes()).slice(-2) + ("0" + date.getSeconds()).slice(-2);
-
-  console.log('session:', session);
-  console.log('req.session:', req.session);
-  console.log('req.session.id:', req.session.id);
-  console.log('req.sessionID: ', req.sessionID);
-  console.log('req.session.cookie:', req.session.cookie);
-  console.log('req.cookie.maxAge:', req.session.cookie.maxAge);
-
-  console.log('req.session.passport :', req.session.passport );
-  // console.log('req.session.passport.user:', req.session.passport.user);
-  // console.log('req.user:', req.user);
-  res.send('test id name @'+ yyyymmdd_hhmmss);
-});
-
-///////////////////////////////////////////////////////////////////////
 
 process.on('unhandledRejection', (reason, promise) => {
-  console.log('!!!!!!!!!!!',moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'));
-
-  console.log('Unhandled Rejection at:', reason.stack || reason)
-
+  console.log('process.on(unhandledRejection) at: ',moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'));
+  console.log('reason.stack:', reason.stack || reason)
 });
 
 app.use(errorHandler);
 
 function errorHandler (err, req, res, next) {
+  console.log('errorHandler...');  
   if (res.headersSent) {
     return next(err)
   }
-
   var errorLog = new db.ErrorLog({
     user: req.user,
     date: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'),
@@ -193,35 +133,24 @@ function errorHandler (err, req, res, next) {
     error: err.toString(),
   });
   errorLog.save(()=>{
+    console.log('errorLog.save ok.');
     res.status(500);
     res.send( `<p>errorHandler - Error: </p>${err} <p> ${moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')} </p> 
       <p>Request: ${req.originalUrl}</p><p>User: ${req.user}</p>` );
+    console.log('res sent to client.');
   });  
 }
 
 
-///////////////////////////////////////////////////////////////////////
-app.post('/t', function(req,res,next){
-  console.log('enter post /t');
-  console.log('req.body:', req.body);
-  console.log('req.params:', req.params);
-  console.log('params:', req.body.name, req.body.password);
-  console.log('Cookies:', req.cookies);
-  console.log('Signed Cookies:', req.signedCookies);
-
-
-  res.json(req.body);
-})
-
-
-// console.log('==========test end============');
-//------------test---------------------//
 
 app.listen(app.get('port'),'0.0.0.0',function(){
-  console.log('Express started on http://localhost:' +
-    app.get('port') + '; press Ctrl+C to terminate.');
+  console.log('Express started on http://localhost:' +  app.get('port') + '; press Ctrl+C to terminate.');
+  var log = new db.Log({user:'restart', method:'',url:'',date:Date.now()});
+  log.save(()=>{
+    console.log('restart log.save ok.');
+  })
   
 
 });
-console.log('At: ', moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'));
+console.log(moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'));
 console.log('===========app.js started===========');

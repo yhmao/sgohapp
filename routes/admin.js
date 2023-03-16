@@ -1,8 +1,6 @@
+console.log('/routes/admin.js');
 
 var db = require('../database');
-// var passport = require('../middlewares').passport;
-console.log('user.js routes.');
-
 
 // upload
 var multer = require('multer');
@@ -327,4 +325,5 @@ module.exports = function(app){
 
 
 };
-console.log('admin.js.');
+
+

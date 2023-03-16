@@ -6,7 +6,7 @@
   
 
   
-    <a href="/record_patrol/<%= record.id %>"><h4><button class="btn-lg" style="background-color: yellow;">更新显示本记录</button></h4></a>
+    <a href="/record_patrol/<%= record.id %>"><h4><button class="btn-lg" style="background-color: yellow;">更新显示本记录&nbsp;&nbsp;<span class="fa fa-refresh"></span></button></h4></a>
     <% if(user.username == record.user || user.role == 'admin') { %>
       <div class="float-right " style="margin-right: 10px;"><a href="/record_patrol/<%= record.id %>/remove"><h4><button id="buttonRecordRemove"class="bg-danger" onclick="if(!confirm('确定要删除吗？')){ return false;}" title="删除本条记录。需先删除所有的评论项及本记录的所有图片记录项，之后点击本按钮方可删除本条记录。">&times;</button></h4></a></div>
     <% } %>
@@ -29,6 +29,7 @@
         <div><div>私密：</div><div><%= record.exposure  %></div></div>
         <div><div>类别：</div><div> <%= record.patrolType %></div></div>
         <div><div>巡视部位：</div><div><%= record.zone %></div></div>
+        <div><div>所属专业：</div><div><%= record.profession %></div></div>
         <div><div>巡视描述：</div><div><%= record.text %></div></div>
         <div><div>巡视情况：</div><div id="record_annotation"><%= record.annotation %></div></div>
         
@@ -51,6 +52,7 @@
           <input type="radio" id="safety" name="patrolType" value="安全"><label for="safety">安全</label>
           </div></div>
               <div><div>巡视部位：</div><div><%- include("./include/select_zone.ejs")  %></div></div>
+              <div><div>所属专业：</div><div><%- include("./include/select_prof.ejs")  %></div></div>
               <div><div>巡视描述：</div><div><textarea name="text"><%=record.text%></textarea></div></div>
 
               <div><div>巡视情况：</div><div><select id="annotation" name="annotation" style="width:100%">
@@ -72,8 +74,14 @@
               <div><div>id:</div><div><input type="text" name="id" value="<%= record.id %>" hidden></div></div>
               <div><div>上传现场照片：</div><div><input type="file" name="file" id="file"></div></div>
               <div><div>照片说明：</div><div><input id="fileText" type="text" name="text"></div></div>
-              <div><div><input class="btn-lg btn-primary" type="submit" name="submit" value="上传照片"></div><div></div></div>
+              <div><div><input class="btn-lg btn-primary fa" type="submit" name="submit" value="上传照片 &nbsp;&nbsp; &#xf0ee;" style="font-size: 24px;"></div><div></div></div>
           </form>
+          <!--Progress bar-->
+          <div class="progress">
+              <div class="progress-bar"></div>
+          </div>
+          <!--Display upload status-->
+          <div class="uploadStatus"></div>
       </div>
 
       <hr style="height: 10px; background-color: #eee;">
@@ -81,7 +89,7 @@
 
   
     <% if(user.username == record.user || user.role == 'admin') { %>
-    <button class="btn-lg" onclick="$('div.head, div.headEdit').toggle();">切换编辑/显示</button>
+    <button class="btn-lg" onclick="$('div.head, div.headEdit').toggle();">切换:&nbsp;&nbsp;编辑&nbsp;<span class="fa fa-exchange"></span>&nbsp;显示</button>
     <% } %>
   
 
@@ -109,7 +117,7 @@
 				  
 				  <% if(user.username == record.user || user.role == 'admin') { %>   <!--^图片说明-->
                   <div class="fileText" >
-                    <button ><<图片说明</button>
+                    <button >图片说明>></button>
                     <div class="recordId" hidden><%= record.id %></div>
                     <div class="fileId" hidden><%= file._id %></div>
 					<div class="fileTextOld" hidden><%= file.text %></div>
@@ -183,6 +191,13 @@
               <div><div>附件: </div><div><input type="file" id="file" name="file" ></div></div>
               <div><div><div></div><button class="btn-lg btn-primary" type="submit" name="submit">上传评论文字与所选图片</button></div></div>
             </form>
+
+            <!--Progress bar-->
+            <div class="progress">
+                <div class="progress-bar"></div>
+            </div>
+            <!--Display upload status-->
+            <div class="uploadStatus"></div>
         </div>
         <!--添加评论$-->
   

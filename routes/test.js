@@ -1,7 +1,7 @@
 
 
 
-console.log('test.js.');
+console.log('/routes/test.js');
 
 var multer = require('multer');
 var path = require('path');
@@ -61,6 +61,29 @@ module.exports = function(app) {
     // }
   });
 
+  app.get('/test/json', function(req,res,next){
+    console.log('enter GET /test/json');
+    var data = {'name':'mao', 'age':60};
+    res.json(data);
+  });
+
+  app.get('/test/records/json', function(req,res,next){
+    console.log('enter GET /test/records/json...');
+    db.Record.find({},function(err,records){
+      console.log('find records qty:', records.length);
+      res.json(records);
+    })
+  });
+
+  app.post('/m/upload',function(req,res,next){
+    console.log('enter POST /m/upload');
+    form.parse(req, (err,fields, files)=>{
+      console.log('fields:', fields);
+      console.log('files:', files);
+      res.send('upload got.');
+    })
+  });
+
   app.get('/test/index', function(req,res,next){
     console.log('enter GET /test/index');
     res.render('test/test_menu.ejs')
@@ -105,29 +128,6 @@ module.exports = function(app) {
 
       next();
     });
-    // form.parse(req, (err,fields,files)=>{
-    //   console.log('start parsing form data...');
-    //   if (err) {
-    //     console.log('err in parsing form: ', err);
-    //     next(err);
-    //     return;
-    //   }
-    //
-    //   console.log('inside form parse, fields:', fields);
-    //   console.log('inside form parse, files:',files);
-    //   console.log('inside form parse, files.file.originalFilename:', files.file.originalFilename);
-    //   console.log('inside form parse, files.file.newFilename:', files.file.newFilename);
-    //
-    // });
-
-    // console.log('req:', req);
-    // console.log('outside form parse, req.body:',req.body);
-    // console.log('outside form parse, req.files:',req.files);
-    // console.log('outside form parse, req :',req );
-
-    // res.send(req.file);
-
-
 
   });
 
@@ -144,10 +144,31 @@ module.exports = function(app) {
     });
   });
 
-  // app.get('/test/docx',function(req,res,next){
-  //   console.log('enter GET /test/docx...');
-  //   var id = 
-  // });
+
+  app.get('/test/search', function(req,res){
+    console.log('GET /test/search...');
+    res.send(`
+      <form action="/test/search/10" method="POST">
+        <input type="text" name="text" placeholder="please input query string..." />
+        <input type="submit" value="Submit" />
+      </form>    
+    `)
+  })
+  app.post('/test/search/:p',function(req,res){
+    console.log('POST /test/search...');
+    var p = req.params.p;
+    console.log('p:',p);
+    var q = req.body.text;
+    console.log('q:',q);
+
+    var q1 = req.cookies.q;
+    console.log("req.get q:", q1);
+
+
+    res.cookie('q',q);
+    res.send('response from /test/search');
+  })
+
 
 
 

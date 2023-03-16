@@ -10,6 +10,14 @@
   <%- include("./include/header.ejs") %>
 
   <div>共找到<%= records.length  %>条记录：(从2022年11月23日起)</div>
+  <% var pages = 5 ; %>
+  <ul class="paginatio">
+    <% for (let p=1; p<=pages; p++) { %>
+      <li class="page-item"><a href="#">p</a></li>
+    <% } %>
+  </ul>
+
+
 
 
 <% records.sort(function(a,b){return a.dateUpdate-b.dateUpdate}).reverse().forEach(function(record,index){ %>

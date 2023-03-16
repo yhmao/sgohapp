@@ -1,0 +1,78 @@
+<head>
+    <%- include("./include/head.ejs") %>
+</head>
+
+Search
+
+
+
+
+
+<form action="/search" method="POST">
+
+日期&nbsp;
+起:  <button type="button" id="pre1" name="pre1"><</button><input type="date" id="start" name="start"/> <button type="button" id="next1" name="next1">></button>
+止: <button type="button" id="pre2" name="pre2"><</button><input type="date" id="end" name="end" /> <button type="button" id="next2" name="next2">></button>
+
+<br>
+
+我的
+<input type="radio" id="exposureMyPrivate" name="exposure" value="exposureMyPrivate"/><label for="exposureMyPrivate">我的私密</label>
+<input type="radio" id="exposoureMyPublic" name="exposure" value="exposoureMyPublic" /><label for="exposoureMyPublic">我的公开</label>
+<input type="radio" id="exposureMyAll"  name="exposure"  value="exposureMyAll"  /> <label for="exposureMyAll">我的所有</label>
+<input type="radio" id="exposureAll"  name="exposure"  value="exposureAll" checked /> <label for="exposureAll">所有</label>
+<br>
+
+排序
+<input type="radio" id="byDate" name="sort" value="date"/> <label for="byDate">按记录生成日期排序</label>
+<input type="radio" id="byDateUpdate" name="sort" value="dateUpdate" checked/> <label for="byDateUpdate">按记录更新日期排序</label>
+<br>
+
+类别
+<input type="radio" id="routine" name="patrolType" value="routine" /> <label for="routine">日常</label>
+<input type="radio" id="safety"  name="patrolType" value="safety" /> <label for="safety">安全</label>
+<input type="radio" id="catAll" name="patrolType" value="" checked/> <label for="catAll">所有</label>
+
+<br>
+
+记录状态
+<input type="radio" id="statusAll" name="status" value="" checked /> <label for="statusAll">所有状态</label>
+<input type="radio" id="follow" name="status" value="follow" /> <label for="follow">跟踪</label>
+<input type="radio" id="closed" name="status" value="closed" /> <label for="closed">关闭</label>
+<input type="radio" id="promoted" name="status" value="promoted" /> <label for="promoted">记录已提交上级</label>
+
+
+
+
+
+<br>
+
+
+文本查询
+<input type="text" id="text" name="text" placeholder="请输入查询关键词" />
+<input type="checkbox" id="moreText" name="moreText" value="moreText" /> <label for="moreText">结果列表显示更多文字内容</label>
+
+<br>
+<button type="reset" id="reset" name="reset">重置</button>
+
+<br>
+<button type="submit" id="submit" name="submit">提交</button>
+
+
+</form>
+
+
+<script>
+    function getCookie(name) {
+        let cookie = {};
+        document.cookie.split(';').forEach(function(el) {
+            let [k,v] = el.split('=');
+            cookie[k.trim()] = v;
+        })
+        return cookie[name];
+    }
+    if(getCookie('start')) {console.log('start');document.getElementById('start').value = getCookie('start');}
+    if(getCookie('end')) {console.log('end'); document.getElementById('end').value = getCookie('end');}  
+
+</script>
+

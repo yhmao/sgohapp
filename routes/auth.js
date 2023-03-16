@@ -1,9 +1,7 @@
+console.log('/routes/auth.js');
 var db = require('../database');
 var passport = require('../middlewares').passport;
 var formidable = require('formidable');
-
-
-
 
 const form = formidable({
   multiples:true,
@@ -17,147 +15,140 @@ const form = formidable({
   }
 });
 
-console.log('auth.js.');
 
 module.exports = function(app) {
 
-  app.get('/login',function(req,res){
-    console.log('enter get login.');
-    res.render('login');
-  });
+// login 
+app.get('/login',function(req,res){
+  console.log('enter GET /login.');
+  res.render('login');
+});
 
-  app.post('/login',
-    function(req,res,next){
-      console.log('enter post login');
-      next();
-      },
-    passport.authenticate('local', {
-      // successRedirect: '/',
-      failureRedirect: '/login',
-      failureFlash: true
-      }),
-    function(req,res) {  // remember me
-      if (req.body.remember_me === "yes"){
-        console.log('remember_me checked.');
-        req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000;  //30days
-      } else {
-        console.log('remember_me not checked.');
-        req.session.cookie.expires = false; // Cookie expires at end of session
-      }
-      res.redirect('/');
+// login
+app.post('/login',
+  function(req,res,next){
+    console.log('enter POST /login');
+    next();
+    },
+  passport.authenticate('local', {
+    // successRedirect: '/',
+    failureRedirect: '/login',
+    failureFlash: true
+    }),
+  function(req,res) {  // remember me
+    if (req.body.remember_me === "yes"){
+      console.log('req.body.remember_me === "yes"');
+      req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000;  //30days
+    } else {
+      console.log('!req.body.remember_me');
+      req.session.cookie.expires = false; // Cookie expires at end of session
     }
-    // function(req,res,next){
-    //   console.log('auth.js app POST login finish passport authenticate local');
-    //   next();
-    // },
-    // function(req,res,next) {
-    //   console.log('login middleware function for set remember_me cookie');
-    //   if (!req.body.remember_me) { return next();}
-    //   var token = utils.randomString(64);
-    //   Token.save(token, {userId: req.user.id}, function(err){
-    //     if (err) { return done(err);}
-    //     res.cookie('remeber_me', token, {path: '/', httpOnly: true, maxAge: 604800000}); // 7 days
-    //     return next();
-    //   });
-    // },
-    // function(req,res) {
-    //   res.redirect('/');
-    // }
-  );
+    res.redirect('/');
+    console.log('res sent to client: redirect /');
+  }
+);
 
-  app.get('/logout', function(req,res,next){
-    req.logout(function(err){
-      if (err) { return next(err);}
-      res.redirect('/home');
-    })
-  });
+// logout
+app.get('/logout', function(req,res,next){
+  console.log('enter GET /logout');
+  req.logout(function(err){
+    if (err) { 
+      console.log('req.logout err:', err);
+      return next(err);
+    }
+    res.redirect('/home');
+    console.log('res sent to client (redirect /home )');
+  })
+});
 
-  app.post('/logout', function(req,res,next){
-    req.logout(function(err){
-      if (err) { return next(err);}
-      res.send('You have logged out.')
-    })
-  });
+// register
+app.get('/register', function(req,res,next){
+  console.log('enter GET /register');
+  res.render('register');
+  console.log('res sent to client.');
+});
 
-  app.get('/register', function(req,res,next){
-    console.log('enter get register');
-    res.render('register');
-  });
-  app.post('/register', function(req,res,next) {
-    console.log('enter post register.');
-    form.parse(req, (err,fields,files)=>{
-      if (err) {
-        console.log('err in parsing form: ', err);
-        next(err);
-        return;
-      }
-      var username = fields.username;
-      console.log('username:',username);
-      var nickname = fields.nickname;
-      var cellphone = fields.cellphone;
-      var password = fields.password;
-      if ( nickname == '') { nickname = username;}
-      db.User.find({username:username},(err,users)=>{
-        if (users.length>0) {
-          // console.log('find user with same name.');
-          // console.log('users:',users);
-          res.send("你注册的用户名已存在，请重新输入用户名，或使用已有的用户名登录。");        
-        } else {
-          var user = new db.User({username, nickname,cellphone,password});
-          // console.log('register user: ', user);
-          user.save(function(err){
-            if (err) {
-              console.log('err saving register: ', err);
-              return next(err);
-            }
-            console.log('saved one user.');
-            db.User.findOne({username:username},function(err,user){
-              req.login(user, function(err){
-                if (err) { return next(err);}
-                res.send(`你已成功注册，用户名：${username}，昵称：${nickname}，手机号：${cellphone}，密码：${password}。
-                已为你用刚注册的用户名登录。请联系管理员设置你的权限以便你正常使用本系统。<br>
-                <a href="/">点击这里进入首页</a>`);
-              })
-            });
+// register
+app.post('/register', function(req,res,next) {
+  console.log('enter POST /register');
+  form.parse(req, (err,fields,files)=>{
+    if (err) {
+      console.log('form.parse err: ', err);
+      next(err);
+      return;
+    }
+    var username = fields.username;
+    var nickname = fields.nickname;
+    var cellphone = fields.cellphone;
+    var password = fields.password;
+    console.log('fields:', fields )
+    if ( nickname == '') { nickname = username;}
+    db.User.find({username:username},(err,users)=>{
+      if (users.length>0) {
+        console.log('db.User.find existing username.')
+        res.send("你注册的用户名已存在，请重新输入用户名，或使用已有的用户名登录。");  
+        console.log('res sent to client.');      
+      } else {
+        var user = new db.User({username, nickname,cellphone,password});
+        user.save(function(err){
+          if (err) {
+            console.log('user.save err: ', err);
+            return next(err);
+          }
+          console.log('user.save ok.');
+          db.User.findOne({username:username},function(err,user){
+            req.login(user, function(err){
+              if (err) { 
+                console.log('req.login err:', err);
+                return next(err);
+              }
+              res.send(`你已成功注册，<br>用户名：${username}，<br>昵称：${nickname}，<br>手机号：${cellphone}，<br>密码：${password}。
+              <br>已为你用刚注册的用户名登录。<br>请联系管理员设置你的权限以便你正常使用本系统。<br>
+              <a href="/">点击这里进入首页</a>`);
+              console.log('login ok. res sent to client');
+            })
           });
-        }
-      })
+        });
+      }
+    })
+  });    
+});
 
+// my account
+app.get('/my/account', function(req,res,next){
+  console.log('enter GET /my/account');
+  res.render('account_show',{user:req.user});
+  console.log('res sent to client');
+});
+
+// my account edit: get form
+app.get('/my/account/edit',function(req,res,next){
+  console.log('enter GET my/account/edit');
+  res.render('account_edit', {user:req.user});
+  console.log('res sent to client.');
+});
+
+// my account edit: post form
+app.post('/my/account/edit', function(req,res,next){
+  console.log('enter POST my/account/edit');
+  var nickname = req.body.nickname;
+  var cellphone = req.body.cellphone;
+  var password = req.body.password;
+  console.log('nickname:', nickname);
+  console.log('cellphone:', cellphone);
+  console.log('password:', password);
+  console.log('req.user.id:', req.user.id);
+  db.User.findById(req.user.id, (err,user)=>{
+    user.nickname = nickname;
+    user.cellphone = cellphone;
+    user.password = password;
+    user.save(()=>{
+      console.log('user.save ok, user:',user);
+      res.redirect('/my/account');
+      console.log('res sent to client redirect /my/account');
     });
-
-    
   });
-
-  app.get('/my/account', function(req,res,next){
-    console.log('enter GET my account show');
-    res.render('account_show',{user:req.user});
-  });
-  app.get('/my/account/edit',function(req,res,next){
-    console.log('enter GET my account edit');
-    res.render('account_edit', {user:req.user});
-  });
-  app.post('/my/account/edit', function(req,res,next){
-    console.log('enter POST my account edit');
-    // var username = req.body.username;
-    var nickname = req.body.nickname;
-    var cellphone = req.body.cellphone;
-    var password = req.body.password;
-    console.log('New nickname, cellphone, password: ', nickname,cellphone,password);
-    console.log('user.id:', req.user.id);
-    db.User.findById(req.user.id, (err,user)=>{
-      console.log('user found from db: ', user);
-      // user.username = username;
-      user.nickname = nickname;
-      user.cellphone = cellphone;
-      user.password = password;
-      user.save(()=>{
-        console.log('user account modification saved to db.');
-        console.log('user:', user);
-        res.redirect('/my/account');
-        // res.render('home',{user:user});
-      });
-    });
-  });
+});
 
 
 
