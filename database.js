@@ -12,9 +12,9 @@ console.log('hostname:', os.hostname());
 var url;
 if(os.hostname() == "DESKTOP-F1V3PN0"){
   console.log("running on windows MI.");
-  url = 'mongodb://localhost:27017/sgoh-node';
+  // url = 'mongodb://localhost:27017/sgoh-node';
   // uncomment next line if using ali 3y mongodb:
-  // url = "mongodb://admin:Flzx3000c@8.134.79.194:27017/sgoh-node?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false"
+  url = "mongodb://admin:Flzx3000c@8.134.79.194:27017/sgoh-node?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false"
 }else if (os.hostname == "yyo2") {
   console.log("running on ali server yyo2 1y.");
   url = "mongodb://admin:Flzx3000c@8.134.79.194:27017/sgoh-node?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false"
