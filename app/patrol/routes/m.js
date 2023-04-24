@@ -25,9 +25,9 @@ router.post('/record_patrol/:id/children/:commentIndex/comment/:username', s.add
 router.post('/body_text/:username', s.updateBodyText);
 router.post('/body_file_plus/:username', s.addRecordFile);
 router.post('/main_FileText/:username', s.updateBodyFileText);
-router.post('/text_search', s.searchText);
+router.post('/text_search/:page/:username', s.searchText);
 router.post('/record_patrol_list/search/:page/:username', s.pagination);
-router.post('/record_patrol_list/search/co/:page/:username', s.paginationCo);
+router.post('/record_patrol_list/search/co/:page/:username', s.paginationCo);  //兄弟单位
 //批注
 router.post('/record_patrol/:id/:type/:index/pz/add/:username', s.addPz); // type: file/comment
 router.get('/record_patrol/:id/file_doc/:fIndex/pz/:pzIndex/remove/:username', s.removeFileDocPz);

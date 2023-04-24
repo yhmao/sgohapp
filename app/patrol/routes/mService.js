@@ -25,6 +25,117 @@ const form = formidable({
     }
 });
 
+// functions
+
+let mlog = function(req) {
+  console.log('log');
+  let user = req.params.username;
+  if (user) {
+    let url = req.originalUrl;
+    let method = req.method;
+    console.log('> log >', user, method, url);
+    var log = new db.Log({user:user,method:method,url:url});
+    log.save();
+  } else {
+    console.log('no user information got from req, no log');
+    return;
+  }
+};
+
+
+// pipeline text
+let pt = function(qs) {
+  console.log('qsToAl');
+  let words = qs.split(/(\s+)/).filter( e => e.trim().length > 0);
+  // console.log(words);
+  let andList = [];
+  words.forEach(function(word){
+    let orList = [
+        {"text":{$regex:word, $options:"i"}},
+        {"files.text":{$regex:word, $options:"i"}},
+        {"children.text":{$regex:word, $options:"i"}},
+        {"files.children.text":{$regex:word, $options:"i"}},
+      ];
+    andList.push({$or:orList});
+  } );
+  let pt = {$match:{$and: andList}};
+  return pt;
+};
+
+// pipeline common
+let pc = function(req) {
+  console.log('pc pipeline common');
+  let q = req.body.q.q;
+
+  // console.log('q:', q);
+  // console.log('q:', JSON.stringify(q));
+
+  let project = q.project;
+  let date = q.date || {};
+  let sort = q.sort || {};
+  let exposure = q.exposure || {};
+  let user = q.user || {};
+  let patrolType = q.patrolType || {};
+  let status = q.status || {};
+  let responsible = q.responsible || {};
+  let co = q.co || {};
+
+  // console.log('project:', project);
+  // console.log('date:',date);
+  // console.log('sort:', sort);
+  // console.log('exposure:', exposure);
+  // console.log('user: ', user);
+  // console.log('patrolType:', patrolType);
+  // console.log('status:', status);
+  // console.log('responsible:', responsible);
+  //
+  // console.log('date:',date);
+
+  let from = moment(new Date((date.date && date.date.dateFrom) || (date.dateUpdate && date.dateUpdate.dateFrom))).startOf('day').toDate();
+  let to = moment(new Date((date.date && date.date.dateTo) || (date.dateUpdate && date.dateUpdate.dateTo))).endOf('day').toDate();
+  // console.log('from <= to : ', from <= to);
+  if (from > to ){ var temp = from; from = to; to = temp; }   //swap
+  // console.log('sort:',sort);
+  if (sort.$sort.dateUpdate === -1) { date = {'dateUpdate':{$gte:from, $lte:to} }; }
+  else if (sort.$sort.date === -1 ) { date = {'date':{$gte:from, $lte:to} }; }
+  // console.log('date: ',date);
+
+  let andList = [date,project,exposure,user,patrolType,status,responsible,co];
+
+  let pc = {$match:{$and:andList} };
+
+  // console.log('pc:', JSON.stringify(pc));
+
+  return pc;
+};
+
+// total aggregate pipeline
+let getTotal = async function(p) {
+  console.log('getTotal');
+  let count = {$count: 'total'};
+  let pipelines;
+  if (Array.isArray(p)) { pipelines = [...p,count]; }
+  else { pipelines = [p,count]; }
+  let total;
+  try {
+    let agg = (await db.Record.aggregate(pipelines));
+    // console.log('aggregate:', agg);
+    if (agg.length>0) { total = (await db.Record.aggregate(pipelines))[0].total; }
+    else {
+      console.log('aggregate result in nothing');
+      total = 0;
+    }
+  } catch (err) {
+    console.log('error calculating total, err:', err);
+    total = 0;
+  }
+  console.log('total:', total);
+  return total;
+};
+
+
+///////////////////////////////////////////////
+
 
 
 // authentication check nickname in db.users
@@ -218,10 +329,10 @@ let removeFileDoc = function(req,res,next){
     if (record.files[index].children.length > 0 ) { res.send('本项有批注，不能删除！'); return;}
     else {
           try{fs.unlinkSync(`${__dirname}\/..\/upload\/${record.files[index].file}`);}
-          catch(err){console.log('err removing file:', err);}      
+          catch(err){console.log('err removing file:', err);}
           record.files.splice(index,1);
           record.markModified('files');
-          record.save((err,record)=>{            
+          record.save((err,record)=>{
             res.json(record);
             console.log('removed one file from record.files');
           });
@@ -290,7 +401,7 @@ let addFileComment = function(req,res,next) {
     record.markModified('files');
     record.save(()=>{
       res.send(`成功添加评论: ${commentContent}!`)
-    });    
+    });
   })
 
 };
@@ -313,7 +424,7 @@ let addCommentComment = function(req,res,next) {
     record.markModified('children');
     record.save(()=>{
       res.send(`成功添加评论: ${commentContent}!`)
-    });    
+    });
   })
 
 };
@@ -334,7 +445,7 @@ let updateBodyText = function(req,res,next){
   var annotation = req.body.annotation;
   var co = req.body.co;
   console.log('id,patroType,zone,profession, text,exposure,annotation,co:',id,patrolType, zone,profession, text,exposure,annotation,co);
-  if (exposure == undefined) {exposure = 'public';}   
+  if (exposure == undefined) {exposure = 'public';}
   db.Record.findById(id,(err,record)=>{
     record.patrolType = patrolType;
     record.zone = zone;
@@ -472,35 +583,53 @@ let updateBodyFileText = function(req,res,next){
 /* 查询字符串，空格分词，结果含所有单词
    搜索：记录标题，附件说明，附件批注，评论文本。
 */
-let searchText = function(req,res,next){
-  console.log('enter POST m /text_search');
-  var queryString = req.body.queryString;
-  console.log('query:', queryString);
-
-  var words = queryString.split(/(\s+)/).filter( e => e.trim().length > 0);
-  console.log(words);
-  var andList = [];
-  words.forEach(function(word){
-    let orList = [
-        {"text":{$regex:word, $options:"i"}},
-        {"files.text":{$regex:word, $options:"i"}},
-        {"children.text":{$regex:word, $options:"i"}},
-        {"files.children.text":{$regex:word, $options:"i"}},		
-      ];	
-    andList.push({$or:orList});	
-  } );
-  var match = {$and: andList};
-  console.log(match);
-  var q = db.Record.aggregate([
-    {$match:match},
-    {$sort:{dateUpdate:-1} }
-  ]);
+let searchText =  async function(req,res,next){
+  console.log('enter POST m /text_search/:page/:username');
+  let user = req.params.username;
+  let page = parseInt(req.params.page);
+  let sort = req.body.q.q.sort || {};
+  sort = sort.$sort.dateUpdate? '-dateUpdate' : '-date';      // sort
 
 
-  q.exec(function(err,records){
-    res.json(records);
+  var queryString = req.body.queryString;  // search text
+  // console.log('query:', queryString);
+
+  let p1 = pt(queryString);    // text => query obj => pipeline
+  console.log('p1:',p1);
+
+  let p2 = pc(req);           // constraints options  = > query obj => pipeline
+  console.log('p2:', p2);
+
+  let skip = 0;
+  if ( page > 0 ) {skip = ( (page-1) * 20 ); }
+
+  // console.log('page:', page);
+
+  let total = await getTotal([p1,p2]);     // total found
+  console.log('total:', total);
+
+  let pages = Math.ceil(total/20);
+  // console.log('pages:', pages);      
+
+  let hResult = function(records){    // handler success
+    console.log('hResult');
+    if ( records ) { console.log(`found ${records.length} document results.`)}
+    if ( !records ) { console.log('not found any result document.'); }
     console.log('records.length:', records.length);
-  });
+    mlog(req);
+    res.json({records,pages,total});
+  }; 
+  let hError = function(err) {    // handler error
+    console.log('hError');
+    if (err) { console.log('err Db query: ', err); return; }
+  };  
+
+  db.Record
+    .aggregate( [p1,p2] )
+    .sort(sort)
+    .skip(skip)
+    .limit(20)
+    .then(hResult,hError);     // result = > res.json()
 
 };
 
@@ -522,7 +651,7 @@ let pagination = async function(req,res,next){
   var page = req.params.page;
   console.log('page:', page);
   var q = req.body.q;
-  
+
   console.log('q:', q);
 
   let project = q.project;
@@ -555,7 +684,7 @@ let pagination = async function(req,res,next){
   else if (sort.$sort.date === -1 ) { date = {'date':{$gte:from, $lte:to} }; }
   console.log('date: ',date);
 
-  var andList = [date,project,exposure,user,patrolType,status,responsible,co];    
+  var andList = [date,project,exposure,user,patrolType,status,responsible,co];
 
   match = {$match:{$and:andList} };
 
@@ -579,18 +708,18 @@ let pagination = async function(req,res,next){
     var count = {$count:'total'};
     try {
       var agg = (await db.Record.aggregate([match,count]));
-      console.log('aggregate:', agg);       
+      console.log('aggregate:', agg);
       if (agg.length>0) { total = (await db.Record.aggregate([match,count]))[0].total; }
-      else { 
+      else {
         console.log('aggregate result in nothing');
-        total = 0; 
+        total = 0;
       }
 
     } catch (err) {
       console.log('error calculating total, err:', err);
       total = 0;
     }
-    
+
     console.log('total:', total);
     var pages = Math.ceil(total/20);
     console.log('pages:', pages);
@@ -632,7 +761,7 @@ let pagination = async function(req,res,next){
   }
 
 
-  
+
 };
 
 let paginationCo = async function(req,res,next) {
@@ -686,11 +815,11 @@ let paginationCo = async function(req,res,next) {
     var count = {$count:'total'};
     try {
       var agg = (await db.Record.aggregate([match,count]));
-      console.log('aggregate:', agg);       
+      console.log('aggregate:', agg);
       if (agg.length>0) { total = (await db.Record.aggregate([match,count]))[0].total; }
-      else { 
+      else {
         console.log('aggregate result in nothing');
-        total = 0; 
+        total = 0;
       }
 
     } catch (err) {
@@ -736,7 +865,7 @@ let paginationCo = async function(req,res,next) {
 
     });
 
-  }    
+  }
 
 
 
@@ -761,7 +890,7 @@ let removeFileDocPz = function(req,res,next) {
       res.send('成功删除一条附件的批注！');
     })
   });
-}; 
+};
 
 let removeCommentPz = function(req,res,next) {
   console.log('app/patrol/routes/mService removeCommentPz');
@@ -799,17 +928,17 @@ let addPz = function(req,res,next) {
   console.log('responsible:', responsible);
   db.Record.findById(id, (err, record)=>{
     if ( type === 'file' ) {
-      if ( text ) { 
+      if ( text ) {
         pz = new db.Review({user:user,text:text});
-        record.files[index].children.push(pz); 
-      }      
+        record.files[index].children.push(pz);
+      }
       if (responsible) { record.files[index].responsible = responsible; record.status = "跟进"; }
       record.markModified('files');
     } else if ( type === 'comment' ) {
-      if ( text ) { 
+      if ( text ) {
         pz = new db.Review({user:user,text:text});
-        record.children[index].children.push(pz); 
-      }  
+        record.children[index].children.push(pz);
+      }
       if (responsible) { record.children[index].responsible = responsible; record.status = "跟进"; }
       record.markModified('children');
     } else {
@@ -832,7 +961,10 @@ let getResponsibleUsers = function(req,res,next) {
     console.log('usernames:', usernames);
     res.json(usernames);
   });
-}
+};
+
+
+
 
 
 
@@ -860,5 +992,3 @@ module.exports = exports = {
     addPz,
     getResponsibleUsers,
 };
-
-
