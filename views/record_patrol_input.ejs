@@ -14,11 +14,11 @@
             <div><div></div><div><input type="text" name="id" value="<%= record.id %>" hidden></div></div>
             <div><div>姓名：</div><div><%= record.user  %></div></div>
             <div><div>日期：</div><div><%= moment(Date.now()).format('YYYY年MM月DD日')  %></div></div>
-            <div><div>工程名称：</div><div>上海大歌剧院项目</div></div>
+            <div><div>工程名称：</div><div><%= user.projects[0] %></div></div>
             <div><div>类别：</div><div><input type="radio" id="routine" name="patrolType" value="日常" checked="checked"><label for="routine" >日常</label>
-              <input type="radio" id="safety" name="patrolType" value="安全"><label for="safety">安全</label>  
+              <input type="radio" id="safety" name="patrolType" value="安全"><label for="safety">安全</label>
             </div></div>
-                      
+
             <div><div>巡视部位：</div><div><%- include("./include/select_zone.ejs")  %></div></div>
             <div><div>巡视描述：</div><div></div></div>
             <div><textarea name="text" title="请在这里输入描述文字，这部分内容将作为标题显示在搜索列表中，强烈建议输入有针对性的描述以便于后于自己与他人的搜索。" style="margin:0px 15px 0px 15px;"></textarea></div>
@@ -30,13 +30,13 @@
             </select></div></div><br>
             <div><div></div><div><input type="submit" name="submit" value="提交上述更新" class="btn btn-primary btn-lg"  style="width:100%;font-size: 24px;" title="点击后以上的内容将更新到记录中。"></div></div>
           </form>
-          
+
           <hr style="height: 10px; background-color: #eee;">
           <br>
 
           <form class="form" id="main_file_plus" action="/body_file_plus" method="post" enctype="multipart/form-data">
             <div  hidden><div>id:</div><div><input type="text" name="id" value="<%= record.id %>"></div></div>
-            <div><div title="所选照片文件不能太大，太大将不能上传。">上传现场照片：</div><div><input type="file" name="file" id="file"></div></div>            
+            <div><div title="所选照片文件不能太大，太大将不能上传。">上传现场照片：</div><div><input type="file" name="file" id="file"></div></div>
             <div><div >照片说明：</div><div></div></div>
             <div><input type="text" name="text" style="margin:0px 15px 0px 15px;" title="添加的文字将显示在照片下面，作为照片的caption。"></div><br>
             <div><div></div><div><input type="submit" name="submit" value="上传所选照片 &nbsp;&nbsp; &#xf0ee;" class="btn btn-primary btn-lg fa " style="width:100%;font-size: 24px;"></div></div>

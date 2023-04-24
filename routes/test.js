@@ -86,13 +86,34 @@ module.exports = function(app) {
 
   app.get('/test/index', function(req,res,next){
     console.log('enter GET /test/index');
-    res.render('test/test_menu.ejs')
+    res.locals.user = req.user;
+    res.render('test/test_menu.ejs');
+    console.log('res.locals:', res.locals);
   });
 
   app.get('/test/test', function(req,res,next){
     console.log('enter GET /test/test');
+    res.locals.user = req.user;
+    console.log('res.locals:', res.locals);
+    req.session.mysession = {name:'yhmao'};
     res.render('test/test.ejs')
   });
+
+  app.get('/test/test/null', function(req,res,next){
+    req.session.mysession = null;
+    res.send('mysession set to null.');
+  });
+
+  app.get('/test/test/d', function(req,res,next){
+    delete req.session.mysession;
+    res.send('mysession deleted.');
+  })
+
+  app.get('/test/test/s', function(req,res,next){
+    console.log('req.session:', req.session);
+    console.log
+    res.send(`req.session.mysession: ${req.session.mysession}`);
+  })
 
   app.get('/test/image', function(req,res,next){
     console.log('enter GET /test/image');

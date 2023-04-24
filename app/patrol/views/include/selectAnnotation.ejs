@@ -1,0 +1,10 @@
+<% var annotations=["正常","关注","有问题", "有疑问"]; %>
+<select class="form-select" name="annotation" id="annotation" style="width:100%">  
+  <% for (var i=0; i < annotations.length; i++){ %>
+    <% if (record.annotation === annotations[i]) {%>
+      <option value="<%= annotations[i] %>" selected> <%= annotations[i] %> </option>
+    <% } else { %>
+      <option value="<%= annotations[i] %>"> <%= annotations[i] %> </option>
+    <% } %>
+  <% } %>
+</select>

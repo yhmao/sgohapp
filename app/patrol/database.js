@@ -1,6 +1,6 @@
 console.log('/database.js');
 
-const uri = require("./uri.js");
+const uri = require("../../uri.js");
 
 const Mongoose = require('mongoose').Mongoose;
 const mongoose = new Mongoose();
@@ -24,7 +24,7 @@ const recordSchema = new mongoose.Schema({
   user: {type:String,default:'user'},
   date: {type:Date, default:Date.now},
   dateUpdate: {type:Date, default:Date.now},  //update when any modification
-  project: {type: String, default:'SGOH'},
+  project: String,
   profession: String,
   zone: String,
   title: String,
@@ -38,6 +38,7 @@ const recordSchema = new mongoose.Schema({
   annotation: String,   // record: 巡视情况：正常，关注，有问题，有疑问
   keywords: String,  //for later organize
   exposure: {type: String, default:'public'},  // visible to: private,siteManager,projectManager...
+  co: String,  // =>四建
   parents: Array,  // array of id
   children: Array   // array of document
 });
@@ -47,6 +48,13 @@ const Comment = mongoose.model('Comment', recordSchema);
 const Review = mongoose.model('Review', recordSchema);
 const Sharefile = mongoose.model('Sharefile', recordSchema);
 const BodyFile = mongoose.model('BodyFile', recordSchema);
+
+const fileCommentSchema = new mongoose.Schema({
+  user: String,
+  date: {type:Date, default:Date.now},
+  text: String,
+});
+const FileComment = mongoose.model('FileComment', fileCommentSchema);
 
 const projectSchema = new mongoose.Schema({
   name: {type:String, default:''},
@@ -85,6 +93,23 @@ const errorLogSchema = new mongoose.Schema({
 });
 const ErrorLog = mongoose.model('ErrorLog', errorLogSchema);
 
+const journalSchema = new mongoose.Schema({
+  date: {type: Date, default: Date.now},
+  dateUpdate: {type: Date, default: Date.now},
+  user: String,
+  day: String,
+  weather: String,
+  temp: Number,
+  schedule: String,
+  quality: String,
+  material: String,
+  others: String,
+  author: String,
+  supervisor: String,
+  profession: String,
+});
+const Journal = mongoose.model('Journal', journalSchema);
+
 
 module.exports = {
   mongoose:mongoose,
@@ -94,8 +119,10 @@ module.exports = {
   Comment:Comment,
   Review: Review,
   BodyFile:BodyFile,
+  FileComment:FileComment,
   Sharefile:Sharefile,
   Zone:Zone,
   Log:Log,
-  ErrorLog:ErrorLog
+  ErrorLog:ErrorLog,
+  Journal:Journal,
 };

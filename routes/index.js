@@ -1,6 +1,8 @@
 console.log('/routes/index.js');
 
-module.exports = function(app){
+const pRouter = require('./patrol');
+
+module.exports = exports = function(app){
   require('./auth')(app);
   require('./user')(app);
   require('./admin')(app);

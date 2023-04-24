@@ -85,7 +85,7 @@ app.post('/record_patrol_new', function(req,res,next){
     console.log('record.user:', record.user);
     console.log('record.patrolType:', record.patrolType);
     record.save(()=>{
-      res.render('record_patrol_input',{record:record,moment:moment});
+      res.render('record_patrol_input',{record:record,moment:moment,user:req.user});
       console.log(`record saved with id: 【${record.id}】 `);
     });    
   }); 

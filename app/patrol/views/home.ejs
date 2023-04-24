@@ -14,17 +14,18 @@
 
 
 	<body>
-    <%- include("./include/header.ejs") %>
+		/app/patrol/views/home
+		<%- include("./include/header.ejs") %>
+
 
 		<header>
-
 
 		<div>
 			<ul class="nav nav-pills">
 				<li class="nav-item " ><a href="#" class="nav-link active">首页</a></li>
-				<li class="nav-item " ><a href="/record_patrol_my" class="nav-link " title="打开菜单：我的帐号，共享资料，贡献分享">我的</a></li>
-				<li class="nav-item"><a href="/home/notice" class="nav-link" title="将显示最近的一些公告信息">公告</a></li>
-				<li class="nav-item"><a href="/record_patrol_menu" class="nav-link" title="打开菜单，选择显示不同搜索条件的记录列表">列表</a></li>
+				<li class="nav-item " ><a href="/p/my" class="nav-link " title="打开菜单：我的帐号，共享资料，贡献分享">我的</a></li>
+				<li class="nav-item"><a href="/p/notice" class="nav-link" title="将显示最近的一些公告信息">公告</a></li>
+				<li class="nav-item"><a href="/p/menu" class="nav-link" title="打开菜单，选择显示不同搜索条件的记录列表">列表</a></li>
 				<!-- <li class="nav-item"><a href="/0" class="nav-link">更多</a></li> -->
 
 				<li class="nav-item"><a href="/logout" class="nav-link">登出</a></li>
@@ -34,10 +35,8 @@
 
 				<% } %>
 
-				<li class="nav-item"><a href="/about" class="nav-link"  >关于</a></li>
-				<li class="nav-item"><a href="/search" class="nav-link"  >高级搜索</a></li>
-				<li class="nav-item"><a href="/p" class="nav-link"  >app/patrol</a></li>
-				<li class="nav-item"><a href="/j" class="nav-link"  >j</a></li>
+				<li class="nav-item"><a href="/p/about" class="nav-link"  >关于</a></li>
+				<li class="nav-item"><a href="/p/search" class="nav-link"  >高级搜索</a></li>
 
 			</ul>
 		</div>
@@ -51,7 +50,7 @@
 		</div>
 		<div>
 			<% if(user.role == 'siteManager' || user.role == 'admin') { %>
-				<a href="/record_patrol_full_list"><button class="btn btn-primary" title="袁总使用，点击可以进行批注">所有记录 (请袁总点击这里进行批注)</button></a>
+				<a href="/p/listFull"><button class="btn btn-primary" title="袁总使用，点击可以进行批注">所有记录 (请袁总点击这里进行批注)</button></a>
 			<% } %>
 		</div>
 
@@ -65,24 +64,24 @@
 
 
 		<div class="container-fluid">
-			<form id="initRecord" action="/record_patrol_new" method="post" enctype="multipart/form-data">
+			<form id="initRecord" action="/p/create" method="post" enctype="multipart/form-data">
 				<div><div>姓名： </div><div><%= user.username  %></div></div>
 				<div><div>日期：</div><div><%= moment(Date.now()).format('YYYY年MM月DD日')  %></div></div>
-				<div><div>工程名称： </div><div><%= user.projects[0] %> </div></div>
+				<div><div>工程名称： </div><div><%= user.projects[0] %></div></div>
 				<div><div>巡视类别： </div><div>
 					<input type="radio" id="routine" name="patrolType" value="日常" checked="checked"><label for="routine" >日常</label>
 					<input type="radio" id="safety" name="patrolType" value="安全"><label for="safety">安全</label>
 				</div></div>
-				<div><div></div><div><input type="submit" name="submit" value="开始巡视" onclick="clicked(event)" disabled></div></div>
+				<div><div></div><div><input type="submit" name="submit" value="开始巡视" onclick="clicked(event)"></div></div>
 				<div><div></div><div class="mygs">点击“开始巡视”将在系统中生成记录号，在下一页显示中你将进一步完善记录信息，添加现场图片等...</div></div>
 			</form>
 
 		</div>
+		
 
 
 
 
-	<!-- <%- include("./include/footer.ejs") %> -->
 	<script>
 		console.log($("form#initRecord :submit"));
 		$("form#initRecord").css('font-size','1.3em');

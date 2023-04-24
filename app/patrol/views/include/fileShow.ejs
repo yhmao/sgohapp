@@ -1,0 +1,36 @@
+<!--show picture/video/file in html-->
+<!-- filename = file -->
+
+<div >
+    <% if(typeof file === 'object' && file !== null) { %>
+    <% var file = file.file %>
+    <% } %>
+
+    <% if(['jpg','png','tiff','jpeg','gif'].includes(file.split('.').pop().toLowerCase())) {%>
+      <%#= file %> 
+      <a href='/upload/<%= file %>'>
+        <img src="/upload/<%= file %>" alt="<%= file %>"    >
+      </a>
+    <% } else if (['mp4','ogg','webm', 'mov','wmv','avi','flv','swf','mkv','mpeg'].includes(file.split('.').pop().toLowerCase())) { %>
+      <a href='/upload/<%= file %>'>
+        <%#= file %> <br>
+        <video  controls>
+          <source src='/upload/<%= file %>' type="video/mp4">
+          Your browser does not support the video tag. Please download to play with proper software.
+        </video>
+      </a>
+    <% } else { %>
+      <a href='/upload/<%= file %>'>Click to open or download:   <%= file %></a> <br><br>
+    <% }  %><br>
+    <% if (user.role == 'admin') { %>
+      <%= file %>
+    <% } %>
+</div>
+
+<!-- button for removing this file -->
+<% if(user.role == 'admin'){ %>
+  <a href="/record_patrol/<%= record.id %>/file_remove/<%= file %>"><button title="Only for admin!">删除该文件</button></a><br><br>
+<% } %>
+
+
+

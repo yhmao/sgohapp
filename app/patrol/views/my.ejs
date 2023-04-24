@@ -1,0 +1,114 @@
+<%- include('./include/head') %>
+<!--import moment-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"
+integrity="sha512-rmZcZsyhe0/MAjquhTgiUcb4d9knaFc7b5xAfju483gbEXTkeJRUMIPk6s3ySZMYUHEcjKbjLjyddGWMrNEvZg==" crossorigin="anonymous">
+</script>
+<body>
+  app/patrol/views/my.ejs <br>
+  <%- include("./include/header.ejs") %>
+
+<%= user.username %> | <%= user.role %> |
+<h2><a href="/p/home"><button class="btn btn-sm btn-secondary"><%= user.projects[0] %></button></a></h2>
+<hr>
+
+<div>
+ <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+  <a class="navbar-brand" id="filter" href="#"><b>请选择</b></a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="collapsibleNavbar">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" id="my_account" href="#">我的帐号</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="share" href="#">共享资料</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="share_contribute" href="#">贡献分享</a>
+      </li>
+      <% if (user.role == 'admin') { %>
+        <li class="nav-item">
+          <a class="nav-link" id="admin" href="#">管理员</a>
+        </li>
+      <% } %>
+      <li class="nav-item">
+        <a class="nav-link" id="logout" href="/logout">登出</a>
+      </li>
+
+    </ul>
+  </div>
+ </nav>
+</div>
+
+<div>
+  <form action="/p/my/setCurrentProject" method="POST">
+    <%- include('./include/selectMyProjects.ejs') %>
+    <input type="submit" value="submit"/>
+  </form>
+</div>
+
+
+<div id="div-menu-selected"></div>
+<div id="div-show"></div>
+
+<script>
+    function my_account(){
+      const xhttp = new XMLHttpRequest();
+      xhttp.onload = function(){
+        document.getElementById("div-show").innerHTML = this.responseText;
+      };
+      xhttp.open("get", "/my/account");
+      xhttp.send();
+    }
+    function share(){
+      const xhttp = new XMLHttpRequest();
+      xhttp.onload = function(){
+        document.getElementById("div-show").innerHTML = this.responseText;
+      };
+      xhttp.open("get", "/share");
+      xhttp.send();
+    }
+    function share_contribute(){
+      const xhttp = new XMLHttpRequest();
+      xhttp.onload = function(){
+        document.getElementById("div-show").innerHTML = this.responseText;
+      };
+      xhttp.open("get", "/sharefile");
+      xhttp.send();
+    }
+    function admin(){
+      const xhttp = new XMLHttpRequest();
+      xhttp.onload = function(){
+        document.getElementById("div-show").innerHTML = this.responseText;
+      };
+      xhttp.open("get", "/admin");
+      xhttp.send();
+    }
+
+    // my_responsible();
+
+    document.getElementById('my_account').addEventListener("click", my_account);
+    document.getElementById('share').addEventListener("click", share);
+    document.getElementById('share_contribute').addEventListener("click", share_contribute);
+    document.getElementById('admin').addEventListener("click", admin);
+
+
+    $(document).ready(function(){
+      $('a').click(function(){
+        $('a').css('background-color','')
+        $(this).css('background-color','blue');
+        $('#div-menu-selected').text(
+          $(this).text()
+        );
+        $("#filter").text(
+          $(this).text()
+        );
+
+      })
+    })
+
+
+</script>
+</body>

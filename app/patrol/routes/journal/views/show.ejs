@@ -1,0 +1,20 @@
+app/patrol/routes/journal/views/show.ejs <br>
+
+
+<a href="/j/edit/<%= j._id %>">编辑</a><br>
+
+
+<%= j._id %><br>
+<%= j.profession %><br>
+<%= j.day %><br>
+<%= j.weather %><br>
+<%= j.temp %><br>
+<%= j.schedule %><br>
+<%= j.quality %><br>
+<%= j.others %><br>
+<%= j.author %><br>
+<%= j.supervisor %><br>
+
+<button><a href="/j/generateJForm/<%=j._id %>">生成Word表</a></button>
+
+

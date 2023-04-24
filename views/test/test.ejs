@@ -6,6 +6,12 @@
 
     <body>
 
+
+      Test for res.locals:
+
+      user.username:  <%= user.username %>
+      <%= user %>
+
         Test for full text search
 
         <form action="/m/text_search" method="POST">
@@ -13,14 +19,8 @@
             <button type="submit">提交</button>
         </form>
 
-		
-		<% for (var i =0; i < 10; ++i) { %>
-     - <%-   i&nbsp;  %> 
-<% } %>
-<br/><br/>
-<% for (var i =0; i < 10; ++i) { %>
-    - <%- i -%>
-<% } %>
+
+
 
 
 

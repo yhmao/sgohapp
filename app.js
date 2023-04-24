@@ -9,12 +9,11 @@ const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn();
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const path = require('path');
-const morgan = require('morgan');
 const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local')
 const db = require('./database.js');  
-const mw = require('./middlewares.js') 
+
 
 const cron = require('node-cron');
 cron.schedule('0 0 */2 * * *',()=>{  // every 2 hour
@@ -38,7 +37,6 @@ app.use(express.static('public'));  //for css etc.
 app.use('/static', express.static('public/static'));  //serve static files
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
-app.use(morgan('dev'));
 app.use(cookieParser("keyboard cat"));
 app.use('/public',express.static(path.join(__dirname,'public')));
 app.use('/views',express.static(path.join(__dirname,'views')));
@@ -59,11 +57,7 @@ app.use(session({
 }));
 console.log('app.use(session)');
 
-app.use(mw.passport.initialize());
-app.use(mw.passport.session());
-app.use(mw.passport.authenticate('session'));
-// app.use(mw.passport.authenticate('remember-me'));
-console.log('app.use(mw.passport.xxx)');
+require('./middlewares').use(app);
 
 
 
@@ -76,7 +70,7 @@ app.use(function(req,res,next){
 
 
 app.use(
-  /\/((?!login|register|home|test|m).)*/,    // exclude login and register + mobile
+  /\/((?!login|register|home|test|m|p).)*/,    // exclude login and register + mobile
   function(req,res,next){
     next();
   },
@@ -87,28 +81,14 @@ app.use(
 //log to db
 app.use(
   /\/((?!log).)*/,
-  function(req,res,next){
-    // console.log('req:', req);
-    if (req.user){
-      var user = req.user.username;
-      var url = req.originalUrl;
-      var method = req.method;
-      console.log('> log >', user, method, url);
-      var log = new db.Log({user:user,method:method,url:url});
-      log.save(()=>{
-        // console.log('Saved log: ', log);
-      });
-    }
-    next();
-  }
+  require('./middlewares').logger
 );
 
-
-
 require('./routes')(app);
-var mRouter = require('./routes/m');
-app.use('/m', mRouter);
+// var mRouter = require('./routes/m');
+// app.use('/m', mRouter);
 
+require('./app/')(app);    
 
 app.use(express.json()) 
 app.use(express.urlencoded({ extended: true })) 
@@ -119,27 +99,7 @@ process.on('unhandledRejection', (reason, promise) => {
   console.log('reason.stack:', reason.stack || reason)
 });
 
-app.use(errorHandler);
-
-function errorHandler (err, req, res, next) {
-  console.log('errorHandler...');  
-  if (res.headersSent) {
-    return next(err)
-  }
-  var errorLog = new db.ErrorLog({
-    user: req.user,
-    date: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'),
-    url: req.originalUrl,
-    error: err.toString(),
-  });
-  errorLog.save(()=>{
-    console.log('errorLog.save ok.');
-    res.status(500);
-    res.send( `<p>errorHandler - Error: </p>${err} <p> ${moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')} </p> 
-      <p>Request: ${req.originalUrl}</p><p>User: ${req.user}</p>` );
-    console.log('res sent to client.');
-  });  
-}
+app.use(require('./middlewares').errorHandler);
 
 
 
@@ -154,3 +114,6 @@ app.listen(app.get('port'),'0.0.0.0',function(){
 });
 console.log(moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'));
 console.log('===========app.js started===========');
+
+
+

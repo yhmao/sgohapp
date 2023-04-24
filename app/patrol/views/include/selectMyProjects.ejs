@@ -1,0 +1,9 @@
+<select class="form-select" name="project" id="project" style="width:100%">
+    <% for (var i=0; i < user.projects.length; i++){ %>
+        <% if (i === 0) {%>
+        <option value="<%= user.projects[i] %>" selected> <%= user.projects[i] %> </option>
+        <% } else { %>
+        <option value="<%= user.projects[i] %>"> <%= user.projects[i] %> </option>
+        <% } %>
+    <% } %>
+</select>
