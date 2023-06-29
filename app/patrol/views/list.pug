@@ -1,0 +1,19 @@
+extends layout 
+
+block content    
+    h3 搜索结果列表显示
+    
+    - var page = page || 1;
+
+    if  total <= 0 
+        p(style="color:red;") 没有找到任何记录，您可以退回重新设定搜索条件再试一次
+    else
+        p 共找到: #[strong #{total}], 页数: #[strong #{pages}], 当前页:#[strong #{page}]
+
+        div
+            include _pagination.pug
+        +pagination
+        hr
+        each doc,index in docs
+            include _list_item.pug
+        +pagination

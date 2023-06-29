@@ -1,0 +1,20 @@
+
+
+<% sharefiles.sort(function(a,b){return a.dateUpdate-b.dateUpdate}).reverse().forEach(function(sharefile){ %>
+
+
+
+  文件file: <%= sharefile.file %><br>
+
+  图注Caption:<%= sharefile.caption %><br>
+
+
+  作者User:<%= sharefile.user %>&nbsp;|&nbsp;
+  创建:<%= moment(sharefile.dateUpdate).format('YYYY-MM-DD HH:mm:ss') %>&nbsp;|&nbsp;
+
+
+
+  <a href="/admin/sharefile_show/<%=sharefile.id%>">ShowDetail</a>
+  <a href="/admin/sharefile_remove/<%=sharefile.id%>">Remove</a>
+  <hr>
+<% }); %>

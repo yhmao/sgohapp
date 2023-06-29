@@ -1,0 +1,50 @@
+extends layout
+
+block content
+    //- c={label,tag,type,id,name,value,hidden=false}
+    mixin row(c)
+        div.row(hidden=c.hidden,style="margin-bottom:10px;")
+            div.col-5.col-md-2 #{c.label}
+            div.col-7.col-md-10   
+                if (c.type === 'radio')
+                    +radio(c.name,c.value)
+                else if (c.tag === 'input')
+                    input(type=c.type,name=c.name,id=c.id,value=c.value,style="width:80%")
+                else if (c.tag === 'textarea')
+                    textarea(name=c.name,id=c.id,rows='5',style="width:80%")= c.value   
+                else if (c.tag === 'select')
+                    +select(c.name,c.value)
+                else if (c.tag === 'p')
+                    | #{c.value}
+
+
+    h1 修改我的帐号信息
+    br
+    br
+    form(action=`/my/account/edit`,method="POST")
+        div.container-fluid
+            +row({label: '用户名',tag:'input', type:'text', name: 'username', id: 'username', value: user.username})
+            +row({label: '昵 称 (需要与微信的昵称一致)',tag:'input', type:'text', name: 'nickname', id: 'nickname', value: user.nickname})
+            +row({label: '手 机',tag:'input', type:'text', name: 'cellphone', id: 'cellphone', value: user.cellphone})
+            +row({label: '密 码',tag:'input', type:'text', name: 'password', id: 'password', value: user.password})
+            //- +row({label: '角 色',tag:'input', type:'text', name: 'role', id: 'role', value: user.role})
+            +row({label: '',tag:'input', type:'submit', name: 'submit', id: 'submit', value: '提交更改'})
+
+
+
+
+
+    //- <h1>My Account</h1>
+
+
+
+
+//- Username: <%= user.username %> <br>
+//- Nickname: <%= user.nickname %> <br>
+//- Cellphone: <%= user.cellphone %> <br>
+//- Password: <%= user.password %> <br>
+//- Role:     <%= user.role %> <br>
+//- 注册时间： <%= user.date %> <br>
+//- 最近修改时间：<%= user.dateUpdate %> <br>
+
+//- <a href="/my/account/edit"> 修改我的帐号登录信息</a>

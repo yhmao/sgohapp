@@ -1,4 +1,0 @@
-This is the content of the ajax_info text in the txt file.\n
-this is the second line.\n
-...\n
-this is the end.

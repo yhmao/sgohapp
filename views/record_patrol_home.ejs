@@ -63,21 +63,24 @@
 		</header>
 
 
+		<% if(user) { %>
+			<div class="container-fluid">
+				<form id="initRecord" action="/record_patrol_new" method="post" enctype="multipart/form-data">
+					<div><div>姓名： </div><div><%= user.username  %></div></div>
+					<div><div>日期：</div><div><%= moment(Date.now()).format('YYYY年MM月DD日')  %></div></div>
+					<div><div>工程名称： </div><div><%= user.projects[0] %> </div></div>
+					<div><div>巡视类别： </div><div>
+						<input type="radio" id="routine" name="patrolType" value="日常" checked="checked"><label for="routine" >日常</label>
+						<input type="radio" id="safety" name="patrolType" value="安全"><label for="safety">安全</label>
+					</div></div>
+					<!-- <div><div></div><div><input type="submit" name="submit" value="开始巡视" onclick="clicked(event)" disabled></div></div> -->
+					<div><div></div><div><input type="submit" name="submit" value="开始巡视" onclick="clicked(event)" ></div></div>					
+					<div><div></div><div class="mygs">点击“开始巡视”将在系统中生成记录号，在下一页显示中你将进一步完善记录信息，添加现场图片等...</div></div>
+				</form>
 
-		<div class="container-fluid">
-			<form id="initRecord" action="/record_patrol_new" method="post" enctype="multipart/form-data">
-				<div><div>姓名： </div><div><%= user.username  %></div></div>
-				<div><div>日期：</div><div><%= moment(Date.now()).format('YYYY年MM月DD日')  %></div></div>
-				<div><div>工程名称： </div><div><%= user.projects[0] %> </div></div>
-				<div><div>巡视类别： </div><div>
-					<input type="radio" id="routine" name="patrolType" value="日常" checked="checked"><label for="routine" >日常</label>
-					<input type="radio" id="safety" name="patrolType" value="安全"><label for="safety">安全</label>
-				</div></div>
-				<div><div></div><div><input type="submit" name="submit" value="开始巡视" onclick="clicked(event)" disabled></div></div>
-				<div><div></div><div class="mygs">点击“开始巡视”将在系统中生成记录号，在下一页显示中你将进一步完善记录信息，添加现场图片等...</div></div>
-			</form>
+			</div>
+		<% } %>
 
-		</div>
 
 
 

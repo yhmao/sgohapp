@@ -1,0 +1,28 @@
+//- show file
+mixin caption(action,file)
+    form.ajax.inline(action=action,method="POST")
+        button(type="button",title="设置或更改说明文字" )
+            img(src=`/public/static/edit.png`) 
+        div 
+            input(type='text',name='text',value=`${file.text}`)
+            
+            //- input(type='submit',value="提交")  
+            input(type='submit',value="提交") 
+
+p= one_edit
+
+div.caption 【#{index}】  #{file.text || '(无图片说明)'}
+if (selfOrAdmin && one_edit)
+    +caption(`${MOUNT}/edit/${doc._id}/files/${index}/caption`,file)
+//- +caption(`${MOUNT}/edit/${doc._id}/files/${index}/caption`,file)
+if (file.file)
+    if (['jpg','png','tiff','jpeg','gif','heic'].includes(file.file.split('.').pop().toLowerCase()))
+        a(href=`/upload/${file.file}`): img(src=`/upload/${file.file}`, width="400") 
+    else if (['mp4','ogg','webm', 'mov','wmv','avi','flv','swf','mkv','mpeg'].includes(file.file.split('.').pop().toLowerCase()))
+        a(href=`/upload/${file.file}`): video(src=`/upload/${file.file}`, type="video/mp4" width="400") 
+    else 
+        a(href=`/upload/${file.file}`): span=file.file
+
+//- if image show image
+//- if video show video
+//- if other file, show file logo, file name, download link

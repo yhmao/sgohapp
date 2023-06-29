@@ -1,5 +1,6 @@
 console.log('/utils.js');
 const moment = require('moment');
+const path = require('path');
 
 const Jimp = require('jimp');
 const sizeOf = require('image-size');
@@ -129,7 +130,15 @@ let setInitialQList = function(user) {
   if (user.co === 'co') {qList.push({co:user.co});}
   if (user.role === 'projectManager') { qList.push( {exposure: {$ne:"private"} });}
   return qList;
-}
+};
+
+let test = function (req, res, next) {
+  let {method,protocol,ip,baseUrl,path,orginalUrl,route} = req;
+  let functionPath = `${module.filename} this: ${this}`;
+  let config = {functionPath, method, protocol, ip,baseUrl,path,  orginalUrl,route, }
+  res.json(config);
+};
+
 
 
 module.exports = exports = {
@@ -140,4 +149,5 @@ module.exports = exports = {
   dateSpanObject,
   setInitialQuery,
   setInitialQList,
+  test,
 }

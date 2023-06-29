@@ -1,0 +1,133 @@
+<h1>Edit user</h1>
+
+<form action="/admin/user_edit" method="post">
+  id: <%= user.id %><br><input type="text" id="id" name="id" value="<%=user.id%>" hidden/>
+  created: <%= user.date %><br>
+  lastUpdate: <%= user.dateUpdate %><br><br>
+  username:<input type="text" id="username" name="username" value="<%=user.username%>"/><br>
+  nickname:<input type="text" id="nickname" name="nickname" value="<%=user.nickname%>"/><br>
+  cellphone:<input type="text" id="cellphone" name="cellphone" value="<%=user.cellphone%>"/><br>
+  password:<input type="text" id="password" name= "password" value="<%=user.password%>"/><br>
+  team: <select name="team" id="team">
+
+          <% if(user.team == 'none'){ %>
+            <option value="steel" selected>none|未加入</option>
+          <% }else{ %>
+            <option value="steel">none|未加入</option>
+          <% } %>
+
+          <% if(user.team == 'steel'){ %>
+            <option value="steel" selected>steel|钢结构</option>
+          <% }else{ %>
+            <option value="steel">steel|钢结构</option>
+          <% } %>
+
+          <% if(user.team == 'civil'){ %>
+            <option value="civil" selected>civil|土建</option>
+          <% }else{ %>
+            <option value="civil">civil|土建</option>
+          <% } %>
+
+          <% if(user.team == 'install'){ %>
+            <option value="install" selected>install|安装</option>
+          <% }else{ %>
+            <option value="install">install|安装</option>
+          <% } %>
+
+          <% if(user.team == 'stage'){ %>
+            <option value="stage" selected>stage|舞台</option>
+          <% }else{ %>
+            <option value="stage">stage|舞台</option>
+          <% } %>
+
+          <% if(user.team == 'all'){ %>
+            <option value="stage" selected>all|所有</option>
+          <% }else{ %>
+            <option value="stage">all|所有</option>
+          <% } %>
+
+
+
+
+        </select>
+        <br>
+
+
+
+  role: <select name="role" id="role">
+
+
+          <% if(user.role == 'supervisor'){ %>
+            <option value="supervisor" selected>supervisor</option>
+          <% }else{ %>
+            <option value="supervisor">supervisor</option>
+          <% } %>
+
+          <% if(user.role == 'teamLeader'){ %>
+            <option value="teamLeader" selected>teamLeader</option>
+          <% }else{ %>
+            <option value="teamLeader">teamLeader</option>
+          <% } %>
+
+          <% if(user.role == 'siteManager'){ %>
+            <option value="siteManager" selected>siteManager</option>
+          <% }else{ %>
+            <option value="siteManager">siteManager</option>
+          <% } %>
+
+          <% if(user.role == 'projectManager'){ %>
+            <option value="projectManager" selected>projectManager</option>
+          <% }else{ %>
+            <option value="projectManager">projectManager</option>
+          <% } %>
+
+          <% if(user.role == 'divisionManager'){ %>
+            <option value="divisionManager" selected>divisionManager</option>
+          <% }else{ %>
+            <option value="divisionManager">divisionManager</option>
+          <% } %>
+
+          <% if(user.role == 'companyManager'){ %>
+            <option value="companyManager" selected>companyManager</option>
+          <% }else{ %>
+            <option value="companyManager">companyManager</option>
+          <% } %>
+
+          <% if(user.role == 'guest'){ %>
+            <option value="guest" selected>guest</option>
+          <% }else{ %>
+            <option value="guest">guest</option>
+          <% } %>
+
+          <% if(user.role == 'user'){ %>
+            <option value="user" selected>user</option>
+          <% }else{ %>
+            <option value="user">user</option>
+          <% } %>
+
+          <% if(user.role == 'admin'){ %>
+            <option value="admin" selected>admin</option>
+          <% }else{ %>
+            <option value="admin">admin</option>
+          <% } %>
+
+          <% if(user.role == 'co'){ %>
+            <option value="co" selected>co</option>
+          <% }else{ %>
+            <option value="co">co</option>
+          <% } %>
+
+
+
+
+
+
+
+        </select>
+  <br>
+  <button type="submit" name="submit">Submit</button>
+</form>
+
+<a href="/admin/user_remove/<%= user.id %>" onclick="return confirm('确定要删除该用户吗？');"><button style="color:red;">删除该用户</button></a>
+
+

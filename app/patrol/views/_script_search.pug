@@ -1,0 +1,43 @@
+script.
+    $(document).ready(function(){
+
+        // default dates (3d)
+        $('#from').val(moment().subtract(3,'days').format('YYYY-MM-DD'));
+        $('#to').val(moment().subtract(0,'days').format('YYYY-MM-DD'));
+
+        let highlight = (e) => {
+            let $c = $(e.currentTarget);  // current
+            let $ss = $(e.currentTarget).parent().siblings().children();   // siblings
+            $ss.css('color','blue')       
+            $c.css('color','red');            
+        };
+        let $shortcuts = $('#shortcuts ul.navbar-nav .nav-item').not(':first-child').find('*');
+        $shortcuts.bind('click', highlight);
+
+        let period = (e) => {                        
+            let days = e.data;
+            if (days>30){
+                $('#from').val('2022-11-23');
+            } else {
+                $('#from').val(moment().subtract(days,'days').format('YYYY-MM-DD'));
+            }        
+            $('#to').val(moment().format('YYYY-MM-DD'));
+            //- $('#submit').click();
+        };
+        $('#d1').bind('click',0,period);
+        $('#d3').bind('click',3,period);
+        $('#d7').bind('click',7,period);
+        $('#d30').bind('click',30,period);
+        $('#dx').bind('click',100,period);
+        $('#dIgnore').bind('click',()=>{
+            $('#from, #to').val('');
+        });
+
+
+    })
+
+
+
+
+
+

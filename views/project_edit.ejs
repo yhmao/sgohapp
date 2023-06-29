@@ -1,0 +1,69 @@
+<head>
+        <%- include("./include/head.ejs") %>
+</head>
+
+<h1>项目更新</h1>
+
+<form action="/my/project/<%= project._id %>/edit" method="post">
+  id: <%= project._id %><br>
+  <input type="text" id="id" name="id" value="<%=project.id%>" hidden/>
+  生成时间: <%= project.date %><br>
+  上次更新时间: <%= project.dateUpdate %><br><br>
+  <p>更改项目名称与指定项目成员不能同时进行，更改的项目名称不能与已有的项目重名。</p>
+  项目名称:<input type="text" id="name" name="name" value="<%= project.name %>"/><br>
+  <p id="warn" style="color:red;"></p>
+
+  拥有者: <%= project.owner %><br>
+  描述: <textarea id="description" name="description"> <%= project.description %> </textarea> <br/>
+  成员：<%= project.members %> <br/>
+
+  <select id="selected" size="8" name="members" multiple>
+    <% project.members.forEach(function(user){ %>
+        <option value="<%= user %>" selected><%= user %></option>
+    <% });  %>          
+  </select>
+
+  <select id="candidates" size="8">
+        <% usernameList.forEach(function(user){ %>
+            <option value="<%= user %>"><%= user %></option>
+        <% });  %>   
+  </select>
+  
+  
+  <button type="submit" id="submit" name="submit">Submit</button>
+</form>
+
+<script>
+    $(document).ready(function(){
+        let projectNames;        
+        $.get('/admin/project_names', function(data){
+            projectNames = data;
+            console.log('projectNames:', projectNames);
+        });
+
+        $('#selected').on('dblclick', 'option', function(e){
+            $(this).prependTo('#candidates');
+        });
+        $('#selected').on('blur mouseleave', function(e){
+            $(this).children('option').prop('selected',"selected");
+        });
+        $('#candidates').on('dblclick', 'option', function(e){
+            $(this).appendTo('#selected');
+        });
+        $('input#name').on('change',function(e){ // project name change 
+            $('select').prop('disabled',true);   
+            if (projectNames.includes($(this).val().trim())) {  // check duplicates
+                $(this).css('background','red');
+                $('#warn').text('项目名称已存在不能提交，请重新输入！');
+                $('#submit').prop('disabled',true)  // disable submit
+            } else {
+                $(this).css('background','');  // enable submit
+                $('#warn').text('');
+                $('#submit').prop('disabled',false);
+            };
+        });
+        $('select').on('change',function(e){ // select change
+            $('#name').prop('disabled',true);
+        });        
+    })
+</script>

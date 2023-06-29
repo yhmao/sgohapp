@@ -1,0 +1,14 @@
+extends layout
+
+block content
+    h1 new Form
+
+    .row
+        .col-12.col-md-8
+            form(action="/post/post/new",method="POST")
+                .form-group.row
+                    input(name="title")
+                .form-group.row
+                    textarea(name="text")
+                .form-group.row
+                    button 提交

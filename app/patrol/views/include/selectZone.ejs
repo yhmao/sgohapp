@@ -1,8 +1,0 @@
-
-<% var zones=["大歌剧厅","中歌剧厅","小歌剧厅", "3号区", "核心柱", "二结构","其他"]; %>
-<select class="form-select" name="zone" id="zone" style="width:100%">
-  <option value="未选择" selected>请选择区域</option>
-  <% for (var i=0; i < zones.length; i++){ %>
-    <option value="<%= zones[i] %>"> <%= zones[i] %>%> </option>
-  <% } %>
-</select>

@@ -1,0 +1,31 @@
+<table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>_id</th>
+        <th>生成时间</th>   
+        <th>更新时间</th>                   
+        <th>项目名称</th> 
+        <th>拥用者</th>            
+        <th>描述</th>
+        <th>成员</th>
+        <th>详细</th>        
+        <th>编辑</th>               
+      </tr>
+    </thead>
+    <tbody >
+      <% projects.forEach(function(p){ %>
+        <tr>
+          <td><%= p._id %></td>
+          <td><%= p.date %></td>
+          <td><%= p.dateUpdate %></td>          
+          <td><b><%= p.name %></b></td>
+          <td><%= p.owner %></td>          
+          <td><%= p.description %></td>
+          <td><%= p.members %></td>
+          <td><a href="/my/project/<%= p._id %>/show">详细</a></td>          
+          <td><a href="/my/project/<%= p._id %>/edit">编辑</a></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  
+  </table>

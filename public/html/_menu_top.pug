@@ -1,0 +1,26 @@
+div.d-flex
+    div.col-xs-12.col-md-12
+        nav.navbar.navbar-expand-sm.bg-light
+            ul.navbar-nav
+                li.nav-item
+                    a.nav-link(href= `/home`) 首页              
+                li.nav-item
+                    a.nav-link(href=`/patrol`) 巡视系统
+                li.nav-item
+                    a.nav-link(href=`/share/`) 文件分享     
+                li.nav-item
+                    a.nav-link(href=`/post`) 知识与博文                 
+                li.nav-item
+                    a.nav-link(href=`/my`) 我的设置
+                li.nav-item
+                    a.nav-link(href=`/notice`) 公告
+                li.nav-item
+                    a.nav-link(href=`/about`) 关于   
+                if (user.role === 'admin')                 
+                    li.nav-item
+                        a.nav-link(href=`/admin`) 管理员专用     
+                li.nav-item
+                    a.nav-link(href=`/logout`) 登出                 
+                li.nav-item
+                    a.nav-link(href=`/register`) 注册
+

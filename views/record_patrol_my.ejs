@@ -21,6 +21,12 @@ integrity="sha512-rmZcZsyhe0/MAjquhTgiUcb4d9knaFc7b5xAfju483gbEXTkeJRUMIPk6s3ySZ
         <a class="nav-link" id="my_account" href="#">我的帐号</a>
       </li>
       <li class="nav-item">
+        <a class="nav-link" id="my_own_projects" href="#">我拥有的项目</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="my_current_project" href="#">当前项目</a>
+      </li>      
+      <li class="nav-item">
         <a class="nav-link" id="share" href="#">共享资料</a>
       </li>
       <li class="nav-item">
@@ -51,6 +57,22 @@ integrity="sha512-rmZcZsyhe0/MAjquhTgiUcb4d9knaFc7b5xAfju483gbEXTkeJRUMIPk6s3ySZ
       xhttp.open("get", "/my/account");
       xhttp.send();
     }
+    function my_own_projects(){
+      const xhttp = new XMLHttpRequest();
+      xhttp.onload = function(){
+        document.getElementById("div-show").innerHTML = this.responseText;
+      };
+      xhttp.open("get", "/my/own_projects");
+      xhttp.send();
+    }
+    function my_current_project(){
+      const xhttp = new XMLHttpRequest();
+      xhttp.onload = function(){
+        document.getElementById("div-show").innerHTML = this.responseText;
+      };
+      xhttp.open("get", "/my/current_project");
+      xhttp.send();
+    }
     function share(){
       const xhttp = new XMLHttpRequest();
       xhttp.onload = function(){
@@ -79,6 +101,8 @@ integrity="sha512-rmZcZsyhe0/MAjquhTgiUcb4d9knaFc7b5xAfju483gbEXTkeJRUMIPk6s3ySZ
     // my_responsible();
 
     document.getElementById('my_account').addEventListener("click", my_account);
+    document.getElementById('my_own_projects').addEventListener("click", my_own_projects); 
+    document.getElementById('my_current_project').addEventListener("click", my_current_project);        
     document.getElementById('share').addEventListener("click", share);
     document.getElementById('share_contribute').addEventListener("click", share_contribute);
     document.getElementById('admin').addEventListener("click", admin);

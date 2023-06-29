@@ -1,0 +1,76 @@
+- 
+    var perPeriod = [
+            {'快捷时间填充:': `d` },        
+            {'今天': `d1` },
+            {'三天': `d3` },
+            {'一周': `d7` },
+            {'一月': `d30` },
+            {'所有': `dx` },
+            {'清除': `dIgnore` },            
+        ];
+
+    //- var perMy = [
+    //-         {'我的:': `my` },        
+    //-         {'我的所有': `myAll` },
+    //-         {'我的公开': `myPublic` },
+    //-         {'我的私密': `myPrivate` },
+    //-         {'要我跟踪': `myFollow` },
+    //-         {'不选': `myIgnore` },            
+    //-     ];
+
+    //- var perCat = [
+    //-         {'按分类:':`cat`},        
+    //-         {'日常': `routine` },
+    //-         {'安全': `safety` },
+    //-         {'不选': `catIgnore` },            
+    //-     ];
+
+    //- var perStatus = [
+    //-         {'按状态:':`status` },        
+    //-         {'跟进': `follow` },
+    //-         {'已关闭': `closed` },
+    //-         {'已提交上级': `promoted` },
+    //-         {'总包单位可见': `co` },
+    //-         {'不选': `statusIgnore` },              
+    //-     ];
+        
+
+    //- var groups = [perPeriod, perMy, perCat, perStatus]
+    var groups = [perPeriod]
+
+style.
+    .nav-link{padding:0px;}
+    .navbar{padding:1px 0px;}
+
+mixin navGroup(group)
+
+    div.d-flex
+        div.col-xs-12.col-md-6
+            nav.navbar.navbar-expand-sm.bg-light(style="padding:1px 0px;")
+                ul.navbar-nav
+                    each item in group
+                        li.nav-item(style="padding:10px 10px 10px 0px;")
+                            .nav-link(id= `${Object.values(item)[0]}` style="padding:0px;") #{Object.keys(item)[0]}   
+
+//- mixin navGroup(group)
+//-     div.d-flex
+//-         div.col-xs-12.col-md-6
+//-             nav.navbar.navbar-expand-sm.bg-light
+//-                 ul.navbar-nav
+//-                     each item,index in group
+//-                         li.nav-item
+//-                             if (index === 0 || index === group.length)
+//-                                 .nav-link #{Object.keys(item)[0]} 
+//-                             else
+//-                                 .nav-link
+//-                                     input(type="radio", id= `${Object.values(item)[0]}`, value) #{Object.keys(item)[0]} 
+//-                             .nav-link(id= `${Object.values(item)[0]}`) #{Object.keys(item)[0]}   
+
+
+
+
+each group in groups
+    +navGroup(group)
+
+
+        

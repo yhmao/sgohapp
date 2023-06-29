@@ -1,0 +1,6 @@
+
+if(user.username === undefined)
+    div 亲爱的用户，你还没有登录,请先<b><a href='/login'>登录</a>。</b>。
+else
+    div 亲爱的 #[strong #{user.username}] ,欢迎你使用监理巡视系统！ 你当前项目为 #[strong #{user.projects[0]}]
+

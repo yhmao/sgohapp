@@ -1,0 +1,24 @@
+extends layout 
+
+block content    
+    h4 List
+    include list_nav.pug
+    
+    - 
+        var total = total || 1;
+        var pages = pages || 1;
+        var page = page || 1;
+    p total: #{total}, pages: #{pages}, page:#{page}
+    include list_pagination.pug
+    +pagination
+
+    hr
+
+
+    - var docs = docs || [{text:'sample text'},{text:'sample 2'}];
+    each doc,index in docs
+        include _list_item_rich.pug
+
+
+
+    +pagination

@@ -1,0 +1,33 @@
+doctype html
+html
+    head
+        include ../../../public/html/_head.pug
+        include _css.pug
+        include _script_menu.pug          
+        include _script_search.pug
+    body
+        include ../../../public/html/_menu_top.pug
+        include ../../../public/html/_header.pug
+
+ 
+
+
+        include _menu_patrol.pug
+        div(id="search",style="display:none;")
+            div(id='searchShortcuts')
+                include _shortcuts_search.pug  
+            //- 查询
+            div(id='searchForm')
+                include _form_search.pug
+        
+
+        hr
+
+        block content
+
+        include _footer.pug
+
+
+
+
+

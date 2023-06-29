@@ -1,0 +1,38 @@
+extends layout
+
+block content
+    mixin lineDisplay(label,content)
+        div.row(style="margin-bottom:10px; border-bottom:1px solid gray; width: 60%;")
+            div.col-5.col-md-2 #{label}
+            div.col-7.col-md-10 #{content}
+
+
+    h1 我的帐号信息
+    br
+    br
+    div.container-fluid
+        +lineDisplay('用户名',user.username)
+        +lineDisplay('昵 称',user.nickname)
+        +lineDisplay('手 机',user.cellphone)
+        +lineDisplay('密 码',user.password)
+        +lineDisplay('角 色',user.role)
+        +lineDisplay('注册时间',user.date)
+        +lineDisplay('最近修改时间',user.dateUpdate)
+
+    button(style="padding:10px;margin:50px 0px;"): a(href="/my/account/edit") 修改我的帐号登录信息
+
+
+    //- <h1>My Account</h1>
+
+
+
+
+//- Username: <%= user.username %> <br>
+//- Nickname: <%= user.nickname %> <br>
+//- Cellphone: <%= user.cellphone %> <br>
+//- Password: <%= user.password %> <br>
+//- Role:     <%= user.role %> <br>
+//- 注册时间： <%= user.date %> <br>
+//- 最近修改时间：<%= user.dateUpdate %> <br>
+
+//- <a href="/my/account/edit"> 修改我的帐号登录信息</a>

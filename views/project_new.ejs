@@ -1,0 +1,60 @@
+<head>
+        <%- include("./include/head.ejs") %>
+</head>
+
+
+<h1>Project New</h1>
+
+<form action="/admin/project_new" method="POST">
+    项目名称：<input type="text" id="name" name="name" placeholder="项目名称(不能有重复)" /><div id="warn" style="color:red;"></div></br>
+    项目描述：<textarea type="text" id="description" name="description" placeholder="项目描述" ></textarea></br>
+    项目所有人：
+    <select id="owner" name="owner"></select></br>
+    <input type="submit" id="submit" value="提交" />
+</form>
+
+<script>
+    $(document).ready(function(){
+
+        $.get(`/admin/username_list`,function(usernameList){
+            console.log('usernameList:', usernameList);
+            let options = '';
+            usernameList.forEach(element => {
+                options += `<option value="${element}">${element}</option>`;
+                });
+            $('#owner').html(options);
+        });
+
+        let projectNames;        
+        $.get('/admin/project_names', function(data){
+            projectNames = data;
+            console.log('projectNames:', projectNames);
+        });
+
+        // let projectNames = await $.get('/admin/project_names');
+        // console.log('projectNames:', projectNames);
+
+        $('#name').on('change',function(e){  // no duplicate project name
+            // get projectNames
+            if (projectNames.includes($(this).val().trim())) {
+                $(this).css('background','red');
+                $('#warn').text('项目名称已存在不能提交，请重新输入！');
+                $('#submit').prop('disabled',true)  // disable
+            } else {
+                $(this).css('background','');  // enable
+                $('#warn').text('');
+                $('#submit').prop('disabled',false);
+            }
+        });
+
+
+
+
+
+
+    })
+
+
+
+
+</script>

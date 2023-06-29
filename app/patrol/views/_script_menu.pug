@@ -1,0 +1,46 @@
+script.
+    $(document).ready(function(){
+
+        $('#create').bind('click',(e)=>{
+            let prompt = `系统将为您在当前项目中生成新的记录，并开始进一步完善记录内容。确认要生成新的记录吗？`;
+            if(!confirm(prompt)) return false;
+        })
+        // click: 最近一周  所有  我的所有  点击展开搜索选项
+        $('#expand').bind('click',(e)=>{
+        $('#search').toggle(500);
+        });
+        $('#7d').bind('click',(e)=>{
+            console.log('7d clicked');
+            $('#reset').trigger("click");
+            $('#d7').trigger("click");
+            $('#submit').trigger("click");
+        });
+        $('#all').bind('click',(e)=>{
+            console.log('all clicked');
+            $('#reset').trigger("click");
+            $('#dx').trigger("click");
+            $('#submit').trigger("click");
+        }); 
+        $('#my').bind('click',(e)=>{
+            console.log('my clicked');
+            $('#reset').trigger("click");
+            $('#dx').trigger("click");
+            $('input[name=my]').val('myAll');
+            $('#submit').trigger("click");
+        }); 
+
+        // 点击高显一下
+        $('#collapsibleNavbar a').bind('click',(e)=>{
+            console.log('e:',e);
+            $('#collapsibleNavbar a').css('background-color','');
+            $(this).css('background-color','blue');
+        })
+        
+        //- click(function(){ 
+        //-     $('a').css('background-color','')
+        //-     $(this).css('background-color','blue');
+        //- };
+
+
+    })
+

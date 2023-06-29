@@ -1,0 +1,50 @@
+<%- include('./include/head') %>
+
+<h1>所有用户列表</h1>
+
+
+
+
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>id</th>
+      <th>用户名</th>
+      <th>昵称</th>
+      <th>密码</th>
+      <th>角色</th>
+      <th>小组</th>
+      <th>注册时间</th>
+    </tr>
+  </thead>
+  <tbody >
+    <% users.forEach(function(user){ %>
+      <tr>
+        <td><%= user.id %></td>
+        <td><b><%= user.username %></b></td>
+        <td><%= user.nickname %></td>
+        <td><%= user.password %></td>
+        <td><%= user.role %></td>
+        <td><%= user.team %></td>
+        <td><%= user.created %></td>
+        <td><a href="/admin/user_edit/<%= user.id %>">编辑</a></td>
+      </tr>
+    <% }) %>
+  </tbody>
+
+</table>
+
+
+<% /* %>
+<% users.forEach(function(user){ %>
+  id: <%= user.id %><br>
+  User: <%= user.username %><br>
+  Password:<%= user.password %><br>
+  Role: <%= user.role %><br>
+  Team: <%= user.team %><br>
+  Registered:   <%= user.created %><br>
+
+  <a href="/admin/user_edit/<%=user.id%>">Edit this user</a>
+  <hr>
+<% }); %>
+<% */ %>

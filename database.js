@@ -17,29 +17,31 @@ const userSchema = new mongoose.Schema({
   dateUpdate: {type:Date, default:Date.now},
   selectable: Number,
   projects: Array,
+  debug:String,
 });
 const User = mongoose.model('User', userSchema);
 
 const recordSchema = new mongoose.Schema({
-  user: {type:String,default:'user'},
+  user: String,   // req.user.username
   date: {type:Date, default:Date.now},
   dateUpdate: {type:Date, default:Date.now},  //update when any modification
-  project: {type: String, default:'SGOH'},
-  profession: String,
-  zone: String,
-  title: String,
-  patrolType: String, //质量，日常
-  text: String,     //for BodyFiles: = text
-  file: String,
-  files: Array, //allow multiple files. 批注：files.children.text
-  caption: String,
-  status: String,  //followup,closed
-  responsible: String,  //person assigned by siteManager
-  annotation: String,   // record: 巡视情况：正常，关注，有问题，有疑问
-  keywords: String,  //for later organize
+  project: String,   // 项目名 project.name
+  profession: String, // "请选择所属专业","土建","安装","钢结构", "幕墙", "装修","舞台", "其他"
+  zone: String,   // collection: zones.zoneDescription
+  title: String, 
+  patrolType: String, //质量，日常 {routine, safety}
+  text: String,     // 主体文字 描述
+  file: String, // 不用
+  files: Array, //附件. 批注：files.children.text
+  caption: String,  // 附图/视频脚标题
+  status: String,  //followup(responsible),closed
+  responsible: String,  //username (by siteManager/admin)
+  annotation: String,   //['正常','关注', '有问题', '有疑问'],  //巡视情况     m:xsqk
+  keywords: String,  //later
   exposure: {type: String, default:'public'},  // visible to: private,siteManager,projectManager...
   parents: Array,  // array of id
-  children: Array   // array of document
+  children: Array,   // comments 评论
+  co:String,  // 'co' 施工单位可见
 });
 recordSchema.index({'$**':'text'});
 const Record = mongoose.model('Record', recordSchema);
@@ -53,6 +55,8 @@ const projectSchema = new mongoose.Schema({
   code:{type:String, default:''},
   date: {type:Date, default:Date.now},
   dateUpdate: {type:Date, default:Date.now},
+  description: String,
+  owner: String,
   members: Array,
 });
 const Project = mongoose.model('Project',projectSchema);

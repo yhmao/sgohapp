@@ -1,0 +1,216 @@
+extends layout 
+
+block content
+    //- ------------------------------------------   
+    - var one_edit = 'true';
+    - var zonesList=['',"大歌剧厅","中歌剧厅","小歌剧厅", "3号区", "核心柱", "二结构","其他"];
+    - var professionsList=['',"土建","安装","钢结构", "幕墙", "装修","舞台", "其他"];
+    - var annotationsList=['','正常','关注','有问题','有疑问'];
+    - var statusList = ['','followup','closed'];
+    - var patrolTypesList = ['日常', '安全'];
+    - var adminOrManager = ['siteManage','projectManager','admin'].includes(user.role) || user.username === 'yuanjianping' ;
+    - var selfOrAdmin = user.username === doc.user || user.role === 'admin';
+
+    //- ------------------------------------------   
+
+    mixin select(name,options)
+        select(name=name)
+            each option,index in options
+                if (option === doc[name])
+                    option(value=`${option}`,selected=true) #{index}|#{option}
+                else
+                    option(value=`${option}`)  #{index}|#{option}
+
+    mixin radio(name,options)
+        each value,index in options
+            input(type='radio', name=name ,value=value) 
+            label(style="margin-right:20px;") #{value}
+
+    //- c={label,tag,type,name,id,value}
+    mixin line(c)
+        div.row
+            div.col-5.col-md-2 #{c.label}
+            div.col-7.col-md-10.blue  
+                if (c.tag === 'input' && c.type === 'radio')
+                    +radio(c.name,c.value)
+                else if (c.tag === 'input')
+                    input(type=c.type,name=c.name,id=c.id,value=c.value,placeholder=c.placeholder)
+                else if (c.tag === 'textarea')
+                    textarea(name=c.name,id=c.id,rows='5')= c.value   
+                else if (c.tag === 'select')
+                    +select(c.name,c.value)
+                else if (c.tag === 'p')
+                    | #{c.value}
+
+    mixin lineDisplay(label,content)
+        div.row
+            div.col-5.col-md-2 #{label}
+            div.col-7.col-md-10 #{content}
+
+    //- ------------------------------------------ 
+
+
+    //- 编辑单条记录   <<返回显示    X 删除本条记录
+    div.h4.gray.d-flex.justify-content-between 
+        div 编辑单条记录
+        div: a(href=`/patrol/show/${doc._id}`) <<返回显示
+        if(selfOrAdmin)
+            div: a.red(href=`/patrol/edit/${doc._id}/remove`,id='oneRemove') X 删除本条记录
+
+    //- 标题        
+    h2.blue(style="margin:30px 0px;") #{doc.text}
+
+    //- 主要内容显示区
+    if(!selfOrAdmin)
+        div.container-fluid(id="headerShow" ) 
+            +lineDisplay( 'id',         doc._id) 
+            +lineDisplay( '用户',       doc.user) 
+            +lineDisplay( '创建时间',   moment(doc.date).format('YYYY年MM月DD日 HH:mm:ss')) 
+            +lineDisplay( '更新时间',   moment(doc.dateUpdate).format('YYYY年MM月DD日 HH:mm:ss')) 
+            +lineDisplay( '私密',       doc.exposure) 
+            +lineDisplay( '巡视类别',   doc.patrolType) 
+            +lineDisplay( '巡视描述',   doc.text) 
+            +lineDisplay( '巡视部位',   doc.zone) 
+            +lineDisplay( '所属专业',   doc.profession) 
+            +lineDisplay( '巡视情况',   doc.annotation) 
+            +lineDisplay( '是否要跟踪', doc.statusList) 
+            +lineDisplay( '跟踪负责人', doc.responsible) 
+            +lineDisplay( '施工单位',   doc.co?'可见':'不可见') 
+
+    //- 主要内容编辑区
+    if(selfOrAdmin)
+        form.ajax.container-fluid(action=`${MOUNT}/edit/${doc._id}/header`, method="POST")
+            +line({label:'id',tag:'p',type:null,name:null  ,id:null,value:doc._id}) 
+            +line({label:'用户user',tag:'p',type:null,name:null  ,id:null,value:doc.user}) 
+            +line({label:'创建日期date',tag:'p',type:null,name:null  ,id:null,value:moment(doc.date).format('YYYY年MM月DD日 HH:mm:ss') }) 
+            +line({label:'创建日期dateUpdate',tag:'p',type:null,name:null  ,id:null,value:moment(doc.dateUpdate).format('YYYY年MM月DD日 HH:mm:ss') })        
+            +line({label:'项目名称project',tag:'p',type:null,name:null  ,id:null,value:doc.project}) 
+            +line({label:'私密exposure',tag:'input',type:'checkbox',name:'exposure'  ,id:'exposure',value:'private'}) 
+            +line({label:'类别patrolType',tag:'input',type:'radio',name:'patrolType'  ,id:'patrolType',value:patrolTypesList})                 
+            +line({label:'巡视描述text',tag:'textarea',type:null,name:'text'  ,id:'text',value: doc.text})
+            +line({label:'巡视部位zone',tag:'select',type:null,name:'zone'  ,id:'zone',value: zonesList})
+            +line({label:'所属专业profession',tag:'select',type:null,name:'profession'  ,id:'profession',value: professionsList})
+            +line({label:'巡视情况annotation',tag:'select',type:null,name:'annotation'  ,id:'annotation',value: annotationsList})
+            +line({label:'是否要跟踪statusList',tag:'select',type:null,name:'statusList'  ,id:'statusList',value: statusList})
+            +line({label:'跟踪负责人responsible',tag:'select',type:null,name:'responsible'  ,id:'responsible',value: assignResponsibles})        
+            +line({label:'推送给施工单位co',tag:'input',type:'checkbox',name:'co'  ,id:'co',value:'co'})         
+            +line({label:'',tag:'input',type:'submit',name:'submit'  ,id:'submit',value: '提交上方更新'})
+
+    hr
+    p 附件：#{doc.files.length}, 评论：#{doc.children.length}
+    hr.thick
+
+    //- ====================================================
+    //- 模板：置评，负责人，上传 
+    mixin formComment(action)
+        form.ajax.inline(action=action,method="POST" )
+            button(type="button",title="我来说几句" )
+                img(src=`/public/static/comments.png`)
+            div
+                input(type='text',name="text")
+                //- textarea(name="text",rows="1")
+
+                
+                input(type='submit',value="提交评论") 
+
+    mixin formResponsible(action)
+        form.ajax.inline(action=action,method="POST" )
+            button(type="button", title="指派跟踪负责人")
+                img(src=`/public/static/responsible.png`) 
+            div
+                +select('responsible',assignResponsibles)
+             
+                input(type='submit',value="提交负责人")    
+
+    mixin upload(action)
+        div
+            form.ajax(action=action,method="POST", enctype="multipart/form-data")
+                label 上传照片/视频/文件:
+                br
+                input(type='file',name='file',id='file',style='width:400px;')
+                br
+                input(type='text',name='text', placeholder='请输入说明文字...',style='width:400px;')
+                input(type='submit',value='上传')   
+
+    //- ====================================================
+
+    div(id="files")
+        h4 附件：    
+
+        if (selfOrAdmin)
+            +upload(`${MOUNT}/edit/${doc._id}/files/upload`)
+
+        //- 显示每个附件
+        each file, idx in doc.files.reverse()
+            hr
+            - let index = doc.files.length - 1 - idx;        
+            include _file_show.pug            
+            
+            if (file.responsible)
+                div.maroon 跟踪负责人：#{file.responsible}
+
+            if (adminOrManager)
+                +formResponsible(`${MOUNT}/edit/${doc._id}/files/${index}/responsible`)
+
+            if (selfOrAdmin)
+                div
+                    a.ajax(href=`${MOUNT}/edit/${doc._id}/files/${index}/remove`,title=`删除本条附件/评论,标号为【${index}】`) 
+                        img(src=`/public/static/delete.png`,style="margin-left:370px;height:28px;")
+                    
+            +formComment(`${MOUNT}/edit/${doc._id}/files/${index}/comments/add`)
+
+            //- 显示每个置评
+            each child,index1 in file.children
+                div(style="margin:1px 0px") 
+                    span.hint #{moment(child.date).format('YYYY/MM/DD HH:mm:ss')} 【 #{child.user} 】 
+                    span.blue #{child.text}  &nbsp;&nbsp;
+                    if(user.role === 'admin' || user.username === child.user)
+                        a.ajax.red(href=`${MOUNT}/edit/${doc._id}/files/${index}/comments/${index1}/remove`) X
+
+    hr.thick
+
+
+    //- ====================================================
+
+    div(id="comments",style="background-color:#f5f5f5;")
+
+        h4 评论：
+
+        if (selfOrAdmin)
+            +upload(`${MOUNT}/edit/${doc._id}/comments/upload`)
+
+        //- 显示每个评论
+        //- here file = comment
+        each file, idx in doc.children.reverse()
+            hr
+            - let index = doc.children.length - 1 - idx;
+
+            include _file_show.pug
+
+            if(file.responsible)
+                div.maroon 跟踪负责人：#{file.responsible}
+
+            +formComment(`${MOUNT}/edit/${doc._id}/comments/${index}/comments/add`)
+            
+            if (adminOrManager)
+                +formResponsible(`${MOUNT}/edit/${doc._id}/comments/${index}/responsible`)
+
+            if (selfOrAdmin)
+                div
+                    a.ajax(href=`${MOUNT}/edit/${doc._id}/comments/${index}/remove`,title=`删除本条,标号为【${index}】`) 
+                        img(src=`/public/static/delete.png`,style="margin-left:370px;height:28px;")
+
+            //- 显示每个置评
+            each child,index1 in file.children
+                div(style="margin:1px 0px") 
+                    span.hint #{moment(child.date).format('YYYY/MM/DD HH:mm:ss')} 【 #{child.user} 】 
+                    span.blue #{child.text} &nbsp;&nbsp;
+                    if(user.role === 'admin' || user.username === child.user)
+                        a.ajax.red(href=`${MOUNT}/edit/${doc._id}/comments/${index}/comments/${index1}/remove`) X 
+        
+    hr.thick
+
+    include _script_edit.pug
+
+    //- 撑开底部
+    div(style="margin-bottom:200px;") 

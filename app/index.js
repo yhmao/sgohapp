@@ -1,7 +1,12 @@
-const postRouter = require('./post/routes');
-const patrolRouter = require('./patrol/routes')
 
 module.exports = exports = function(app){
-    postRouter(app);
-    patrolRouter(app);
+    require('./admin')(app);
+    require('./auth')(app);
+    require('./home')(app);
+    require('./m')(app);
+    require('./my')(app);
+    require('./patrol')(app);
+    // require('./post')(app);
+    require('./share')(app);
+    // require('./tip')(app);
 };

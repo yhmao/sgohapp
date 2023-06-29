@@ -1,0 +1,12 @@
+
+<h1>项目详细</h1>
+
+_id: <%= project._id %> <br>
+生成时间: <%= project.date %> <br>
+更新时间: <%= project.dateUpdate %> <br>
+项目名称: <%= project.name %> <br>
+拥用者:     <%= project.owner %> <br>
+描述： <%= project.description %> <br>
+成员：<%= project.members %> <br>
+
+<a href="/my/project/<%= project._id %>/edit"> 更新</a>

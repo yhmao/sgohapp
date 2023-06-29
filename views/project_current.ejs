@@ -1,0 +1,20 @@
+<head>
+        <%- include("./include/head.ejs") %>
+</head>
+
+<h1>当前项目及更换</h1>
+
+当前项目：<%= user.projects[0] %>
+<form action="/my/current_project" method="POST">
+    切换当前项目：
+    <select name="currentProject">
+        <% user.projects.forEach(function(p,index){ %>
+            <% if (index === 0) {  %>
+                <option value=<%= p %> selected><%= p %></option>
+            <% } else { %>
+                <option value=<%= p %>><%= p %></option>
+            <% } %>
+        <% }) %>
+    </select>
+    <input type="submit" id="submit" value="提交">
+</form>

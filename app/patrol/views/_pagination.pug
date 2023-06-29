@@ -1,0 +1,14 @@
+
+mixin pagination
+    div.container-fluid.d-flex
+        div.col-xs-12.col-md-2.p-3      
+        if(pages>1)
+            div.col-xs-12.col-md-10 
+                ul.pagination.flex-wrap
+                    each n in [...Array(pages).keys()]
+                        if( n+1 === page )                            
+                            li.page-item.active: a.p-3.page-link(href=`${MOUNT}/list/${n+1}`)= n+1
+                        else
+                            li.page-item: a.p-3.page-link(href=`${MOUNT}/list/${n+1}`)= n+1
+
+

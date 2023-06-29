@@ -28,6 +28,8 @@
     "passport-local": "^1.0.0",
     "passport-remember-me": "^0.0.1",
     "path": "^0.12.7",
-    "serve-index": "^1.9.1"
+    "pug": "^3.0.2",
+    "serve-index": "^1.9.1",
+    "tinymce": "^6.4.2"
   }
 }

@@ -1,0 +1,125 @@
+extends layout 
+
+block content
+    //- 变量
+    - var selfOrAdmin = user.username === doc.user || user.role === 'admin';
+    - var one_edit = '';
+
+    //- 模板：两列显示
+    mixin lineDisplay(label,content)
+        div.row
+            div.col-5.col-md-2 #{label}
+            div.col-7.col-md-10.blue #{content}
+    //- ------------------------------------------ 
+
+    //-  显示单条记录   编辑本条记录>>
+    div.h4.gray.d-flex.justify-content-between
+        div 显示单条记录
+
+        if(selfOrAdmin)
+            div: a.RebeccaPurple(href=`/patrol/edit/${doc._id}`,id='oneEdit') 编辑本条记录>>
+
+    //- 标题 
+    h2.blue(style="margin:30px 0px;") #{doc.text}
+
+    //- 主内容
+    div.container-fluid(id="headerShow" ) 
+        +lineDisplay( 'id',         doc._id) 
+        +lineDisplay( '用户',       doc.user) 
+        +lineDisplay( '创建时间',   moment(doc.date).format('YYYY年MM月DD日 HH:mm:ss')) 
+        +lineDisplay( '更新时间',   moment(doc.dateUpdate).format('YYYY年MM月DD日 HH:mm:ss')) 
+        +lineDisplay( '私密',       doc.exposure) 
+        +lineDisplay( '巡视类别',   doc.patrolType) 
+        +lineDisplay( '巡视描述',   doc.text) 
+        +lineDisplay( '巡视部位',   doc.zone) 
+        +lineDisplay( '所属专业',   doc.profession) 
+        +lineDisplay( '巡视情况',   doc.annotation) 
+        +lineDisplay( '是否要跟踪', doc.statusList) 
+        +lineDisplay( '跟踪负责人', doc.responsible) 
+        +lineDisplay( '施工单位',   doc.co?'可见':'不可见') 
+
+
+
+    hr
+    p 附件：#{doc.files.length}, 评论：#{doc.children.length}
+    hr.thick
+
+    //- ====================================================
+    //- 模板：置评
+    mixin formComment(action)
+        form.ajax.inline(action=action,method="POST" )
+            button(type="button",title="我来说几句" )
+                img(src=`/public/static/comments.png`)
+            div
+                input(type='text',name="text")
+                //- textarea(name="text",rows="1")
+
+                
+                input(type='submit',value="提交评论") 
+
+
+    //- ====================================================
+    div(id="files")
+        h4 附件：    
+
+        //- 显示每个附件
+        each file, idx in doc.files.reverse()
+            hr
+            - let index = doc.files.length - 1 - idx;        
+            include _file_show.pug            
+            
+            if (file.responsible)
+                div.maroon 跟踪负责人：#{file.responsible}
+                  
+            +formComment(`${MOUNT}/edit/${doc._id}/files/${index}/comments/add`)
+
+            //- 每个置评
+            each child,index1 in file.children
+                div(style="margin:1px 0px") 
+                    span.hint #{moment(child.date).format('YYYY/MM/DD HH:mm:ss')} 【 #{child.user} 】 
+                    span.blue #{child.text}  &nbsp;&nbsp;
+                    if(user.role === 'admin' || user.username === child.user)
+                        a.ajax.red(href=`${MOUNT}/edit/${doc._id}/files/${index}/comments/${index1}/remove`) X
+                            
+
+
+    hr.thick
+
+    //- ====================================================
+    div(id="comments",style="background-color:#f5f5f5;")
+        h4 评论：
+
+        //- here file = comment
+        //- 显示每个评论
+        each file, idx in doc.children.reverse()
+            hr
+            - let index = doc.children.length - 1 - idx;
+            include _file_show.pug
+            if(file.responsible)
+                div.maroon 跟踪负责人：#{file.responsible}
+
+            +formComment(`${MOUNT}/edit/${doc._id}/comments/${index}/comments/add`)
+            
+            //- 每个置评
+            each child,index1 in file.children
+                div(style="margin:1px 0px") 
+                    span.hint #{moment(child.date).format('YYYY/MM/DD HH:mm:ss')} 【 #{child.user} 】 
+                    span.blue #{child.text} &nbsp;&nbsp;
+                    if(user.role === 'admin' || user.username === child.user)
+                        a.ajax.red(href=`${MOUNT}/edit/${doc._id}/comments/${index}/comments/${index1}/remove`) X 
+        
+    hr.thick
+
+    include _script_edit.pug
+
+    //- 撑开底部
+    div(style="margin-bottom:200px;")
+
+
+
+
+
+
+
+
+

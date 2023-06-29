@@ -81,7 +81,7 @@ let logger = function(req,res,next){
     var user = req.user.username;
     var url = req.originalUrl;
     var method = req.method;
-    console.log('> log >', user, method, url);
+    console.log('> logger >', user, method, url);
     var log = new db.Log({user:user,method:method,url:url});
     log.save(()=>{
       // console.log('Saved log: ', log);

@@ -1,0 +1,70 @@
+script.
+    $(document).ready(function(){
+        $('input:checkbox').css("width","auto"); // left align checkbox
+        
+        $('#oneRemove').bind('click',()=>{
+            if (!confirm('确定要删除吗？')){return false;}
+        });
+        
+        $('a.ajax').bind('click',function(e){
+            if (!confirm('确定要删除吗？')){return false;}
+            e.preventDefault();
+            let that = this;
+            console.log(e.currentTarget.href);
+            $.ajax({
+                method:'GET',
+                url: e.currentTarget.href,
+                success: function(data,status,jqXHR){
+                    console.log('res:',data);
+                    console.log('status:', status);
+                    console.log('jqXHR:', jqXHR);
+                    console.log('this:',this);
+                    console.log($(that));
+                    let tag = `<div>${data}</div>`;
+                    console.log('tag:',tag);
+                    $(that).parent().after($(tag))
+                    $(that).parent().remove()
+                } 
+
+            })
+        });
+
+        $('form.ajax').bind('submit',function(e){
+            event.preventDefault();
+            console.log("this:",this);
+            var url = this.action;
+            console.log('url:',url);
+            var formData = new FormData(this);
+            console.log('form data:', formData);
+            for (var [key, value] of formData.entries()) { 
+                console.log(key, value);
+            }
+            let that = this;
+
+            $.ajax({
+                url:url,
+                processData:false,
+                contentType:false,
+                data:formData,
+                type:'POST',
+                success:function(data){
+                console.log('ajax done, data:', data);
+                $(that).after(`<div class="red">${data}</div>`)
+                },
+                error:function(xhr,status,errorThrown){
+                console.log('ajax fail xhr,status,errorThrown: ', xhr, status, errorThrown);
+                },
+            })
+        });
+
+        $('form.inline>button').bind('click',function(e){
+            console.log('this button;', this);
+            if ($(this).next('div').css('visibility')==='hidden') $(this).next('div').css('visibility','visible');
+            else $(this).next('div').css('visibility','hidden');
+        })
+
+
+
+
+
+    })

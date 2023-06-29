@@ -1,0 +1,131 @@
+
+
+-
+    let sorts = [
+        {'按更新时间查询及排序': 'dateUpdate'},   
+        {'按创建时间查询及排序':'date'}
+    ];
+
+    let patrolTypes = [
+        {'不限':''},  
+        {'日常':'routine'},
+        {'安全':'safety'},      
+    ];
+
+    let mys =[
+        {'不限':''},
+        {'我的全部':'myAll'},
+        {'我的公开':'myPublic'},
+        {'我的私密':'myPrivate'}
+    ];
+
+    let exposures = [
+        {'公开':'public'},        
+        {'不限':''}, 
+        {'私密':'private'},        
+        {'组长可见':'siteManager'}, //不用
+        {'项目总监可见':'projectManager'}, 
+        {'公司领导可见':'companyManager'}, 
+    ];
+
+    let annotations = [
+        {'不限':''},
+        {'正常':'正常'},
+        {'关注':'关注'},
+        {'有问题':'有问题'},
+        {'有疑问':'有疑问'},
+    ];
+
+    let statuss =[
+        {'不限':''},        
+        {'跟踪':'跟踪'},
+        {'已关闭':'已关闭'}
+    ];
+    
+    let myResponsibles =[
+        {'不限':''},        
+        {'我负责':'myResponsible'},
+    ];
+
+    //- router.locals.searchResponsibles
+    //- [
+    //-     { username: '' },        
+    //-     { username: 'admin' },
+    //-     { username: 'yhmao' },
+    //- ]
+
+    
+style.
+    label{margin-right:15px;}
+
+//- options: [{label:value},...]
+mixin select(name,options) 
+    select(name=name,style="width:80%")
+        each option,index in options
+            //- if (option === doc[name])
+            //-     option(value=`${Object.values(option)[0]}`,selected=true) #{index}|#{Object.keys(option)[0]}
+            //- else
+            option(value=`${option.username}`)  #{index} |      #{option.username}
+
+mixin radio(name,options)
+    each option,index in options        
+        label 
+            if(index === 0)
+                input(type='radio',name=name,value=`${Object.values(option)[0]}`,checked) 
+            else
+                input(type='radio',name=name,value=`${Object.values(option)[0]}`)             
+            | #{Object.keys(option)[0]}
+
+//- c={label,tag,type,id,name,value,hidden=false}
+mixin row(c)
+    div.row(hidden=c.hidden)
+        div.col-5.col-md-2 #{c.label}
+        div.col-7.col-md-10   
+            if (c.type === 'radio')
+                +radio(c.name,c.value)
+            else if (c.tag === 'input')
+                input(type=c.type,name=c.name,id=c.id,value=c.value,style="width:80%")
+            else if (c.tag === 'textarea')
+                textarea(name=c.name,id=c.id,rows='5',style="width:80%")= c.value   
+            else if (c.tag === 'select')
+                +select(c.name,c.value)
+            else if (c.tag === 'p')
+                | #{c.value}
+
+form(action=`${MOUNT}/list`, id="searchForm",method="POST")
+    +row({label: '项目',tag:'input',type:'text',id:'project',name:'project',value:`${user.projects[0]}`, hidden :user.role==='admin'?false:true})    
+    +row({label:'从',tag:'input',type:'date',id:'from',name:'from'})
+    +row({label:'到',tag:'input',type:'date',id:'to',name:'to'})    
+    +row({label:'排序依',tag:'input',type:'radio',id:'sort',name:'sort',value:sorts})             
+    +row({label:'巡视类别',tag:'input',type:'radio',id:'patrolType',name:'patrolType',value:patrolTypes})               
+    +row({label:'我的',tag:'input',type:'radio',id:'my',name:'my',value:mys})              
+    +row({label:'可见性',tag:'input',type:'radio',id:'exposure',name:'exposure',value:exposures, hidden :user.role==='admin'?false:true})            
+    +row({label:'巡视情况',tag:'input',type:'radio',id:'annotation',name:'annotation',value:annotations})           
+    +row({label:'状态',tag:'input',type:'radio',id:'status',name:'status',value:statuss})           
+    +row({label:'我负责的',tag:'input',type:'radio',id:'myResponsible',name:'myResponsible',value:myResponsibles})             
+    +row({label:'负责人',tag:'select',id:'responsible',name:'responsible',value:searchResponsibles})           
+    +row({label:'文本搜索',tag:'input',type:'text',id:'text',name:'text'})          
+    +row({label:'',tag:'input',type:'reset',id:'reset',name:'reset',value:'复位'})                 
+    +row({label:'',tag:'input',type:'submit',id:'submit',name:'submit',value:'提交'})                
+    br
+
+
+
+
+    //- name           label                value                              tag             match         values                                 cookie(q={})
+    //- project        项目                  当前   空/输入(admin)              input: text     project      user.project, project.name(string)
+    //- from           从                    选择/预设/快选                     input: date     from         ~2023/05/30, ''
+    //- to             到                    选择/预设/快选                     input: date     to           ~2023/06/25 , ''
+    //- sort           时间查询及排序依据     创建时间 更新时间                   input: radio    sort         'date','dateUpdate',''         
+    //- patrolType     分类                  不限 日常 安全                     input: radio    patrolType    '日常','安全',''
+    //- my             我的                  不限 我的全部 我的公开 我的私密      input: radio    my           '','myAll','myPublic','myPrivate'
+    //- exposure       可见性                不限 公开 组长 总监 公司            input: radio    exposure      '','public','siteManager','projectManager','companyManager'
+    //- annotation     巡视情况              不限 正常 关注 问题 疑问             input: radio   annotation    '','正常','关注','有问题','有疑问'
+    //- status         状态                  不限 跟踪 关闭                      input: radio   status        '','跟踪','已关闭'
+    //- myResponsible  我负责的              不限 我负责                         input: radio   myResponsible '','myResposbile' 
+    //- Responsible    负责人                不限 选择负责人                     select         responsible   '', ~'maoyuhong'    
+    //- text           文本搜索              空/输入                            input: text     text         '', 'text string'
+    //- reset          -                      -                                input: reset     -      
+    //- submit         -                      -                                input: submit    -
+    // 不限，未选, 空格： '', undefined, 
+

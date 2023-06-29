@@ -1,0 +1,12 @@
+作者User:<%= sharefile.user %>&nbsp;|&nbsp;
+Id:<%= sharefile.id %><br>
+创建:<%= moment(sharefile.dateUpdate).format('YYYY-MM-DD HH:mm:ss') %>&nbsp;|&nbsp;
+更新:<%= moment(sharefile.date).format('YYYY-MM-DD HH:mm:ss') %><br>
+
+标题Title:<%= sharefile.title %><br>
+说明文字Text:<%= sharefile.text %><br>
+图注Caption:<%= sharefile.caption %><br>
+文件file: <%= sharefile.file %><br><br><br>
+
+
+<a href="/admin/sharefile_remove/<%=sharefile.id%>">Remove</a>
