@@ -103,3 +103,18 @@ module.exports = {
   Log:Log,
   ErrorLog:ErrorLog
 };
+
+const shareSchema = new mongoose.Schema({
+  date: {type: Date, default: Date.now},
+  dateUpdate: {type: Date, default: Date.now},
+  user: String,
+
+  filename: String,
+  fileSize: Number,
+  title: String,
+  text: String,
+  keywords: String,
+  exposure: String
+});
+// Schema.index({'$**':'text'});
+module.exports.Share = mongoose.model('Share', shareSchema);

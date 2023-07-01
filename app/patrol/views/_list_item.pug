@@ -1,12 +1,12 @@
 div 
-    div(style="margin-left:60px;")
+    div.gray(style="margin-left:60px;")
         div  创建:&nbsp;#{moment(doc.date).format('YYYY/MM/DD HH:mm:ss')} |&nbsp;更新:&nbsp;#{moment(doc.dateUpdate).format('YYYY/MM/DD HH:mm:ss')}
         div 
             span.blue #{doc.user} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             span   | #{doc.patrolType}  &nbsp;&nbsp;&nbsp;&nbsp;
             span   |  #{doc.zone}      &nbsp;&nbsp;&nbsp;&nbsp;
             span   | #{doc.profession} 
-    h3(style="margin:5px 0px;")
+    h4(style="margin:5px 0px;") 
         span.badge.badge-primary(style="color:black;")  #{index+1+(page-1)*20}
         a(href=`${MOUNT}/show/${doc._id}`)   #{doc.text || '(作者忘记写标题了)'} 
 

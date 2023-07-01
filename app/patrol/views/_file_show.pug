@@ -4,10 +4,10 @@ mixin caption(action,file)
         button(type="button",title="设置或更改说明文字" )
             img(src=`/public/static/edit.png`) 
         div 
-            input(type='text',name='text',value=`${file.text}`)
+            input(type='text',name='text',value=`${file.text}`,required)
             
             //- input(type='submit',value="提交")  
-            input(type='submit',value="提交") 
+            input(type='submit',value="") 
 
 p= one_edit
 

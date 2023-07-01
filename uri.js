@@ -14,8 +14,8 @@ const remoteYYO2Sgoh = "mongodb://admin:Flzx3000c@8.134.79.194:27017/sgoh-node?a
 var uri;  //mongodb connection string for sgoh-node
 if(os.hostname() == MI){
   console.log("running on windows MI.");
-  // uri = localSgoh; console.log('using MI localhost:27017/sgoh-node database');
-  uri = remoteYYO2Sgoh; console.log('using remote 8.134.79.194:27017:27017/sgoh-node database.');
+  uri = localSgoh; console.log('using MI localhost:27017/sgoh-node database');
+  // uri = remoteYYO2Sgoh; console.log('using remote 8.134.79.194:27017:27017/sgoh-node database.');
 }else if (os.hostname == "yyo2") {
   console.log("running on ali server yyo2 1y.");
   uri = remoteYYO2Sgoh;

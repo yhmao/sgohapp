@@ -24,6 +24,14 @@ const form = formidable({
         return utils.yyyymmdd_hhmmss() + '_' + name + ext;
     }
 });
+form.parsePromise = function(req){
+  return new Promise((resolve,reject)=>{
+      form.parse(req, (err,fields,files)=>{
+          if (err) { reject(err);}
+          resolve([fields,files])            
+      });
+  });
+};
 
 // functions
 
@@ -145,6 +153,7 @@ module.exports.verifyPost = function(req,res,next){
   console.log('req.body:', req.body);
   db.User.findOne({'nickname':nickname},function(err,user){
     if (err) { console.log('用户名非法'); res.send(""); }
+    console.log('user:',user);
     res.json(user);
     console.log('/verify done successfully.');
 
@@ -968,17 +977,35 @@ module.exports.usersResponsible = function(req,res,next) {
 };
 
 
-module.exports.myProjectsSelect = function(req,res,next) {
-
-
-
-    // let currentProject = req.body.currentProject;
-    // let user = await db.User.findById(req.user._id);
-    // console.log('user:', user);
-    // user.projects.splice(user.projects.indexOf(currentProject),1)
-    // user.projects.unshift(currentProject);
-    // let u = await user.save();
-    // res.send(`当前项目已切换至：${u.projects[0]}。请退回上页继续其他操作。`);
-
-
+module.exports.userProjectsMakeCurrent = async function(req,res,next) {
+  let id = req.params.id;
+  let index = req.params.index;
+  let user = await db.User.findById(id);
+  console.log('user.projects:', user.projects);  
+  let current = user.projects[index];
+  console.log('to set current:',current);
+  user.projects.splice(index,1);
+  user.projects.unshift(current);
+  console.log('user.projects:', user.projects);
+  user = await user.save();
+  res.json(user);
 };
+
+module.exports.commentsText = async function(req,res,next) {
+  let id = req.params.id;
+  let index = parseInt(req.params.index);
+  let user = req.params.username;
+  console.log('id,index,user:',id,index,user);
+  
+  // let [fields,files] = await form.parsePromise(req);
+  // let text = fields.text;
+  let text = req.body.text;
+  let doc = await db.Record.findById(id);
+  console.log(`doc.children[index].text: ${doc.children[index].text}`);
+  doc.children[index].text = text;
+  doc.dateUpdate = Date.now();
+  doc.markModified('children');
+  doc = await doc.save();
+  console.log(`doc.children[index].text: ${doc.children[index].text}`);
+  res.send(`更改序号为【${index}】评论的说明为【${text}】成功！`);  
+}

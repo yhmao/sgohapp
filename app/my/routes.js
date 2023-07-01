@@ -4,6 +4,7 @@ const passport = require('../../middlewares').passport;
 const formidable = require('formidable');
 const path = require('path');
 const router = require('express')();
+const moment = require('moment');
 router.set('views', path.join(__dirname,'./views'));
 router.set('view engine', 'pug');
 router.set('view engine', 'ejs');
@@ -64,9 +65,11 @@ router.post('/account/edit', function(req,res,next){
 });
 
 router.get('/own_projects',function(req,res,next){
-  db.Project.find({owner:req.user.username}, (err,projects)=>{
+  let filter = {owner:req.user.username};
+  if (req.user.role === 'admin') filter = {};
+  db.Project.find(filter, (err,projects)=>{
     console.log('projects:', projects);
-    res.render('project_list',{projects});
+    res.render('project_list',{projects,moment});
   })
 });
 

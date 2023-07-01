@@ -1,3 +1,11 @@
+<style>
+  td,th{
+    padding:5px 5px;
+    border: 1px solid black;
+  }
+
+</style>
+
 <table class="table table-bordered table-striped">
     <thead>
       <tr>
@@ -16,8 +24,8 @@
       <% projects.forEach(function(p){ %>
         <tr>
           <td><%= p._id %></td>
-          <td><%= p.date %></td>
-          <td><%= p.dateUpdate %></td>          
+          <td><%= moment(p.date).format('YYYY/MM/DD') %></td>
+          <td><%= moment(p.dateUpdate).format('YYYY/MM/DD') %></td>          
           <td><b><%= p.name %></b></td>
           <td><%= p.owner %></td>          
           <td><%= p.description %></td>
