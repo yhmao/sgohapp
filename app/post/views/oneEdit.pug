@@ -1,0 +1,86 @@
+extends layout
+
+block content
+    h1 Edit
+
+    //- 编辑单条记录   <<返回显示    X 删除本条记录
+    div.h4.gray.d-flex.justify-content-between 
+        div 编辑
+        div: a(href=`${MOUNT}/show/${doc._id}`) 显示
+
+        div: a.red(href=`${MOUNT}/edit/${doc._id}/remove`,id='oneRemove') X 删除
+
+    //- 标题        
+    h2.blue(style="margin:30px 0px;") #{doc.title}
+
+
+
+    div
+
+        form(action=`${MOUNT}/edit/${doc._id}`,method="POST",enctype="multipart/form-data")
+            .form-group.row
+                label 标题:
+                input(name="title",value=`${doc.title}`)
+            .form-group.row
+                label 内容
+                textarea.tiny(name="text",id="text") #{doc.text}
+            .form-group.row
+                button 提交
+
+    hr
+    p 评论：#{doc.comments ? doc.comments.length : ""}
+    hr.thick
+
+    //- ====================================================
+    mixin upload(action)
+        div
+            form.ajax(action=action,method="POST", enctype="multipart/form-data")
+                label 上传照片/视频/文件:
+                br
+                input(type='file',name='file',id='file',style='width:100%;')
+                br
+                textarea(name='text', placeholder='评论内容...',rows='10',style='width:100%;')
+                br
+                input(type='text',name='caption', placeholder='附件说明...',style='width:100%;')                
+                input.btn.btn-primary(type='submit',value='上传',style='width:100%;margin-top:5px;')   
+    //- ====================================================
+
+    hr.thick
+
+
+    //- ====================================================
+
+    div(id="comments",style="background-color:#f5f5f5;")
+
+        h4 评论：
+
+
+        +upload(`${MOUNT}/edit/${doc._id}/comments/upload`)
+
+        //- 显示每个评论
+        //- here file = comment
+        if (doc.comments)
+            each comment, idx in doc.comments.reverse()
+                hr
+                - let index = doc.comments.length - 1 - idx;
+                - let showOrEdit = 'edit';
+
+                div
+                    include _comment_show.pug            
+
+
+                    div(style="display: flex; justify-content: flex-end;margin-top:5px;")
+                        a.ajax(href=`${MOUNT}/edit/${doc._id}/comments/${index}/remove`,title=`删除本条,标号为【${index}】`) 
+                            img(src=`/public/static/delete.png`,style="margin-left:370px;height:28px;")
+
+     
+    hr.thick
+
+    include _script_edit.pug
+
+    //- 撑开底部
+    div(style="margin-bottom:200px;") 
+
+
+
+

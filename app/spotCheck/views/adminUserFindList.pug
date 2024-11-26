@@ -1,0 +1,31 @@
+extends _layout
+
+block script 
+    style.
+        body{
+            margin:20px;
+        }
+
+block content 
+    h1.text-center 找到 #{docs.length} 个用户,列表如下
+    each user in docs 
+        .row 
+            .col-sm-6.col-md-10 
+                span _id: #{user._id}           
+            .col-sm-6.col-md-2
+                span 用户：#{user.Name}
+            .col-sm-6.col-md-10
+                span 手机：#{user.Cellphone}
+            .col-sm-6.col-md-10
+                span 角色：#{user.Role}
+            if (user.Right)
+                .col-sm-6.col-md-10
+                    span 部间：#{user.Right}                
+
+            .col-sm-6.col-md-10 
+                span 
+                    a(href=`/spotCheck/admin/user/edit/${user._id}`) 编辑
+            .col-sm-6.col-md-10 
+                span 
+                    a(href=`/spotCheck/admin/user/delete/${user._id}` onclick="return confirm('确定要删除？')") 删除
+        hr

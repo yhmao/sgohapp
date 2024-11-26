@@ -1,0 +1,117 @@
+extends _layout
+
+block content 
+
+    - if (action == 'show')
+        #spotIdShow 
+            h1 显示场所
+            br
+            button 
+                a(href=`/spotCheck/admin/spot/edit/${scSpot._id}`) 编辑
+            button 
+                a(href=`/spotCheck/admin/spot/clone/${scSpot._id}`) 克隆后进行编辑添加
+            br
+            br
+            br
+            p _id:  #{scSpot._id}
+            p 场所： #{scSpot.Spot}
+            p 项目： #{scSpot.Project}
+            p 说明： #{scSpot.Description}
+            p 检查表：#{scSpot.CheckList}
+
+            br
+            br
+            br
+            br
+            br
+
+
+
+    - else if (action == 'edit')
+
+        #spotIdEdit
+            h1 编辑场所
+            br
+
+            form#edit(action=`/spotCheck/admin/spot/edit/${scSpot._id}`,method="POST")
+
+                mixin inputText(labelName,name, value, disabled=false)
+                    .form-group.row
+                        label.col-form-label.col-sm-2(for=name)= labelName 
+                        .col-sm-10 
+                            input.form-control(type="text", id=name, name=name, value=value, disabled = disabled ? true : null )
+                
+                +inputText("_id", "_id", scSpot._id, disabled=true)
+                +inputText("场所", "spot", scSpot.Spot)
+                +inputText("项目", "project", scSpot.Project)
+                +inputText("描述", "description", scSpot.Description)
+
+                .form-group.row 
+                    label.col-form-label.col-sm-2(for="checkList") 检查项 
+                    .col-sm-10 
+                        textarea.form-control(type="text", id="checkList", name="checkList", width="100%", rows=6)= scSpot.CheckList.join('\n')   
+                br
+                .form-group.row 
+                    .col-sm-10.offset-sm-2
+                        button.btn.btn-secondary(type="submit",style="width: 50%") 提交
+                br
+                br
+                br
+                br
+                br
+
+
+
+            //- form#edit(action=`/spotCheck/admin/spot/edit/${scSpot._id}`,method="POST")
+            //-     input(type="text", name="_id", id="_id", value=`${scSpot._id}`)
+            //-     input(type="text", name="spot", id="spot", value=`${scSpot.Spot}`)
+            //-     input(type="text", name="project", id="project", value=`${scSpot.Project}`)
+            //-     input(type="text", name="description", id="description", value=`${scSpot.Description}`)
+            //-     textarea(name="checklist", id="checklist",width="100%",rows="6")= scSpot.CheckList.join('\n')
+            //-     input(type="submit", name="submit", id="submit", value="提交更新")
+
+
+
+    - else if (action == 'clone')
+
+        #spotIdClone
+            h1 根据克隆的内容创建新的场所
+            br
+            form#clone(action=`/spotCheck/admin/spot/add`,method="POST")
+
+                mixin inputText(labelName,name, value, disabled=false)
+                    .form-group.row
+                        label.col-form-label.col-sm-2(for=name)= labelName 
+                        .col-sm-10 
+                            input.form-control(type="text", id=name, name=name, value=value, disabled = disabled ? true : null )
+                
+                +inputText("_id", "_id", scSpot._id, disabled=true)
+                +inputText("场所", "spot", scSpot.Spot)
+                +inputText("项目", "project", scSpot.Project)
+                +inputText("描述", "description", scSpot.Description)
+
+                .form-group.row 
+                    label.col-form-label.col-sm-2(for="checkList") 检查项 
+                    .col-sm-10 
+                        textarea.form-control(type="text", id="checkList", name="checkList", width="100%", rows=6)= scSpot.CheckList.join('\n')   
+                br
+                .form-group.row 
+                    .col-sm-10.offset-sm-2
+                        button.btn.btn-secondary(type="submit",style="width: 50%") 创建新的场所
+
+                br
+                br
+                br
+                br
+                br
+
+
+
+
+                
+                //- //- input(type="text", name="_id", id="_id", value=`${scSpot._id}`)
+                //- input(type="text", name="spot", id="spot", value=`${scSpot.Spot}`)
+                //- input(type="text", name="project", id="project", value=`${scSpot.Project}`)
+                //- input(type="text", name="description", id="description", value=`${scSpot.Description}`)
+                //- textarea(name="checklist", id="checklist",width="100%",rows="6")= scSpot.CheckList.join('\n')
+                //- input(type="submit", name="submit", id="submit", value="创建新的场所")   

@@ -56,6 +56,7 @@ let errorHandler = function(err, req, res, next) {
   console.log('err:',err);
   console.log('err.stack:', err.stack);
   if (res.headersSent) {
+    console.log('res.headersSent.');
     return next(err)
   }
   var errorLog = new db.ErrorLog({
@@ -67,8 +68,9 @@ let errorHandler = function(err, req, res, next) {
   errorLog.save(()=>{
     console.log('errorLog.save ok.');
     res.status(500);
-    res.send( `<p>errorHandler - Error: </p>${err} <p> ${moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')} </p>
-      <p>Request: ${req.originalUrl}</p><p>User: ${req.user}</p>` );
+    // res.send( `<p>errorHandler - Error: </p>${err} <p> ${moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')} </p>
+    //   <p>Request: ${req.originalUrl}</p><p>User: ${req.user}</p>` );
+    res.redirect('/');
     console.log('res sent to client.');
   });
 };

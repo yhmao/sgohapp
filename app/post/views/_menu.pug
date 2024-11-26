@@ -1,0 +1,16 @@
+div(id="menu")
+
+    nav.navbar.navbar-expand-md.bg-dark.navbar-dark
+        a.navbar-brand(id="filter", href="#"): b 知识与博文&gt;请选择：
+        button.navbar-toggler(type="button" data-toggle="collapse" data-target="#collapsibleNavbar")
+            span.navbar-toggler-icon
+        div.collapse.navbar-collapse(id="collapsibleNavbar")
+            ul.navbar-nav
+            li.nav-item: a.nav-link(id="home" href=`${MOUNT}/`) 博文首页            
+                li.nav-item: a.nav-link(id="create" href=`${MOUNT}/create`) 新建          
+                li.nav-item: a.nav-link(id="my" href=`${MOUNT}/my`) 我的
+            ul.navbar-nav   
+                li.nav-item: div.nav-link
+                    form(action=`${MOUNT}/list`,method="POST")
+                        input(type="text", placeholder="输入要搜索的关键词......",id="form1",name="text")         
+                        input(type="submit",value="搜索")                                

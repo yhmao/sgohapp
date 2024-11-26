@@ -1,0 +1,220 @@
+[{
+  "_id": {
+    "Venue": "Big Opera Hall 大歌剧厅",
+    "System": "PL 演出灯光"
+  },
+  "Group1": [
+    "3 Installed Equipment",
+    "4 Portable Equipment 便携式设备",
+    "5 Preliminaries and Engineering 准备工作和施工"
+  ],
+  "Total": 235
+},
+{
+  "_id": {
+    "Venue": "Big Opera Hall 大歌剧厅",
+    "System": "SC 音响通讯"
+  },
+  "Group1": [
+    "8 Preliminaries and Engineering 准备工作和施工",
+    "4 SOUND EQUIPMENT 音响设备",
+    "3 Installed Equipment 固定安装设备",
+    "6 LOOSE EQUIPMENT 流动设备",
+    "7 Installed Temporary Cable Routes",
+    "5 COMMUNICATIONS EQUIPMENT 通讯设备"
+  ],
+  "Total": 367
+},
+{
+  "_id": {
+    "Venue": "Big Opera Hall 大歌剧厅",
+    "System": "SE 舞台机械"
+  },
+  "Group1": [
+    "7 OVERSTAGE EQUIPMENT - FORESTAGE 台上设备 - 舞台前部",
+    "10 ADDITIONAL EQUIPMENT 额外设备",
+    "4 UNDERSTAGE EQUIPMENT - FORESTAGE 台下设备 - 舞台前部",
+    "UNDERSTAGE  EQUIPMENT - SUPPORT 5 STAGES\r\n台下设备 - 辅助舞台",
+    "9 CONTROL SYSTEMS 控制系统",
+    "8 OVERSTAGE EQUIPMENT - SUPPORT STAGES 台上设备 - 支持舞台",
+    "12 BUILDING INFRASTRUCTURE",
+    "11 OPERA REHEARSAL ROOM EQUIPMENT 合成排练厅设备",
+    "6 OVERSTAGE EQUIPMENT - STAGE HOUSE 台上设备 - 台塔",
+    "3 UNDERSTAGE EQUIPMENT - STAGE HOUSE 台下设备 - 台塔"
+  ],
+  "Total": 57
+},
+{
+  "_id": {
+    "Venue": "Lecture Theatre 学术报告厅",
+    "System": "PL 演出灯光"
+  },
+  "Group1": [
+    "4 Portable Equipment 便携式设备",
+    "5 Preliminaries and Engineering 准备工作和施工",
+    "3 Installed Equipment"
+  ],
+  "Total": 150
+},
+{
+  "_id": {
+    "Venue": "Lecture Theatre 学术报告厅",
+    "System": "SC 音响通讯"
+  },
+  "Group1": [
+    "5 COMMUNICATIONS EQUIPMENT 通讯设备",
+    "4 SOUND EQUIPMENT 音响设备",
+    "6 LOOSE EQUIPMENT 流动设备",
+    "3 Installed Equipment 固定安装设备",
+    "7 Installed Temporary Cable Routes",
+    "8 Preliminaries and Engineering 准备工作和施工"
+  ],
+  "Total": 239
+},
+{
+  "_id": {
+    "Venue": "Lecture Theatre 学术报告厅",
+    "System": "SE 舞台机械"
+  },
+  "Group1": [
+    "5  ADDITIONAL EQUIPMENT 额外设备",
+    "3 OVERSTAGE EQUIPMENT 台上设备",
+    "4  CONTROL SYSTEMS 控制系统",
+    "6  BUILDING INFRASTRUCTURE 建筑基础设施"
+  ],
+  "Total": 7
+},
+{
+  "_id": {
+    "Venue": "Medium Opera Hall 中歌剧厅",
+    "System": "PL 演出灯光"
+  },
+  "Group1": [
+    "3 Installed Equipment",
+    "4 Portable Equipment 便携式设备",
+    "5 Preliminaries and Engineering 准备工作和施工"
+  ],
+  "Total": 233
+},
+{
+  "_id": {
+    "Venue": "Medium Opera Hall 中歌剧厅",
+    "System": "SC 音响通讯"
+  },
+  "Group1": [
+    "6 LOOSE EQUIPMENT 流动设备",
+    "3 Installed Equipment 固定安装设备",
+    "4 SOUND EQUIPMENT 音响设备",
+    "7 Installed Temporary Cable Routes 安装临时电缆线路",
+    "8 Preliminaries and Engineering 准备工作和施工",
+    "5 COMMUNICATIONS EQUIPMENT 通讯设备"
+  ],
+  "Total": 339
+},
+{
+  "_id": {
+    "Venue": "Medium Opera Hall 中歌剧厅",
+    "System": "SE 舞台机械"
+  },
+  "Group1": [
+    "3 UNDERSTAGE EQUIPMENT - STAGE HOUSE 台下设备 - 台塔",
+    "UNDERSTAGE EQUIPMENT - SUPPORT 5 STAGES\r\n台下设备 - 辅助舞台",
+    "7 OVERSTAGE EQUIPMENT - FORESTAGE 台上设备 - 舞台前部",
+    "4 UNDERSTAGE EQUIPMENT - FORESTAGE 台下设备 - 舞台前部",
+    "CONTROL SYSTEMS 9 控制系统",
+    "10 ADDITIONAL EQUIPMENT 额外设备",
+    "8 OVERSTAGE EQUIPMENT - SUPPORT STAGES 台上设备 - 支持舞台",
+    "6 OVERSTAGE EQUIPMENT - STAGE HOUSE 台上设备 - 台塔"
+  ],
+  "Total": 56
+},
+{
+  "_id": {
+    "Venue": "Small Opera Hall 小歌剧厅",
+    "System": "PL 演出灯光"
+  },
+  "Group1": [
+    "3 Installed Equipment",
+    "4 Portable Equipment 便携式设备",
+    "5 Preliminaries and Engineering 准备工作和施工"
+  ],
+  "Total": 199
+},
+{
+  "_id": {
+    "Venue": "Small Opera Hall 小歌剧厅",
+    "System": "SC 音响通讯"
+  },
+  "Group1": [
+    "5 COMMUNICATIONS EQUIPMENT 通讯设备",
+    "4 SOUND EQUIPMENT 音响设备",
+    "6 LOOSE EQUIPMENT 流动设备",
+    "3 Installed Equipment 固定安装设备",
+    "7 Installed Temporary Cable Routes",
+    "8 Preliminaries and Engineering 准备工作和施工"
+  ],
+  "Total": 318
+},
+{
+  "_id": {
+    "Venue": "Small Opera Hall 小歌剧厅",
+    "System": "SE 舞台机械"
+  },
+  "Group1": [
+    "3 UNDERSTAGE EQUIPMENT 台下设备",
+    "6 ADDITIONAL EQUIPMENT 额外设备",
+    "5 CONTROL SYSTEMS 控制系统"
+  ],
+  "Total": 21
+},
+{
+  "_id": {
+    "Venue": "Support Space 排练厅和支持空间",
+    "System": "PL 演出灯光"
+  },
+  "Group1": [
+    "4 Portable Equipment 便携式设备",
+    "5 Preliminaries and Engineering 准备工作和施工",
+    "3 Installed Equipment"
+  ],
+  "Total": 56
+},
+{
+  "_id": {
+    "Venue": "Support Space 排练厅和支持空间",
+    "System": "SC 音响通讯"
+  },
+  "Group1": [
+    "14 Video Editing Room 25 视频编辑室25",
+    "13 Central Equipment Room 24 中央设备室24",
+    "8 Large Chorus Rehearsal Room 14 合唱大排练厅14",
+    "12 Small Dance Rehearsal 22-23 舞蹈小排练厅22-23",
+    "6 Vocal Rehearsal Rooms 3-6 声部排练室3-6",
+    "17 Sound Studio Live Room 28 音响工作室现场室",
+    "3 Installed Equipment 固定安装设备",
+    "18 Audio Editing Room 27A 音频编辑室 27A",
+    "9 Small Chorus Rehearsal Room 15-18 合唱小排练室15-18",
+    "4 Large Orchestra Rehearsal Room 1 乐队大排练厅",
+    "11 Medium Dance Rehearsal 20-21 舞蹈中排练厅20-21",
+    "20 Preliminaries and Engineering 准备工作和施工",
+    "19 Building Wide Paging System 楼宇传呼系统",
+    "5 Chamber Rehearsal Room 2 室内乐排练室2",
+    "16 Sound Studio Control Room 27 音响工作室控制室",
+    "7 Small Music Rehearsal Rooms 7-12 小型器乐排练用房7-12",
+    "15 Broadcast Control Room 26 现场转播控制室26",
+    "10 Large Dance Rehearsal Room 19 舞蹈大排练厅19"
+  ],
+  "Total": 310
+},
+{
+  "_id": {
+    "Venue": "Support Space 排练厅和支持空间",
+    "System": "SE 舞台机械"
+  },
+  "Group1": [
+    "4 PAINT ROOM 绘景间",
+    "3 REHEARSAL ROOM EQUIPMENT 排练厅",
+    "5  BUILDING INFRASTRUCTURE 建筑基础设施"
+  ],
+  "Total": 8
+}]

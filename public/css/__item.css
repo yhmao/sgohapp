@@ -1,0 +1,12 @@
+.key {  
+    font-size: x-small;
+    font-style: italic;
+};
+.value {
+    font-size: small;
+};
+.title {
+    font-size: 3rem;
+    font-weight: bold;
+    
+}

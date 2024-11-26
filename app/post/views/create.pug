@@ -1,14 +1,16 @@
 extends layout
 
 block content
-    h1 new Form
+    h1 create
 
     .row
         .col-12.col-md-8
-            form(action="/post/post/new",method="POST")
+            form(action="/post/create",method="POST",enctype="multipart/form-data")
                 .form-group.row
+                    label 标题:
                     input(name="title")
                 .form-group.row
-                    textarea(name="text")
+                    label 内容
+                    textarea.tiny(name="text",id="text")
                 .form-group.row
                     button 提交

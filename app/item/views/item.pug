@@ -1,0 +1,43 @@
+extends _layout
+
+block content 
+    -   
+        let f = function(key){
+            return key.match(/^[^_A-Za-z].*/)
+        }
+        let keys = Object.keys(item.toJSON()).filter(f)
+        let item2 = item.toJSON();
+        if (item2.dateCreated) item2.dateCreated = new Date(item2.dateCreated).toISOString().split('T')[0]
+        if (item2.dateUpdated) item2.dateUpdated = new Date(item2.dateUpdated).toISOString().split('T')[0]
+
+    .container
+        h3 Item 
+
+
+
+        if (item2.Cat == "舞台TP")
+            .row 
+                .col-sm-2.key 文档号 
+                .col-sm-10.value: a(href=`/uploadItem/${item2.Document}.pdf`) #{item2.Document} 
+                    a(href=`/uploadItem/${item2.Document.slice(0,14) + "1.pdf"}`) 【技术规范】
+            .row
+                .col-sm-2.key 场馆 
+                .col-sm-10.value= item2.Venue
+            .row 
+                .col-sm-2.key 时间 
+                .col-sm-10.value #{item2.dateCreated}
+            hr
+
+
+        each key in keys
+            .row
+                .col-sm-12.key(style="color:grey")= key 
+                .col-sm-12.value(style="white-space: pre-wrap;margin-bottom:5px;") #{item2[key]}
+            //- hr(style="color:gray")
+
+
+        hr
+
+
+
+    

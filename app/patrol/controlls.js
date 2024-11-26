@@ -45,181 +45,253 @@ module.exports.create = async function(req,res,next) {
     res.redirect(`${require('./mount.js')}/edit/${doc._id}`);
 }
 
-function data2Agg(project,from,to,sort,patrolType,my,exposure,annotation,status,myResponsible,responsible,text,req,res,next) {
-    let agg = db.Record.aggregate();    
+function makeAggregateFromFormData(formData,req,res) {
+    console.log('makeAggregateFromFormData');
+    let {project,from,to,sort,patrolType,my,exposure,annotation,status,myResponsible,responsible,text} = formData;
 
+    let timeSpan;
+    let agg = db.Record.aggregate(); 
+    
     agg.match({project})
 
-    // timeSpan (from, to, sort) 时间区间 （从，止，筛)
-    if (!from){from = new Date(Date.now() - 1000*60*60*24*7)} // -7days
-    if (!to) {to = new Date()} 
-    console.log('from,to:',from,to);
-    from = moment(from).startOf('day').toDate();
-    to = moment(to).endOf('day').toDate();
-    // console.log('to:',to);
-    sort = sort || 'dateUpdate';
-    // query objects
-    let timeSpan;
-    if (sort === 'date') {  timeSpan = {date:{$gte:from, $lte:to}};  } 
-    else { timeSpan = {dateUpdate: {$gte:from, $lte:to}}; }
+    let makeTimeSpanAndSort = function(){
+        // timeSpan (from, to, sort) 时间区间 （从，止，筛)
+        if (!from){from = new Date(Date.now() - 1000*60*60*24*7)} // -7days
+        if (!to) {to = new Date()} 
+        console.log('from,to:',from,to);
+        from = moment(from).startOf('day').toDate();
+        to = moment(to).endOf('day').toDate();
+        // console.log('to:',to);
+        sort = sort || 'dateUpdate';
+        // query objects
+
+        if (sort === 'date') {  timeSpan = {date:{$gte:from, $lte:to}};  } 
+        else { timeSpan = {dateUpdate: {$gte:from, $lte:to}}; } 
+
+        // sort 排序
+        sort = sort==='date'? {date:-1} : {dateUpdate:-1};
+
+        console.log('timespan:', timeSpan);
+        console.log('sort:', sort)
+        return {timeSpan,sort};       
+    }
+    timeSpan= makeTimeSpanAndSort().timeSpan;
+    sort = makeTimeSpanAndSort().sort;
+
     agg.match(timeSpan);
 
-    // patrolType 巡视类别
-    if (patrolType) { patrolType = {patrolType:patrolType}; }
+    let makePatrolType = function() {
+        // patrolType 巡视类别
+        if (patrolType) { 
+            patrolType =  {patrolType:patrolType};             
+        } else {
+            patrolType = null;
+        }
+        console.log('patrolType:', patrolType)
+        return patrolType;
+    }
+    patrolType = makePatrolType();
     if(patrolType) { agg.match(patrolType);}
 
-    // my 我的
-    if (my === 'myAll') { my = {user:req.user.username}} 
-    if (my === 'myPublic') {my = {user:req.user.username,exposure:'public'}}
-    if (my === 'myPrivate') {my = {user:req.user.username, exposure:'private'}}
+    let makeMy = function(){
+        // my 我的
+        if (my === 'myAll') { my = {user:req.user.username}} 
+        if (my === 'myPublic') {my = {user:req.user.username,exposure:'public'}}
+        if (my === 'myPrivate') {my = {user:req.user.username, exposure:'private'}}   
+        if (my === '') {my=null;} 
+        console.log('my:', my);
+        return my;
+    }
+    my = makeMy();
     if (my) { agg.match(my);}
 
-    // exposure 可见性
-    exposure = exposure || 'public';    
-    exposure = {exposure: exposure };
+    let makeExposure = function(){
+        // exposure 可见性
+        // exposure = exposure || 'public';    
+        if (exposure) {
+            exposure = {exposure: exposure };             
+        } else {
+            exposure = null;
+        }
+        console.log('exposure:', exposure);
+        return exposure;       
+    }
+    exposure = makeExposure();
     if(exposure) { agg.match(exposure);}
 
-    // annotation 巡视情况
-    annotation = annotation;    
-    if (annotation) {  annotation = {annotation: annotation}; }
+    let makeAnnotation = function(){
+        // annotation 巡视情况 
+        if (annotation) {  annotation = {annotation}; }  
+        else {annotation = null;}
+        console.log('annotation:', annotation);
+        return annotation;      
+    }
+    annotation = makeAnnotation();
     if(annotation) { agg.match(annotation);}
 
-    // status 状态
+    let makeStatus = function(){
+        // status 状态        
+        if (status) { status = {status};}
+        else {status = null;}
+        console.log('status:', status)
+        return status;
+    }
+    status = makeStatus();
     if (status) { agg.match({status})}
 
-    //myResponsible
-    if (myResponsible){
-        myResponsible = {$or:[
-            {'files.responsible':req.user.username},
-            {'children.responsible': req.user.username}
-        ]};
+    let makeMyResponsible = function(){
+        //myResponsible
+        if (myResponsible){
+            myResponsible = {$or:[
+                {'files.responsible':req.user.username},
+                {'children.responsible': req.user.username}
+            ]};
+        } else {
+            myResponsible = null;
+        }
+        console.log('myResponsible:', myResponsible)
+        return myResponsible;        
     }
+    myResponsible = makeMyResponsible();
     if (myResponsible) { agg.match(myResponsible); }
 
-
-    // responsible
-    if (responsible){
-        responsible = {$or:[
-            {'files.responsible':responsible},
-            {'children.responsible': responsible}
-        ]};
+    let makeResponsible = function(){
+        // responsible
+        if (responsible){
+            responsible = {$or:[
+                {'files.responsible':responsible},
+                {'children.responsible': responsible}
+            ]};
+        }  else {
+            responsible = null;
+        }
+        console.log('responsible:', responsible);
+        return responsible;      
     }
+    responsible = makeResponsible();
     if (responsible) { agg.match(responsible); }    
 
+    let makeText = function(){
+        // text 文本搜索
+        if (text) { text = utils.makeTextSearch(text); }  
+        else {text = null;}  
+        console.log('text:', text)
+        return text;    
+    }
+    text = makeText();
+    if(text) {agg.match(text);}; 
 
-    // text 文本搜索
-    if (text) { text = utils.makeTextSearch(text); }
-    if(text) {agg.match(text);}     
-    
-
-    // sort 排序
-    sort = sort==='date'? {date:-1} : {dateUpdate:-1};
-
-
-    return [project,from,to,sort,patrolType,my,exposure,annotation,status,myResponsible,responsible,text,timeSpan,agg];
-    // return individul match like {exposure:'public'} or ''。
-    // agg: only $match
+    return agg; 
 }
 
 
 module.exports.list = async function(req,res,next){
     console.log('/list');
-    console.log('req.body:',req.body);
+    // console.log('req.body:',req.body);
     let q = req.body;
+    let getSearchFormData = function() {
+        let formData = req.body;
+        console.log('Form Data: ', formData);
+        return formData;
+    }
+    let formData = getSearchFormData();
 
-    // q: {
-    //     project: '上海大歌剧院',
-    //     from: '2022-11-23',
-    //     to: '2023-06-26',
-    //     sort: 'dateUpdate',
-    //     patrolType: '',
-    //     my: '',
-    //     exposure: 'public',
-    //     annotation: '',
-    //     status: '',
-    //     myResponsible: '',
-    //     responsible: '',
-    //     text: '',
-    //     submit: '提交'
-    //   }
-    res.cookie('q',q);
-    // let [fields,files] = await form.parsePromise(req);
-    // console.log('fields:',fields);
-    let {project,from,to,sort,patrolType,my,exposure,annotation,status,myResponsible,responsible,text} = req.body;
-    project = project || req.user.projects[0];
-    // set cookies
-    // res
-    //     .cookie('from',from)
-    //     .cookie('to',to)
-    //     .cookie('sort',sort)
-    //     .cookie('user',user)
-    //     .cookie('exposure',exposure)
-    //     .cookie('annotation',annotation)
-    //     .cookie('patrolType',patrolType)
-    //     .cookie('text',text) 
+    let setFormDataToCookie = function(){
+        res.cookie('q',req.body)
+        console.log('set form data to cookie');
+    }
+    setFormDataToCookie();
 
-    let agg,timeSpan;
-    [project,from,to,sort,patrolType,my,exposure,annotation,status,myResponsible,responsible,text,timeSpan,agg] 
-        = data2Agg(project,from,to,sort,patrolType,my,exposure,annotation,status,myResponsible,responsible,text,req,res,next);
+    agg = makeAggregateFromFormData(formData,req,res);
+    console.log('agg:', agg)
+    console.log(JSON.stringify(agg.pipeline()));
 
-    let aggTotal =  db.Record.aggregate(agg.pipeline());
-    aggTotal.count('count');
-    // aggTotal.pipeline(): [
-    //     { '$match': { '$and': [Array] } },
-    //     { '$match': { dateUpdate: [Object] } },
-    //     { '$count': 'count' } ] 
-    console.log('aggTotal pipeline:',JSON.stringify(aggTotal.pipeline()));
-    let total,pages,docs;
-    try {
-        total = (await aggTotal.exec())[0].count;
-    } catch (err) {        
-        total = pages = 0;  docs = {};
-        res.render('list.pug',{docs,pages,total,user:req.user});
+    let sort = req.body.sort==='date'? {date:-1} : {dateUpdate:-1};
+
+
+
+    var total,pages,docs;
+    let findTotalPagesAndHandleZeroFound= async function(){
+        let aggTotal = db.Record.aggregate(agg.pipeline());
+        aggTotal.count('count');        
+        // console.log('aggTotal pipeline:',JSON.stringify(aggTotal.pipeline()));
+
+        try {
+            total = (await aggTotal.exec())[0].count;
+        } catch (err) {        
+            total = pages = 0;  docs = {};
+
+        }
+
+        console.log('total:', total);
+        pages = Math.ceil(total/20);
+        console.log('pages:', pages);
+        return total, pages;
+    }
+
+    total,pages = await findTotalPagesAndHandleZeroFound();
+    if (!total || !pages) {
+        res.render('list.pug',{docs:{},pages,total,user:req.user});
         return;   // 出错不再继续
     }
 
-    console.log('total:', total);
-    pages = Math.ceil(total/20);
-    console.log('pages:', pages);
+    let setTotalPagesToCookie = function() {
+        res
+            .cookie('total',total)
+            .cookie('pages',pages)            
+    }
+    setTotalPagesToCookie();
 
-    // set cookie: total, pages
-    res
-        .cookie('total',total)
-        .cookie('pages',pages)    
-    agg
-        .sort(sort)
-        .limit(20)
-    console.log('agg pipeline docs :', agg.pipeline());   
-    console.log(JSON.stringify(agg.pipeline()));
+    let addSortLimitToAggregate = function() {
+        agg
+            .sort(sort)
+            .limit(20)      
+    }
+    addSortLimitToAggregate();
 
-
-    docs = await agg.exec();
-    console.log('docs.length:', docs.length);
-    res.render('list.pug',{docs,pages,total,user:req.user})
+    let runAgg = async function(){
+        docs = await agg.exec();
+        console.log('docs.length:', docs.length);
+        res.render('list.pug',{docs,pages,total,user:req.user})        
+    }
+    runAgg();
 
 };
 
-module.exports.page = async function(req,res,next){
-    
-    console.log('req.cookies:',req.cookies);
-    let {q,pages,total} = req.cookies;
-    console.log('q:',q);
-    let {project,from,to,sort,patrolType,my,exposure,annotation,status,myResponsible,responsible,text} = q;
-    let page = parseInt(req.params.page);
-    pages = parseInt(pages);
-    total = parseInt(total);
-    console.log('page:',page);
+module.exports.page = async function(req,res,next){    
 
-    let agg,timeSpan;
-    [project,from,to,sort,patrolType,my,exposure,annotation,status,myResponsible,responsible,text,timeSpan,agg] 
-        = data2Agg(project,from,to,sort,patrolType,my,exposure,annotation,status,myResponsible,responsible,text,req,res,next);
+    let getFormDataFromCookies = function () {
+        let formData = req.cookies.q;
+        console.log('getFormDataFromCookies:', formData);
+        return formData;
+    }  
+    let getTPP = function(){ // total, page, pages
+        let page = parseInt(req.params.page);
+        let pages = parseInt(req.cookies.pages);
+        let total = parseInt(req.cookies.total);
+        console.log(`getTPP: total: ${total}, pages: ${pages}, page: ${page}.`)
+        return [total, pages, page];
+    }
+    let formData = getFormDataFromCookies();
+    let [total, pages, page] = getTPP();
+    console.log(`getTPP2: total: ${total}, pages: ${pages}, page: ${page}.`)
 
-    agg
-        .sort(sort)
-        .skip((page-1)*20)
-        .limit(20)
-    console.log('agg pipeline:', agg.pipeline());   
-    console.log(JSON.stringify(agg.pipeline()));
+    let agg, sort;
+    agg = makeAggregateFromFormData(formData,req,res);
+
+
+    let addSortSkipLimitToAggregate = function() {
+        sort = req.cookies.q.sort==='date'? {date:-1} : {dateUpdate:-1};
+        console.log('sort:', sort);        
+        agg
+            .sort(sort)
+            .skip((page-1)*20)
+            .limit(20)
+        console.log('agg pipeline:', agg.pipeline());   
+        console.log(JSON.stringify(agg.pipeline()));
+    }
+    addSortSkipLimitToAggregate();
+
 
     let docs = await agg.exec();
     res.render('list.pug',{docs,pages,total,page,user:req.user})

@@ -9,7 +9,7 @@ const IMAGE_EXTS = ['jpeg', 'png', 'bmp', 'tiff', 'gif','jpg'];
 
 // module.export.IMAGE_EXTS = IMAGE_EXTS;
 
-let yyyymmdd_hhmmss = function(){
+module.exports.yyyymmdd_hhmmss = function(){
   var date = new Date();
   var yyyymmdd_hhmmss = date.getFullYear() + ("0" + (date.getMonth()+1)).slice(-2) + ("0" + date.getDate()).slice(-2) + '_'
     + ("0" + date.getHours()).slice(-2) + ("0" + date.getMinutes()).slice(-2) + ("0" + date.getSeconds()).slice(-2);
@@ -18,7 +18,7 @@ let yyyymmdd_hhmmss = function(){
 };
 
 
-let downsizeImage = function(originalImage,cb){  // params: full path
+module.exports.downsizeImage = function(originalImage,cb){  // params: full path
   console.log('downsizeImage...');
   console.log('originalImage: ', originalImage);
   if ( !IMAGE_EXTS.includes(originalImage.split('.').pop().toLowerCase())) { console.log('not an image file for downsizing, return directly.');return cb(); }  // not an image file path
@@ -61,7 +61,7 @@ let downsizeImage = function(originalImage,cb){  // params: full path
   }
 };
 
-let randomString = function(len) {
+module.exports.randomString = function(len) {
   var buf = [];
   var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   var charlen = chars.length;
@@ -74,7 +74,7 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-let makeTextSearch = function(text){
+module.exports.makeTextSearch = function(text){
   // text sentence => {$and: [ {$or:orList}, ...  ]} or { } 
   console.log('function makeTextSearch...');
   console.log('input:', text);
@@ -100,7 +100,7 @@ let makeTextSearch = function(text){
 };
 
 
-let dateSpanObject = function(start,end){
+module.exports.dateSpanObject = function(start,end){
   // start: 10/30/2022, end: 03/08/2023
   // => { '$gte': 2022-10-30T16:00:00.000Z, '$lte': 2023-03-04T15:59:59.999Z }
   let from,to;
@@ -115,7 +115,7 @@ let dateSpanObject = function(start,end){
   return dateSpanObj;
 }
 
-let setInitialQuery = function(user) {  
+module.exports.setInitialQuery = function(user) {  
   let q = { project: user.projects[0], };
   q.exposure = {$ne:"private"};
   if (user.co === 'co') {q.co = user.co;};
@@ -123,7 +123,7 @@ let setInitialQuery = function(user) {
   return q;
 };
 
-let setInitialQList = function(user) {
+module.exports.setInitialQList = function(user) {
   let qList = [];
   qList.push({ project: user.projects[0]});
   qList.push({ exposure: {$ne:"private"} });  
@@ -132,7 +132,7 @@ let setInitialQList = function(user) {
   return qList;
 };
 
-let test = function (req, res, next) {
+module.exports.test = function (req, res, next) {
   let {method,protocol,ip,baseUrl,path,orginalUrl,route} = req;
   let functionPath = `${module.filename} this: ${this}`;
   let config = {functionPath, method, protocol, ip,baseUrl,path,  orginalUrl,route, }
@@ -140,17 +140,6 @@ let test = function (req, res, next) {
 };
 
 
-
-module.exports = exports = {
-  yyyymmdd_hhmmss,
-  downsizeImage,
-  randomString,
-  makeTextSearch,
-  dateSpanObject,
-  setInitialQuery,
-  setInitialQList,
-  test,
-}
 
 module.exports.makeTextSearchShare = function(text){
   // text sentence => {$and: [ {$or:orList}, ...  ]} or { } 
@@ -168,6 +157,81 @@ module.exports.makeTextSearchShare = function(text){
           {"title":{$regex:word, $options:"i"}},
           {"text":{$regex:word, $options:"i"}},
           {"keywords":{$regex:word, $options:"i"}},		
+        ];	
+      andList.push({$or:orList});	
+    } );
+    text = {$and: andList};
+  }
+  // console.log('returning text stringify:', JSON.stringify(text));
+  return text;
+};
+
+module.exports.makeTextSearchPost = function(text){
+  // text sentence => {$and: [ {$or:orList}, ...  ]} or { } 
+  console.log('function makeTextSearch...');
+  console.log('input:', text);
+  if ( text == '' ) { console.log("text == ''"); text = {};}
+  else {
+    console.log("text !== ''");
+    var words = text.split(/(\s+)/).filter( e => e.trim().length > 0);
+    console.log('split to list:', words);
+    var andList = [];
+    words.forEach(function(word){
+      let orList = [
+          {"title":{$regex:word, $options:"i"}},
+          {"text":{$regex:word, $options:"i"}},
+          // {"keywords":{$regex:word, $options:"i"}},		
+        ];	
+      andList.push({$or:orList});	
+    } );
+    text = {$and: andList};
+  }
+  // console.log('returning text stringify:', JSON.stringify(text));
+  return text;
+};
+
+module.exports.makeTextSearchTip = function(text){
+  // text sentence => {$and: [ {$or:orList}, ...  ]} or { } 
+  console.log('function makeTextSearch...');
+  console.log('input:', text);
+  if ( text == '' ) { console.log("text == ''"); text = {};}
+  else {
+    console.log("text !== ''");
+    var words = text.split(/(\s+)/).filter( e => e.trim().length > 0);
+    console.log('split to list:', words);
+    var andList = [];
+    words.forEach(function(word){
+      let orList = [
+          {"title":{$regex:word, $options:"i"}},
+          {"text":{$regex:word, $options:"i"}},
+          {"keywords":{$regex:word, $options:"i"}},	
+          {"cat1":{$regex:word, $options:"i"}},	
+          {"cat2":{$regex:word, $options:"i"}},		
+          {"comments.text":{$regex:word, $options:"i"}},
+          {"comments.caption":{$regex:word, $options:"i"}},
+          {"comments.file":{$regex:word, $options:"i"}},	
+        ];	
+      andList.push({$or:orList});	
+    } );
+    text = {$and: andList};
+  }
+  // console.log('returning text stringify:', JSON.stringify(text));
+  return text;
+};
+
+module.exports.makeTextSearchTipTitle = function(text){
+  // text sentence => {$and: [ {$or:orList}, ...  ]} or { } 
+  console.log('function makeTextSearch...');
+  console.log('input:', text);
+  if ( text == '' ) { console.log("text == ''"); text = {};}
+  else {
+    console.log("text !== ''");
+    var words = text.split(/(\s+)/).filter( e => e.trim().length > 0);
+    console.log('split to list:', words);
+    var andList = [];
+    words.forEach(function(word){
+      let orList = [
+          {"title":{$regex:word, $options:"i"}},	
         ];	
       andList.push({$or:orList});	
     } );

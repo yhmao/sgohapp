@@ -1,0 +1,20 @@
+include _head.pug
+script.
+    $(document).ready(function(){
+        fpPromise.then(fp => {
+            $("#Fp").val(fp)
+        })
+    })
+
+form(action="/spotCheck/project/user/id/update",method="POST")
+    div 
+        label(for="Text") 请输入你已注册姓名或手机号：
+        input(type="text", name="Text", id="Text")  
+
+    div 
+        label(for="Fp") Fp
+        input(type="text", name="Fp",id="Fp")
+    div
+        input(type="submit", name="Submit", id="Submit", value="提交确认是我")
+
+//-  need to submit fp together

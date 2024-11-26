@@ -1,19 +1,45 @@
+const MOUNT = '/post';
+
+// tinymce.init({
+//   selector: 'textarea#text',
+//   plugins: 'image code',
+//   toolbar: 'undo redo | image code',
+//   images_upload_handler: images_upload_handler,
+//   content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+//   init_instance_callback: init_instance_callback,
+// });
+
 tinymce.init({
-  selector: 'textarea#m',
-  plugins: 'image code',
-  toolbar: 'undo redo | image code',
+  selector: 'textarea.tiny',  // only main
+
+  // width: 600,
+  height: 900,
+  plugins: [
+    'advlist autolink link image lists charmap print preview hr anchor pagebreak',
+    'searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking',
+    'table emoticons template paste help'
+  ],
+  toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | ' +
+    'bullist numlist outdent indent | link image | print preview media fullscreen | ' +
+    'forecolor backcolor emoticons | help',
+  menu: {
+    favs: {title: 'My Favorites', items: 'code visualaid | searchreplace | emoticons'}
+  },
+  menubar: 'favs file edit view insert format tools table help',
+  // content_css: 'css/content.css',
   images_upload_handler: images_upload_handler,
   content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
-  init_instance_callback: init_instance_callback,
+  init_instance_callback: init_instance_callback,    
 });
 
 
 function images_upload_handler (blobInfo, success, failure, progress) {
+  console.log('images_upload_handler');
   var xhr, formData;
 
   xhr = new XMLHttpRequest();
   xhr.withCredentials = false;
-  xhr.open('POST', '/post/upload');
+  xhr.open('POST', '/post/edit/tiny/upload');
 
   xhr.upload.onprogress = function (e) {
     progress(e.loaded / e.total * 100);
@@ -21,6 +47,9 @@ function images_upload_handler (blobInfo, success, failure, progress) {
 
   xhr.onload = function() {
     var json;
+
+    console.log('xhr:',xhr);
+    console.log('xhr.responseText:', xhr.responseText);
 
     if (xhr.status === 403) {
       failure('HTTP Error: ' + xhr.status, { remove: true });
@@ -57,6 +86,7 @@ function init_instance_callback (editor) {
   console.log("tinymce " + editor.id + " init finished.");
   var MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
   var observer = new MutationObserver(function (mutations, instance) {
+      console.log('mutations:', mutations);
       var addedImages = new Array();
       $.each(mutations, function (index, mutationRecord) {
           for (var i = 0; i < mutationRecord.addedNodes.length; i++) {
@@ -103,7 +133,7 @@ function init_instance_callback (editor) {
             let filename = imageSrc.split('/').pop();
             console.log('filename:', filename);
             let xhr = new XMLHttpRequest();
-            xhr.open('GET','/post/remove/'+filename);
+            xhr.open('GET',`${MOUNT}/edit/file/${filename}/remove`);
             xhr.send();              
               //delete image from server.
           }

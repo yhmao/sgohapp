@@ -1,0 +1,140 @@
+extends _layout.pug
+
+block script    
+    script        
+        include _scriptSpotOut.js
+        
+
+
+
+block content 
+    br
+    .container
+        .row.h1 
+            .text-center 离场
+
+
+        .row#spotInfo
+            .col 项目 
+                span.h4.text-success #{project} 
+            .col 场所 
+                span.h4.text-success #{spot}
+        .row
+            .col#errInfo(style="display:none;")
+
+        #waitingFp.row 
+            div.text-warning 等待用户识别中......
+
+        //- p (userInfo1/userInfo0:)
+        .row#userInfo1(style="display:none;") 
+            .col 你好：
+                span.h3.text-success#username(name="username")
+            .col.h3.text-success#cellphone(name="cellphone")
+        
+        .row#userInfo0(style="display:none;") 
+            .col.text-danger 你好，未能识别
+        //- hr
+
+        //- p (formFpAdd:)
+        form#formFpAdd(name="formFpAdd", action="#", method="POST",style="display:none;")
+            input(type="text",name="fp",id="fpFormFpAdd",hidden)
+            input(type="text", name="text",placeholder="请输入你的手机号或用户名...",style="width:80%;")
+            input.btn.btn-secondary(type="submit",name="submit",value="请根据我填写的信息再识别我一次", style="width:80%;")
+        //- hr
+
+
+        hr
+
+
+        //- p (formOut:)
+
+        form#formOut(name="formOut", action="#",method="POST", style="display:none;")
+            div(hidden)
+                input(type="text", name="project",value=`${project}`)
+                br
+                input(type="text", name="spot",value=`${spot}`)
+                br
+                input(type="text", name="username")
+                br
+                input(type="text", name="cellphone")
+                br
+                input(type="text", name="fp")
+                br
+            div()
+                input.btn.btn-secondary(type="submit",name="submit",id="submitFormOut", value="确认离场",style="width:80%;")
+        //- p (msgFormOut:)
+        #msgFormOut.text-success(style="display:none;")
+        hr
+        //- p (formChecklist:)
+
+    .container
+        .row.h3 
+            div 填写报告：
+        form#formCheckList(name="formCheckList",action="#", method="POST")
+            div(hidden)
+                input(type="text", name="fp")
+                br
+                input(type="text", name="project", value=`${project}`) 
+                br
+                input(type="text", name="spot", value=`${spot}`)
+                br
+                input(type="text", name="username")
+                br
+                input(type="text", name="cellphone")
+                br
+                input(type="text", name="role")
+                br
+            
+            each item in checkList 
+                div.row.mb-2 
+                    .col
+                        span #{item}
+                    .col
+                        input(type="radio", value="OK",name=`${item}` checked)
+                        label OK&nbsp;&nbsp;
+
+                        input(type="radio", value="NOK", name=`${item}`)
+                        lable NOK
+
+            textarea(name="text",placeholder="请填写说明文字...",rows="5",style="width:80%;")
+            br
+            input.btn.btn-secondary(type="submit",name="submit", id="submitReport", value="提交报告", style="width:80%;")      
+
+        //- hr
+        //- p (提交后的反馈信息:)
+        #msgCheckList.text-success(style="display:none;") 提交后的反馈信息
+        
+
+        //- 选择文件，并缩小后给表单中文件
+        #divPicker(style="display:none;")            
+            .row#filePicker 
+                label.row(for="picker") 请选择照片，可多选:
+                input.row(type="file", name="picker", id="picker", value="",accept="image/*,.heic,.heif", multiple)
+
+        //- 上传照片
+        form#formFileUpload(name="formFileUpload", action="#", method="POST",enctype="multipart/form-data", style="display:none;") 
+            div(hidden)
+                input(type="text", name="docId",id="docId")
+            br
+            //- p （以下框将被隐藏：）
+            //- input file 表单项必需有 accept="image/*" 使安卓手机可以同时当场拍或相册选。
+            input(type="file",name="files",id="files", value="",accept="image/*,.heic,.heif",multiple, hidden )
+
+            br
+            input.btn.btn-secondary(type="submit",id="submitUpload", name="Submit", value="上传现场照片",style="width:80%;")
+
+        //- p (上传图片后的反馈信息:)
+        #msgFileUpload.text-success(style="display:none;")
+        
+        br
+        br
+        br
+
+       
+        hr
+
+
+
+
+
+

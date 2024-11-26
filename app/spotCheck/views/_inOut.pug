@@ -1,0 +1,30 @@
+//- 渲染聚合用户进出场
+
+//- 张三 
+//-         123123  2024-3-12T12:00  in
+//-         123123  2024-3-12T12:00  out
+//- include _head.pug
+
+//- div= JSON.stringify(userInOutList,null,4)
+
+mixin clock(clock)
+    .row(style=`color:${clock.InOut == 'in'? 'red': 'green'}`)
+        .col-1 
+        .col-5= clock.Clock.toLocaleString() 
+        .col-2= clock.InOut
+        .col-4= clock.Spot
+mixin user(user)
+    .row 
+        .col= user._id 
+        .col 
+        .col 
+    each clock in user.Clocks.sort((a,b)=>a.Clock-b.Clock)
+        +clock(clock)
+
+.h5.text-success 查询用户进出场时间
+hr
+
+each user in userInOutList 
+    +user(user)
+
+    br

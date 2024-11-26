@@ -1,3 +1,6 @@
-const postRouter = require('./routes');
+const R = require('./routes');
+const M = require('./mount')
 
-module.exports = exports = postRouter;
+module.exports = function(app){
+    app.use(M,R);
+};

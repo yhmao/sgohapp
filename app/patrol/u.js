@@ -1,7 +1,7 @@
 
 const moment = require('moment');
 
-let updateQueryWithFilter = function(q,filter,req) {
+module.exports.updateQueryWithFilter = function(q,filter,req) {
     console.log('updateQueryWithFilter');
     query = q || {};
     console.log('query:', query);
@@ -53,7 +53,7 @@ let updateQueryWithFilter = function(q,filter,req) {
       return query;
 };
 
-let setPaginationCookies = function(array,q,res) {
+module.exports.setPaginationCookies = function(array,q,res) {
     console.log('paginationCookies');
     let records = array || [];
     let count = records.length;
@@ -69,7 +69,5 @@ let setPaginationCookies = function(array,q,res) {
 
 
 
-module.exports = exports = {
-    updateQueryWithFilter,
-    setPaginationCookies,
-}
+
+

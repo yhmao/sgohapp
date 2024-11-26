@@ -1,0 +1,50 @@
+mixin caption(action,file)
+    form.ajax.inline(action=action,method="POST")
+        button(type="button",title="caption" )
+            img(src=`/public/static/edit.png`) 
+        div 
+            input(type='text',name='caption',value=`${comment.caption||'' }`,required)
+            
+            //- input(type='submit',value="提交")  
+            input(type='submit',value="") 
+
+mixin text(action)
+    div
+        form.ajax.toggle(action=action,method="POST")
+            button(type="button",title="text" )
+                img(src=`/public/static/edit2.png`) 
+            div(style="visibility:hidden;") 
+                textarea(name='text',required,style="width:100%;") #{comment.text}
+                
+                //- input(type='submit',value="提交")  
+                input(type='submit',value="提交") 
+            
+div
+    if (showOrEdit === 'edit' && comment.file)
+        div.gray 【#{index}】  #{comment.caption || '-'}
+        +caption(`${MOUNT}/edit/${doc._id}/comments/${index}/caption`,file)
+    else if (showOrEdit === 'show' && comment.file)
+        div.gray 【#{index}】 #{comment.caption || '-'}
+    else if (showOrEdit === 'show' && !comment.file)
+        div.gray 【#{index}】 
+
+    div.gray.small 
+        div 
+        span #{moment(comment.created).format('YYYY/MM/DD HH:mm:ss')} 
+            | #{comment.modified? '|' + moment(comment.modified).format('YYYY/MM/DD HH:mm:ss') :'' }
+
+
+    if (comment.file)
+        if (['jpg','png','tiff','jpeg','gif','heic','webp'].includes(comment.file.split('.').pop().toLowerCase()))
+            a(href=`/uploadPost/${comment.file}`): img.w-100(src=`/uploadPost/${comment.file}`, style="max-width:500px;;max-height:400px;border:1px solid black;") 
+        else if (['mp4','ogg','webm', 'mov','wmv','avi','flv','swf','mkv','mpeg'].includes(comment.file.split('.').pop().toLowerCase()))
+            a(href=`/uploadPost/${comment.file}`): video.w-100(src=`/uploadPost/${comment.file}`, type="video/mp4", style="max-width:500px;max-height:400px;border:1px solid black;",controls,autoplay) 
+        else 
+            a(href=`/uploadPost/${comment.file}`): span=comment.file
+
+    if (comment.text)
+        if ( showOrEdit === 'show')
+            div.blue(style='white-space:pre-wrap;overflow-wrap: break-word;') #{comment.text}
+        else if ( showOrEdit === 'edit')
+            div.text.blue(style='white-space:pre-wrap;overflow-wrap: break-word;') #{comment.text}        
+            +text(`${MOUNT}/edit/${doc._id}/comments/${index}/text`)

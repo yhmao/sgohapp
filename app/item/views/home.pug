@@ -1,0 +1,56 @@
+extends _layout.pug
+
+block content 
+
+    .container 
+        p 舞台工程量清单数据之快捷方式：
+        p: a(href="/item/agg/wt/venue") 按空间分类统计金额
+        p: a(href="/item/agg/wt/profession") 按专业分类统计金额
+        p: a(href="/item/agg/wt/pv") 按空间与专业分类统计金额
+        p: a(href="/item/listFiles") 列出所有文件
+
+
+    .container 
+        p 前三个框可以双击后选取搜索选项。输入后点击搜索。
+        form(action="/item/list",method='POST') 
+            .container 
+                .row
+                    .col-sm-2 
+                        label Cat
+                    .col-sm-10
+                        input(type="text", placeholder="选择类别", name="Cat", list="cat-list")
+                        datalist#cat-list 
+                            option(value="舞台TP")
+                            option(value="舞台投标")
+                            option(value="弱电")
+                .row
+                    .col-sm-2 
+                        label Venue
+                    .col-sm-10    
+                        input(type="text", placeholder="选择场馆", name="Venue",list="venue-list")                
+                        datalist#venue-list 
+                            option(value="大歌剧厅")
+                            option(value="中歌剧厅")
+                            option(value="小歌剧厅")   
+                            option(value="学术报告厅")                   
+                            option(value="支持空间")                               
+                .row
+                    .col-sm-2 
+                        label System
+                    .col-sm-10
+                        input(type="text", placeholder="选择系统", name="System",list="system-list")                
+                        datalist#system-list 
+                            option(value="灯光")
+                            option(value="音响")
+                            option(value="机械")   
+                            option(value="EA")       
+                .row 
+                    .col-sm-2
+                        label SearchText
+                    .col-sm-10
+                        input(type="text", placeholder="输入搜索文本", name="Text")                
+                .row
+                    .col-sm-2 
+                    .col-sm-10
+                        input(type="submit",value="搜索")
+        

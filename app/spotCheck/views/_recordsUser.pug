@@ -1,0 +1,11 @@
+
+for record in scRecords 
+    .row 
+        .col= record.DateCreated.toLocaleString()
+        .col= `图片${record.Files.length}张`
+        
+    .row        
+        .col= `说明：${record.Text?record.Text:''}` 
+        .col= `List: ${record.List}`
+
+    hr

@@ -9,8 +9,14 @@ body{
     margin-top: 2%;
 }
 input, textarea, select{ 
-    background-color:lightgrey;color:blue;
+    background-color:gainsboro;color:blue;
 }
+
+.tox-edit-area {
+    background-color:gainsboro;color:blue;
+}
+
+
 
 .caption{color:blue;}
 .blue{color:blue;}
@@ -23,6 +29,7 @@ input, textarea, select{
 .row select,textarea{
     width:80%;
 }
+.small{font-size:small;}
 
 form.inline > div{
     visibility:hidden;

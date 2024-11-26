@@ -1,0 +1,29 @@
+extends _layout
+
+block content 
+    h1.text-center 编辑用户
+    .div 
+        form(action=`/spotCheck/admin/user/edit/${user._id}`,method="POST")
+            .row
+                .col-sm-2.col-md-2
+                    span 姓名：
+                .col-sm-10.col-md-10
+                    input(type="text",name="name",id="name", value=`${user.Name}` , placeholder="请输入用户名")               
+            .row
+                .col-sm-2.col-md-2
+                    span 手机号：
+                .col-sm-10.col-md-10
+                    input(type="text",name="cellphone",id="cellphone", value=`${user.Cellphone}` , placeholder="请输入用户手机号")
+            .row
+                .col-sm-2.col-md-2
+                    span 角色：
+                .col-sm-10.col-md-10
+                    input(type="text",name="role",id="role", value=`${user.Role}` , placeholder="请输入用户角色")         
+            .row
+                .col-sm-2.col-md-2
+                .col-sm-10.col-md-10
+                    input(type="submit",name="submit",id="submit", value="点击提交更改")
+
+
+
+

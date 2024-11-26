@@ -1,0 +1,14 @@
+extends _layout
+
+block content 
+    h1.text-center 查找场所
+    .div 
+        form(action="/spotCheck/admin/spot/find",method="POST")
+            .row
+                input(type="text",name="project",id="project", placeholder="请输入项目代码...(不填查全部)")
+            .row
+                input(type="text",name="spot",id="spot", placeholder="请输入场所代码...(不填查全部)")
+            .row
+                input(type="submit",name="submit",id="submit", value="点击查找场所")
+
+

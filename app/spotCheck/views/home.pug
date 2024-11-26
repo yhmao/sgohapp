@@ -1,0 +1,94 @@
+extends _layout
+
+block script
+    script 
+        include _scriptHome.js
+
+
+block content 
+
+
+
+
+
+
+    .container 
+        h4 Home
+
+        #waitingFp.row 
+            div.text-warning 等待用户识别中......
+
+        //- p (userInfo1/userInfo0:)
+        .row#userInfo1(style="display:none;") 
+            .col 你好：
+                span.h3.text-success#username(name="username")
+            .col.h3.text-success#cellphone(name="cellphone")
+        
+        .row#userInfo0(style="display:none;") 
+            .col.text-danger 你好，未能识别
+
+        //- hr
+
+        //- p (formFpAdd:)
+        form#formFpAdd(name="formFpAdd", action="#", method="POST",style="display:none;")
+            input(type="text",name="fp",id="fpFormFpAdd", hidden)
+            input(type="text", name="text",placeholder="请输入你的手机号或用户名...",style="width:80%;")
+            input.btn.btn-secondary(type="submit",name="submit",value="请根据我填写的信息再识别我一次", style="width:80%;")
+        //- hr
+
+        //- p (链接注册 )   
+        #linkRegister(style="display:none;") 
+            <br>
+            <a href="/spotCheck/user/register"><button class="btn btn-secondary" style="width:80%;">我要注册</button></a>
+
+        hr    
+
+        #divAdmin
+            .nav 
+                a(href=`/spotCheck/admin/`)
+                    button 其他管理工具
+        br
+        br
+        
+
+        h4 查询用户进出场时间
+        form#formInOut(action="/spotCheck/find/InOut", method="post") 
+            input(type="text", name="d", id="d",placeholder="天数(缺省现在往前1天)...")
+            input(type="submit", name="submit", value="查询出入场记录")
+        p(style="color:gray;font-size:small") 查询结果将显示在底部，请往下滑
+        br
+
+        h4 查询用户进出场次数
+        form#formInOutCount(action="/spotCheck/find/count/InOut", method="post") 
+            input(type="text", name="d", id="d",placeholder="天数(缺省现在往前1天)...")
+            input(type="submit", name="submit", value="查询出入场记录")
+        p(style="color:gray;font-size:small") 查询结果将显示在底部，请往下滑
+        br
+
+        h4 巡检记录报告及不合格项汇总
+        form#formSpotReport(action="/spotCheck/find/record/spotReport", method="post")
+            input(type="text", name="spot", id="spot", placeholder="请输入场所代码...")
+            input(type="text", name="days", id="days", placeholder="请输入查询天数...")
+            input(type="submit", name="submit", formaction="/spotCheck/find/record/spotReport/display", id="submit", value="提交")
+            input(type="submit",name="download",formaction="/spotCheck/find/record/spotReport/download", id="download", value="下载")
+        p(style="color:gray;font-size:small") 查询结果将显示在底部，请往下滑
+        hr
+
+
+            
+        //- p (divInOut)
+        #divInOut
+
+        //- p (divSpotReport)
+        #divSpotReport
+
+        #divMyList
+        br
+        br
+        p.text-muted 已到底部。
+        hr
+        br
+    
+        br
+        br
+

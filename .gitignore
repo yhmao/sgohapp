@@ -17,3 +17,8 @@ jspm_packages/
 # upload directories
 upload/
 share/
+uploadItem/
+uploadPost/
+uploadShare/
+uploadSpotCheck/
+uploadTip/

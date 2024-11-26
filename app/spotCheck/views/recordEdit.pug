@@ -1,0 +1,106 @@
+extends _layout.pug
+
+block script 
+    script
+        include _scriptRecordEdit.js
+    style. 
+        body {
+            margin: 20px;
+        }
+
+block content 
+        .container
+            .row.h1 
+                .text-center 编辑
+
+     
+
+ 
+        mixin field(name,value)
+            .row 
+                span #{name}: #{value}
+
+        +field('项目', doc.Project)
+        +field('场所', doc.Spot)
+        +field('用户', doc.User)
+        +field('时间', moment(doc.DateCreated).format('YYYY/MM/DD HH:mm:ss'))
+
+        each item in doc.List
+            li 
+                span #{item.Item}: #{item.Status}
+                //- +field(item.Item, item.Status)
+        each file in doc.Files
+            a(href='/uploadSpotCheck/' + file)
+                - let thumbnail = file => file.split('.')[0] + '_thumbnail.' + file.split('.')[1]
+                img(src='/uploadSpotCheck/' + thumbnail(file), width=100, hight=100,style="margin:2px;")
+        br
+
+
+        form#formCheckList(name="formCheckList",action="#", method="POST")
+            div(hidden)
+                input(type="text", name="_id", id="_id" value=`${doc._id}`)
+            each item in doc.List 
+                div.row.mb-2 
+                    .col
+                        span #{item.Item}
+                    .col
+                        input(type="radio", value="OK",name=`${item.Item}` checked= item.Status == "OK")
+                        label OK&nbsp;&nbsp;
+
+                        input(type="radio", value="NOK", name=`${item.Item}`, checked = item.Status == "NOK")
+                        lable NOK
+
+            textarea(name="Text",placeholder="请填写说明文字...", rows="5",style="width:80%;")= doc.Text
+            br
+            input.btn.btn-secondary(type="submit",name="submit", id="submitReport", value="提交更新后的报告", style="width:80%;")      
+
+        //- p (提交后的反馈信息:)
+        #msgCheckList.text-success(style="display:none;") 提交后的反馈信息
+
+
+
+
+
+        //- 选择文件，并缩小后给表单中文件
+        #divPicker          
+            .row#filePicker 
+                label.row(for="picker") 请选择照片，可多选:
+                input.row(type="file", name="picker", id="picker", value="",accept="image/*,.heic,.heif", multiple)
+
+        //- 上传照片
+        form#formFileUpload(name="formFileUpload", method="POST",enctype="multipart/form-data") 
+            div(hidden)
+                input(type="text", name="docId",id="docId",value=doc._id)
+            br
+            //- p （以下框将被隐藏：）
+            //- input file 表单项必需有 accept="image/*" 使安卓手机可以同时当场拍或相册选。
+            input(type="file",name="files",id="files", value="",accept="image/*,.heic,.heif",multiple, hidden )
+
+            br
+            input.btn.btn-secondary(type="submit",id="submitUpload", name="Submit", value="上传更多现场照片",style="width:80%;")
+
+        //- p (上传图片后的反馈信息:)
+        #msgFileUpload.text-success(style="display:none;")
+        
+        br
+        hr
+
+        p 点击图片以删除该图片
+            each file in doc.Files
+                div
+                    - let thumbnail = file => file.split('.')[0] + '_thumbnail.' + file.split('.')[1]
+                    a.removeFile(href = `/spotCheck/record/file/delete/${file}`)
+                        img(src='/uploadSpotCheck/' + thumbnail(file), width=200, hight=200)
+                br
+                
+        br
+        hr
+        p 删除该条记录（需要先删除其中的所有附属图片文件）
+        a.removeRecord(href=`/spotCheck/record/delete/${doc._id}`)
+            button.btn-secondary 删除本条记录
+
+
+
+
+
+

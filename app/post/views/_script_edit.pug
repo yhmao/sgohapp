@@ -1,0 +1,201 @@
+script.
+    $(document).ready(function(){
+        $('input:checkbox').css("width","auto"); // left align checkbox
+        
+        $('#oneRemove').bind('click',()=>{
+            if (!confirm('确定要删除吗？')){return false;}
+        });
+        
+        $('a.ajax').bind('click',function(e){
+            if (!confirm('确定要删除吗？')){return false;}
+            e.preventDefault();
+            let that = this;
+            console.log(e.currentTarget.href);
+            $.ajax({
+                method:'GET',
+                url: e.currentTarget.href,
+                success: function(data,status,jqXHR){
+                    console.log('res:',data);
+                    console.log('status:', status);
+                    console.log('jqXHR:', jqXHR);
+                    console.log('this:',this);
+                    console.log($(that));
+                    let tag = `<div>${data}</div>`;
+                    console.log('tag:',tag);
+                    $(that).parent().after($(tag))
+                    $(that).parent().remove()
+                } 
+
+            })
+        });
+
+        $('form.ajax').bind('submit',async function(e){
+            console.log('form.ajax submit...');
+            event.preventDefault();
+            console.log("this:",this);
+            var url = this.action;
+            console.log('url:',url);
+            let that = this;
+            var formData = new FormData(this);
+            console.log('formData 10:', formData);
+            for (var [key, value] of formData.entries()) { 
+                console.log(key, value);
+            }            
+            // if file && image
+            if( $(this).find(":file")[0] && $(this).find(":file")[0].files[0] ){
+                console.log('form has file.');
+                formData = await inputFileImageDownsize(that,formData);
+            }
+            
+            console.log('formData 13:', formData);
+            for (var [key, value] of formData.entries()) { 
+                console.log(key, value);
+            }
+            
+
+            $.ajax({
+                url:url,
+                processData:false,
+                contentType:false,  // !
+                data:formData,
+                type:'POST',
+                success:function(data){
+                console.log('ajax done, data:', data);
+                $(that).after(`<div class="red">${data}</div>`)
+                },
+                error:function(xhr,status,errorThrown){
+                console.log('ajax fail xhr,status,errorThrown: ', xhr, status, errorThrown);
+                },
+            })
+        });
+
+
+
+
+
+        let downsizeImage = function(image){
+            console.log('downsizeImage');
+            var canvas = document.createElement('canvas');
+            // scale down to max size
+            var max_size = 600;         
+            var width = image.width;
+            var height = image.height;
+
+            if (width > height) {
+                if (width > max_size){
+                height *= max_size/width;
+                width = max_size;
+                }
+            } else {
+                if (height > max_size){
+                width *= max_size/height;
+                height = max_size;
+                }
+            }
+            // canvas draw and export
+            canvas.width = width;
+            canvas.height = height;
+            console.log('width height:', width,height);
+            canvas.getContext('2d').drawImage(image,0,0,width,height);
+            return new Promise(function(resolve,reject) {
+                canvas.toBlob( function(blob) {
+                resolve(blob)
+                })
+            });  
+        };
+
+
+        let inputFileImageDownsize = (form,formData) => new Promise(resolve=>{   
+                console.log('fileFormImageDownsize');
+                console.log('formData 10.9:',formData);
+                for (const value of formData.values()) {
+                    console.log('value:',value);
+                }   
+                let file = null;
+                let fileEle = $(form).find(":file")[0];
+                console.log('fileEle:', fileEle);
+                if (fileEle && fileEle.files[0]) { 
+                    file = $(form).find(":file")[0].files[0]; 
+                    console.log('file:', file); 
+                }
+                if (file && file.type.split('/')[0] == 'image') {  // file and image
+                    let fileReader = new FileReader();     
+                    fileReader.onload = function() {
+                        console.log('fileReader.onload')
+                        var image = new Image();                        
+                        image.onload = async function(){
+                            console.log('image.onload')
+                            let blob = await downsizeImage(image);   
+                            console.log('formData 11: ',formData);     
+                            for (const value of formData.values()) {
+                                console.log(value);
+                            }                                               
+                            formData.set('file',blob,file.name);
+                            //Display the values
+                            console.log('formData 12:')
+                            for (const value of formData.values()) {
+                                console.log(value);
+                            }     
+                            console.log('returning back from fileFormImageDownsize');
+                            resolve(formData) ;                    
+                        };                        
+                        image.src = fileReader.result;
+                        console.log('image.src')
+                    };         
+                    fileReader.readAsDataURL(file); 
+                    console.log('fileReader.readAsDataURL');                    
+                } else {  // no file or not image
+                    resolve(formData) ;  
+                }
+
+        }); 
+
+        $('form.inline>button,form.toggle>button').bind('click',function(e){
+            console.log('this button;', this);
+            if ($(this).next('div').css('visibility')==='hidden') $(this).next('div').css('visibility','visible');
+            else $(this).next('div').css('visibility','hidden');
+        });
+
+        //- let MOUNT = '/tip';
+
+        //- $('.text').bind('dblclick',function(e){
+        //-     console.log('dblclick this:', this);    
+        //-     console.log('e:',e);        
+        //-     console.log('e.currentTarget:', e.currentTarget);
+        //-     $(this).after($(
+        //-         `<form class="ajax" action="${MOUNT}/edit/${e.currentTarget.dataset._id}/comments/${e.currentTarget.dataset.index}/text" method="POST" encytype="multipart/form-data">
+        //-             <input type="text" name="text" value="${e.currentTarget.innerText}">
+        //-             <input type="submit" value="提交">
+        //-         </form>`            
+        //-     ));
+        //-     //- $(this).hide();
+        //- })
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    })

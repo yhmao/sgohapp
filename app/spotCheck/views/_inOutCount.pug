@@ -1,0 +1,25 @@
+
+mixin user(user)
+    .row 
+        .col= user._id 
+        .col.text-warning= user.countIn 
+        .col.text-success= user.countOut 
+        .col= user.countOut - user.countIn
+        .col= user.LastClock.toLocaleString()
+    .row 
+        
+
+.row.h5.text-success 
+    .col 姓名 
+    .col.text-warning 进场次数
+    .col.text-success 出场次数
+    .col 进出场次数之差
+    .col 最后时间
+.row 
+hr 
+
+
+each user in userInOutCountList 
+    +user(user)
+
+    br

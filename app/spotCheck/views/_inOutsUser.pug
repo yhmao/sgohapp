@@ -1,0 +1,4 @@
+each io in scInOuts 
+    .row 
+        .col= io.Clock.toLocaleString()
+        .col= io.InOut=="in"?"进场":"离场"

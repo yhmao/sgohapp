@@ -1,0 +1,7 @@
+
+
+.footer
+    if (user && user.Name) 
+        hr
+        a(href=`/spotCheck/${user.Cellphone}/recordList`) #{user.Name}的巡视
+        a(href=`/spotCheck/${user.Cellphone}/inOutList`) #{user.Name}的进出场

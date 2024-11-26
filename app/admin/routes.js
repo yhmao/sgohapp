@@ -323,9 +323,17 @@ router.get('/admin/sharefile_remove/:id', function(req,res,next){
 
 router.get('/admin/record_patrol_log',function(req,res,next){
   console.log('enter GET /admin/record_patrol_log');
-  db.Log.find({},(err,logs)=>{
-    res.render('record_patrol_log',{logs:logs,moment:moment})
-  });
+  // db.Log.find({},(err,logs)=>{
+  //   res.render('record_patrol_log',{logs:logs,moment:moment})
+  // });
+  db.Log.find()
+    .sort({date:-1})
+    .limit(2000)
+    .then(logs=>{
+      res.render('record_patrol_log',{logs:logs,moment:moment})
+    });
+
+
 });
 
 router.get('/admin/record_patrol_errorLog',function(req,res,next){

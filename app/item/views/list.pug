@@ -1,0 +1,16 @@
+extends _layout
+
+block content 
+
+    h1 搜索结果列表 
+    h3 共找到 #[strong #{total}] 项. 共 #{pages}页，当前为第#{page}页。
+    include ./_pagination.pug
+    +pagination    
+    hr
+    each item,index in items 
+
+        include ./itemOfList.pug 
+
+    +pagination
+        
+        

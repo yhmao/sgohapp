@@ -1,0 +1,26 @@
+
+.container 
+    .row 
+        .col-sm 
+            span= index+1+(page-1)*20
+        .col-sm 
+            span.key 类别 
+            span.value= item.Cat 
+        .col-sm 
+            span.key 场馆 
+            span.value= item.Venue
+        .col-sm 
+            span.key 系统 
+            span.value= item.System
+    .row 
+        .title.col-sm   
+            a(href=`/item/id/${item._id}`)= item.Item || item.Name || item.Text || item._id
+
+
+
+
+
+hr
+
+
+

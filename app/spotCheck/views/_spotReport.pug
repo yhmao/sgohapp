@@ -1,0 +1,27 @@
+//- 渲染场所巡检报告
+
+.h5.text-success 场所 【#{spot?spot:"所有"}】 巡检报告不合格项汇总
+hr
+
+mixin displayImages(images)
+    .d-flex.flex-wrap
+        for image in images
+            div(style=`border:1px lightgray dashed;`)
+                a(href=`/uploadSpotCheck/${image}`)
+                    img(
+                        src=`/uploadSpotCheck/${(image=>image.split('.')[0]+"_thumbnail."+image.split('.')[1])(image)}`,
+                        onError=`this.onerror=null;this.src='/uploadSpotCheck/${image}';`,           
+                        width="150", height="150",style="padding:10px;"
+                    )
+each item in data 
+    .row(style="border-top: 1px solid; padding:5px;")
+        .col= item.Role
+        .col= item.Status.OK? `OK: ${item.Status.OK} `: ''
+        .col.text-danger= item.Status.NOK? `NOK: ${item.Status.NOK} `: ''
+        //- .col.text-danger= item.Status.NOK? `${JSON.stringify(item.nokItems)}`: ''
+        .col.text-danger= (function(o){let out=""; for(const [k,v] of Object.entries(o)){out+=k+": "+v+";  "};return out;})(item.nokItems)
+        .col= item.Text.join('; ') || ''
+    .row
+        .col-3 
+        .col-9
+            +displayImages(item.Files)

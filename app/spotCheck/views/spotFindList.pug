@@ -1,0 +1,32 @@
+extends _layout
+
+block script 
+    style.
+        body{
+            margin:20px;
+        }
+
+block content 
+    h1.text-center 找到 #{docs.length} 个场所,列表如下
+    each spot in docs 
+        .row 
+            .col-sm-6.col-md-2
+                span
+                    a(href=`/spotCheck/admin/spot/show/${spot._id}` title=`点击显示详情或修改...`) 场所：#{spot.Spot}
+            .col-sm-6.col-md-10
+                span 项目：#{spot.Project}
+        if(spot.CheckList)
+            .row
+                p= spot.CheckList.join(';  ')
+        .qr 
+            Form(action="/spotCheck/admin/qr/qr",method="POST")
+                input#project(type="text", name="project", value=`${spot.Project}`,hidden) 
+                input#spot(type="text", name="spot", value=`${spot.Spot}`,hidden)
+                .row
+                    .col-sm-6.col-md-2
+
+                        input.btn.btn-secondary(type="submit", name="submit", formaction="/spotCheck/admin/qr/qr/display",value="显示进出场二维码")
+                    .col-sm-6.col-md-10
+                        input.btn.btn-secondary(type="submit", name="download",formaction="/spotCheck/admin/qr/qr/download",value="下载含二维码的word文档")
+            
+        hr

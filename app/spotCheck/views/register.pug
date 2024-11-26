@@ -1,0 +1,22 @@
+extends _layout.pug
+
+block content 
+    p 因无法匹配到与你相关的信息，你需要先进行注册，注册后你即可以使用，但请同时通知你的领导尽快进行审批，以免影响后面正常使用。谢谢！
+
+    h1 添加新用户
+    br
+    form(action="/spotCheck/admin/user/add",method="POST")
+        mixin inputText(labelName,name)
+            .form-group.row
+                label.col-form-label.col-sm-2(for=name)= labelName 
+                .col-sm-10 
+                    input.form-control(type="text", id=name, name=name)
+
+        +inputText("姓名",  "Name")
+        +inputText("手机号",  "Cellphone")
+        +inputText("职责部门", "Role")
+
+        .form-group.row 
+            .col-sm-10.offset-sm-2
+                button.btn.btn-secondary(type="submit",style="width: 50%") 提交
+

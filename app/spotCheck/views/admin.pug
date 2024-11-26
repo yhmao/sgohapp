@@ -1,0 +1,31 @@
+extends _layout.pug
+
+block content 
+    h1 管理
+    br
+    br
+
+    mixin adminButton(url,text)
+        a(href=url)
+            button(class="btn btn-secondary", style="margin:2px")= text
+
+    .nav() 
+        +adminButton("/spotCheck/admin/user/add", "用户添加") 
+        +adminButton("/spotCheck/admin/user/find","用户查找及列表") 
+    br
+    .nav
+        +adminButton("/spotCheck/admin/spot/add", "场所添加")
+        +adminButton("/spotCheck/admin/spot/find", "场所查找及列表")
+    br
+    .nav
+        +adminButton("/spotCheck/admin/qr/qr", "二维码制作与打印")
+
+
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    br

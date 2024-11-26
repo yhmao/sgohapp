@@ -1,0 +1,38 @@
+extends _layout.pug
+
+block script
+    style. 
+        body{
+            margin: 20px 20px;
+        }
+        input,textarea{
+            width: 100% !important;
+        }
+        .label{
+            text-align: right;
+        }
+
+block content
+
+    h1.text-center 添加新的场所信息
+    br
+    br
+
+    div(style="margin:10px;") 
+        form#addSpot(action="/spotCheck/admin/spot/add",method="POST")
+            .row(style="margin-bottom:5px;")
+                .col-2.label 项目
+                .col-10
+                    input(type="text",name="project", id="project",placeholder="请输入项目代码")
+            .row(style="margin-bottom:5px;")    
+                .col-2.label 场所
+                .col-10
+                    input(type="text",name="spot", id="spot",placeholder="请输入场所代码")
+            .row(style="margin-bottom:5px;")    
+                .col-2.label 检查表
+                .col-10
+                    textarea(name="checklist", id="checklist",width="100%", rows="6", placeholder="请输入检查列表，以回车分隔")
+            .row(style="margin-bottom:5px;")    
+                .col-2 
+                .col-10
+                    input(type="submit",name="submit",id="submit",value="提交创建新的场所")

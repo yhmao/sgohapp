@@ -1,0 +1,78 @@
+extends _layout.pug
+
+block script 
+
+    script
+        include _scriptSpotIn.js
+
+
+
+block content 
+    br
+    .container
+        .row.h1
+            .text-center 入场
+
+        .row#spotInfo
+            .col 项目 
+                span.h4.text-success #{project} 
+            .col 场所 
+                span.h4.text-success #{spot}
+        .row
+            .col#errInfo(style="display:none;")
+
+        #waitingFp.row 
+            div.text-warning 等待用户识别中......
+
+        //- p (userInfo1/userInfo0:)
+        .row#userInfo1(style="display:none;") 
+            .col 你好：
+                span.h3.text-success#username(name="username")
+            .col.h3.text-success#cellphone(name="cellphone")
+        
+        .row#userInfo0(style="display:none;") 
+            .col.text-danger 你好，未能识别
+        //- hr
+
+        //- p (formFpAdd:)
+        form#formFpAdd(name="formFpAdd", action="#", method="POST",style="display:none;")
+            input(type="text",name="fp",id="fpFormFpAdd", hidden)
+            input(type="text", name="text",placeholder="请输入你的手机号或用户名...",style="width:80%;")
+            input.btn.btn-secondary(type="submit",name="submit",value="请根据我填写的信息再识别我一次", style="width:80%;")
+        //- hr
+
+        //- p (链接注册 )   
+        #linkRegister(style="display:none;") 
+            <br>
+            <a href="/spotCheck/user/register"><button class="btn btn-secondary" style="width:80%;">我要注册</button></a>
+
+        hr
+        //- p (checkList:)
+
+        .row.h3#checkList 
+            .col 检查清单
+        each item in CheckList 
+            .row 
+                .col 
+                        li= item
+        //- hr    
+        br
+        
+        //- p (formIn:)
+
+        form#formIn(name="formIn", method="POST")
+            div(style="display:none;")
+                input(type="text", name="project", value=`${project}`)
+                input(type="text", name="spot", value=`${spot}`)
+                input(type="text", name="username")
+                input(type="text", name="cellphone")
+            div
+                button.btn.btn-secondary(type="submit",id="submitFormIn", name="submit",style="width:80%;") 进入
+                    //- input(type="submit", id="submitFormIn", name="submit", value="进入")
+
+        //- p (msgFormIn:)
+        #msgFormIn.text-success 
+
+
+
+

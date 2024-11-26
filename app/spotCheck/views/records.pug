@@ -1,0 +1,43 @@
+extends _layout.pug
+
+block script 
+
+    style.
+        body{
+            margin:20px;
+        }
+
+
+
+block content 
+    .container
+        .row.h1 
+            .text-center 最近巡更记录列表如下
+
+     
+
+
+
+    each doc in docs 
+        mixin field(name,value)
+            .row 
+                span #{name}: #{value}
+
+        +field('项目', doc.Project)
+        +field('场所', doc.Spot)
+        +field('用户', doc.User)
+        +field('时间', doc.DateCreated)
+        each item in doc.List
+            li 
+                span #{item.Item}: #{item.Status}
+                //- +field(item.Item, item.Status)
+        each file in doc.Files
+            a(href='/uploadSpotCheck/' + file)
+                - let thumbnail = file => file.split('.')[0] + '_thumbnail.' + file.split('.')[1]
+                img(src='/uploadSpotCheck/' + thumbnail(file), width=100, hight=100,style="margin:2px")
+        br
+        a(href="/spotCheck/record/edit/" + doc._id,class='btn btn-secondary') 
+            | 编辑或添加更多照片
+
+        hr
+

@@ -1,0 +1,57 @@
+extends layout
+
+block content
+  h1 Post Show
+  if (user.username === doc.user || user.username === 'admin')
+    div: a(href=`${MOUNT}/edit/${doc._id}`) 编辑
+  hr
+  div.h3.blue #{doc.title}
+  p.gray 创建于：#{doc.date}
+  p.gray 更新于：#{doc.dateUpdate}  
+  p.gray 作者：#{doc.user}  
+  p.gray 标题：#{doc.title}
+  p.gray 内容：  
+  div.blue(style="border:dashed 1px blue;padding:5px;") !{doc.text}
+
+
+
+
+  hr
+  h4.gray 评论：
+    span.blue #{doc.comments.length}
+  hr.thick
+
+  //- ====================================================
+  hr.thick
+  //- ====================================================
+  div(id="comments",style="background-color:#f5f5f5;")
+      
+
+      each comment, idx in doc.comments.reverse()
+          hr
+          - let index = doc.comments.length - 1 - idx;
+          - let showOrEdit = 'show';
+          include _comment_show.pug   
+
+  hr.thick
+
+  //- ====================================================
+  mixin upload(action)
+    div
+        form.ajax(action=action,method="POST", enctype="multipart/form-data")
+            label 上传照片/视频/文件:
+            br
+            input(type='file',name='file',id='file',style='width:100%;')
+            br
+            textarea(name='text', placeholder='评论内容...',rows='10',style='width:100%;')
+            br
+            input(type='text',name='caption', placeholder='附件说明...',style='width:100%;')                
+            input.btn.btn-primary(type='submit',value='上传',style='width:100%;margin-top:5px;')   
+  //- ====================================================
+  +upload(`${MOUNT}/edit/${doc._id}/comments/upload`)
+
+
+
+
+  //- 撑开底部
+  div(style="margin-bottom:200px;")

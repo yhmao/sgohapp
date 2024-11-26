@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <script src="../script/heic2any.min.js"></script>
+        <title>HEIC convert</title>
+    </head>
+    <body>
+        <h1>HEIC</h1>
+
+        <form action="#">
+            <input type="file" id="files" name="files" multiple>
+            <input type="submit" name="submit" value="submit">
+        </form>
+
+        <script>
+            document.getElementById("files").addEventListener('change',
+                (e) => handleFileInputChange(e)
+                
+            )
+
+            let handleFileInputChange = async function(e) {
+                console.log('file input change event:', e);
+                let file = e.target.files[0]
+                console.log('file:', file);
+                let fileReader = new FileReader();
+                fileReader.onload = function() {
+                    let result = fileReader.result;
+                    console.log('fileReader.result:', result)
+                    console.log('typeof:', typeof result);
+                    let blob = new Blob([result])
+                    console.log('blob:', blob);
+                    let h = heic2any({blob});
+                    console.log('heic2any({blob}):', h);
+                    h.then(
+                        (conversionResult) =>{
+                            console.log('h:', conversionResult)
+                            let img = document.createElement('img');
+                            let url = URL.createObjectURL(conversionResult);
+                            img.width = 200;
+                            img.height = 200;
+                            img.src = url;
+                            document.body.append(img)
+                        }
+                    )
+                }
+
+
+                // fileReader.readAsDataURL(file);
+                fileReader.readAsArrayBuffer(file);
+
+            }
+
+
+        // fetching the heic image
+        // console.log("starting...")
+        // fetch("./my-image.heic")
+        //     .then((res) => res.blob())
+        //     .then((blob) => heic2any({ blob }))
+        //     .then((conversionResult) => {
+        //         // conversionResult is a BLOB
+        //         // of the PNG formatted image
+        //     })
+        //     .catch((e) => {
+        //         // see error handling section
+	    //     });
+
+        </script>
+
+
+    </body>
+</html>

@@ -42,12 +42,16 @@ db.User.find({debug:{$ne:'debug'}},{_id:0,username:1},(err,docs)=>{
 
 
 router.get('/',function(req,res,next){    // 设置 views中使用的 user变量。
-  console.log('existing router.locals.user:',router.locals.user);
+  if (!router.locals.user && !req.user) {
+    console.log('not logged in, redirect to login page.');
+    res.redirect('/login');
+  } else {
+    console.log('existing router.locals.user:',router.locals.user);
+    router.locals.user = req.user;    
+    console.log('then router.locals.user:',router.locals.user);
+    next();    
+  }
 
-  router.locals.user = req.user;    
-
-  console.log('then router.locals.user:',router.locals.user);
-  next();
 })
 
 router.get ('/', c.home);                 // patrol首页

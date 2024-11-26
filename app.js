@@ -27,7 +27,9 @@ cron.schedule('0 0 */2 * * *',()=>{  // every 2 hour
 
 // configure app
 var app = express();
-app.set('port', process.env.PORT || 3000);
+if (require('./config.js').TIPONLY) { app.set('port', process.env.PORT || 80); }
+else { app.set('port', process.env.PORT || 3000); }
+
 
 // engine
 app.set('view engine', 'ejs');
@@ -48,7 +50,9 @@ app.use('/public',express.static(path.join(__dirname,'public')));
 app.use('/upload',      express.static(path.join(__dirname, 'upload')));
 app.use('/uploadShare', express.static(path.join(__dirname, 'uploadShare')));
 app.use('/uploadTip',   express.static(path.join(__dirname, 'uploadTip')));
-
+app.use('/uploadPost',   express.static(path.join(__dirname, 'uploadPost')));
+app.use('/uploadItem', express.static(path.join(__dirname,'uploadItem')));
+app.use('/uploadSpotCheck', express.static(path.join(__dirname,'uploadSpotCheck')));
 // session
 app.use(session({
   secret:'keyboard cat',
@@ -81,14 +85,21 @@ app.use(
 // routes
 require('./app/')(app);    
 
+// errorHandler
+app.use(require('./middlewares').errorHandler);
+
+app.use(function(error, req, res, next) {
+  res.redirect('/home');
+});
+
 // unhandled rejection
 process.on('unhandledRejection', (reason, promise) => {
   console.log('process.on(unhandledRejection) at: ',moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'));
   console.log('reason.stack:', reason.stack || reason)
+
 });
 
-// errorHandler
-app.use(require('./middlewares').errorHandler);
+
 
 
 

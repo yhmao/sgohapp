@@ -17,7 +17,12 @@ router.locals.moment = moment;
 
 
 router.get('/',function(req,res,next){
-    res.redirect('/patrol');
+    if (req.user) {
+        res.redirect('/patrol');        
+    } else {
+        res.redirect('/home')
+    }
+
 });
 
 router.get('/home',function(req,res,next){

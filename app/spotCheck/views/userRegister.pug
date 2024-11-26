@@ -1,0 +1,34 @@
+//- 用户自行注册
+//- 不提供fp
+
+extends _layout.pug
+
+block content
+    
+    .container
+        br
+        .row.h3
+            .text-center 自助注册
+        div.text-center.text-success(style="color:blue;") 注册成功后可以重新扫码识别<br>请同时通知你的领导尽快进行审批，以免影响后面正常使用。谢谢！
+        hr
+        form.m-4(action="/spotCheck/user/register",method="POST")
+            div.row 
+                label.col-4(for="name") 姓名
+                input.col-8(type="text", name="name", id="name")  
+            div.row
+                label.col-4(for="cellphone") 手机号
+                input.col-8(type="text",name="cellphone", id="cellphone")
+            div.row
+                label.col-4(for="role") 职能部门
+                input.col-8(type="text",name="role", id="role")
+            div.row
+                label.col-4(for="password") 密码
+                input.col-8(type="text",name="password", id="password")
+            //- div.row(hidden)
+            //-     label.col-4(for="Fp") Fp
+            //-     input.col-4(type="text", name="Fp",id="Fp")
+            div.row.mt-2
+                .col-4 
+                input.col-8.btn.btn-secondary(type="submit", name="submit", id="submit", value="提交")
+
+    //-  need to submit fp together

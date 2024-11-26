@@ -16,11 +16,17 @@ div.d-flex
                     a.nav-link(href=`/notice`) 公告
                 li.nav-item
                     a.nav-link(href=`/about`) 关于   
-                if (user.role === 'admin')                 
+                if (user && user.role === 'admin')                 
                     li.nav-item
                         a.nav-link(href=`/admin`) 管理员专用     
                 li.nav-item
                     a.nav-link(href=`/logout`) 登出                 
                 li.nav-item
                     a.nav-link(href=`/register`) 注册
+                li.nav-item
+                    a.nav-link(href=`/item/`) 工程量清单               
+                if(user && user.username === 'maoyuhong')
+                    li.nav-item
+                        a.nav-link(href=`/tips`) Tip    
+            
 

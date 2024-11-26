@@ -15,7 +15,7 @@
     </tr>
   </thead>
   <tbody >
-    <% logs.reverse().forEach(function(log){ %>
+    <% logs.forEach(function(log){ %>
       <tr>
         <td><%= log.user %></td>
         <td><%= moment(log.date).format('YYYY-MM-DD HH:mm:ss') %> </td>
